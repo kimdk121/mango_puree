@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="topbarFragment">
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/admin/main">Main</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        loadUserMenu();
+    });
+
+    function loadUserMenu() {
+        fetch("/menu/loadUserMenu")
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === "00") {
+                    renderMenu(data.menuList);
+                } else {
+                    console.error("메뉴 로딩 실패:", data.exceptionMessage);
+                }
+            })
+            .catch(error => console.error("메뉴 데이터를 불러오는 중 오류 발생:", error));
+    }
+
+    function renderMenu(menuList) {
+        let menuContainer = document.querySelector(".navbar-nav");
+
+        menuContainer.innerHTML = menuList.map(menu => {
+            if (menu.subMenuList.length < 1) {
+                return `<li class="nav-item"><a class="nav-link" href="${menu.url}">${menu.menuName}</a></li>`;
+            } else {
+                return `
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">${menu.menuName}</a>
+                        <ul class="dropdown-menu">
+                            ${menu.subMenuList.map(sub => `<li><a class="dropdown-item" href="${sub.url}">${sub.menuName}</a></li>`).join('')}
+                        </ul>
+                    </li>`;
+            }
+        }).join('');
+    }
+    </script>
+</th:block>
+</html>

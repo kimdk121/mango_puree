@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutLogin}">
+
+<th:block layout:fragment="content">
+    <div style="text-align: center;">
+        <form name="signupForm" id="signupForm" method="post">
+            <table>
+                <thead>
+                    <tr>
+                        <th>아이디</th>
+                        <td><input th:type="text" th:id="username" th:name="username"></td>
+                    </tr>
+                    <tr>
+                        <th>비밀번호</th>
+                        <td><input th:type="password" th:id="password" th:name="password"></td>
+                    </tr>
+                    <tr>
+                        <th>이름</th>
+                        <td><input th:type="text" th:id="name" th:name="name"></td>
+                    </tr>
+                </thead>
+            </table>
+        </form>
+        <button onclick="history.back()">뒤로 가기</button>
+        <button th:type="button" th:name="signup" th:onclick="ajaxSignup();" th:text="회원가입"></button>
+    </div>
+
+    <script type="text/javascript">
+        function ajaxSignup() {
+            var url = '@{/login/ajaxSignup.do}';
+            var formData = $('#signupForm').serialize();
+            if(confirm('가입하시겠습니까?')) {
+                ajaxCallback(url, formData, function(data) {
+                    if(data.code=='00') {
+                        alert("가입이 완료되었습니다");
+                        location.href = '/login/loginForm.do';
+                    } else {
+                        console.log(data);
+                        alert("가입에 실패하였습니다 \n"+data.exceptionMessage);
+                    }
+
+                });
+            }
+        }
+    </script>
+</th:block>
+</html>

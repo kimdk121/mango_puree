@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutLogin}">
+
+<th:block layout:fragment="content">
+    <div style="text-align: center;">
+        <form name="loginForm" id="loginForm" method="post" action="/loginProcess">
+            <table>
+                <thead>
+                    <tr>
+                        <th>아이디</th>
+                        <td><input type="text" id="username" name="username"></td>
+                    </tr>
+                    <tr>
+                        <th>비밀번호</th>
+                        <td><input type="password" id="password" name="password"></td>
+                    </tr>
+                </thead>
+            </table>
+            <input type="submit" name="login" value="로그인">
+        </form>
+        <input type="button" name="signup" value="회원가입" th:onclick="signup();">
+    </div>
+
+    <script type="text/javascript">
+        window.onload = function () {
+            var errorMessage = "[[${errorMessage}]]";
+            if (errorMessage) alert(errorMessage);
+        };
+
+        function signup() {
+            location.href = '/login/signup';
+        }
+    </script>
+</th:block>
+</html>

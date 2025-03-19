@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangopuree.menu.service.MenuMapper">
+
+    <resultMap id="menuMap" type="com.mangopuree.menu.dto.MenuDto">
+        <id property="menuId" column="menu_id"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="orderIndex" column="order_index"/>
+        <result property="url" column="url"/>
+        <collection property="subMenuList" ofType="com.mangopuree.menu.dto.SubMenuDto">
+            <id property="menuId" column="sub_menu_id"/>
+            <result property="menuName" column="sub_menu_name"/>
+            <result property="orderIndex" column="sub_order_index"/>
+            <result property="url" column="sub_url"/>
+        </collection>
+    </resultMap>
+
+    <select id="findMenuListByUserId" resultMap="menuMap">
+        /*
+            MenuMapper.findMenuListByUserId
+            조회
+        */
+        select
+            m1.menu_id as menu_id
+            , m1.menu_name as menu_name
+            , m1.order_index as order_index
+            , m2.menu_id as sub_menu_id
+            , m2.menu_name as sub_menu_name
+            , m2.order_index as sub_order_index
+            , m2.url as sub_url
+        from
+            menu m1
+            left join menu m2 on m1.menu_id = m2.parent_id
+            left join menu_role mr on m1.menu_id = mr.menu_id
+            left join `user` u on mr.role_id = u.role_id
+        where
+            m1.parent_id is null
+            and u.user_id = #{userId}
+        order by
+            menu_id, order_index, sub_order_index
+    </select>
+
+</mapper>
