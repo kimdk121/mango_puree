@@ -34,20 +34,28 @@
             .catch(error => console.error("메뉴 데이터를 불러오는 중 오류 발생:", error));
     }
 
-    function renderMenu(menuList) {
-        let menuContainer = document.querySelector(".navbar-nav");
+    function renderSidebarMenu(menuList) {
+        let menuContainer = document.querySelector(".sb-sidenav-menu .nav");
 
         menuContainer.innerHTML = menuList.map(menu => {
             if (menu.subMenuList.length < 1) {
-                return `<li class="nav-item"><a class="nav-link" href="${menu.url}">${menu.menuName}</a></li>`;
+                return `
+                    <a class="nav-link" href="${menu.url}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-link"></i></div>
+                        ${menu.menuName}
+                    </a>`;
             } else {
                 return `
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">${menu.menuName}</a>
-                        <ul class="dropdown-menu">
-                            ${menu.subMenuList.map(sub => `<li><a class="dropdown-item" href="${sub.url}">${sub.menuName}</a></li>`).join('')}
-                        </ul>
-                    </li>`;
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#menu${menu.menuId}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-folder"></i></div>
+                        ${menu.menuName}
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="menu${menu.menuId}">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            ${menu.subMenuList.map(sub => `<a class="nav-link" href="${sub.url}">${sub.menuName}</a>`).join('')}
+                        </nav>
+                    </div>`;
             }
         }).join('');
     }
