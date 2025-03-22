@@ -7,10 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/admin/user")
 @RequiredArgsConstructor
 public class UserController extends BaseContoller {
 
     private final UserService userService;
+
+
 
 }

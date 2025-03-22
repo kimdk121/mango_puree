@@ -21,7 +21,7 @@
         });
 
         function loadUserMenu() {
-            fetch("/menu/loadUserMenu")
+            fetch("/admin/menu/loadUserMenu")
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === "00") {

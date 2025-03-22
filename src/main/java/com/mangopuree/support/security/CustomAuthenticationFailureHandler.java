@@ -17,15 +17,15 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
 
-        String errorMsg;
+        String errorMessage;
 
         if(exception instanceof BadCredentialsException){
-            errorMsg = "아이디나 비밀번호가 맞지 않습니다. 다시 확인해 주세요.";
+            errorMessage = "login.fail.badCredentials";
         }
         else{
-            errorMsg = "알수없는 이유로 로그인에 실패하였습니다.";
+            errorMessage = "login.fail.unknown";
         }
-        request.getSession().setAttribute("errorMessage", errorMsg);
+        request.getSession().setAttribute("errorMessage", errorMessage);
         response.sendRedirect(failUrl + "?error=true");
     }
 

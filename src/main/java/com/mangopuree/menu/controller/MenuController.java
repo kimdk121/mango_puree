@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/menu")
+@RequestMapping("/admin/menu")
 public class MenuController extends BaseContoller {
 
     private final MenuService menuService;

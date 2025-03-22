@@ -20,4 +20,34 @@
             a.username = #{username}
     </select>
 
+    <select id="existsByUsername" resultType="boolean">
+        /*
+        UserMapper.existsByUsername
+        조회
+        */
+        select exists (select username from user where username = #{username})
+    </select>
+
+    <insert id="insertUser">
+        /*
+        UserMapper.insertUser
+        조회
+        */
+        insert into
+            user
+                (
+                    username
+                    , password
+                    , name
+                    , role_id
+                )
+            values
+                (
+                    #{username}
+                    , #{password}
+                    , #{name}
+                    , 2
+                )
+    </insert>
+
 </mapper>

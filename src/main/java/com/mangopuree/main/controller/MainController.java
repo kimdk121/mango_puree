@@ -13,7 +13,7 @@ public class MainController extends BaseContoller {
      * 메인 페이지 호출
      */
     @GetMapping
-    public String mainPage() {
+    public String mainForm() {
         return "main";
     }
 }
