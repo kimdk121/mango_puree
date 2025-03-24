@@ -1,4 +1,4 @@
-package com.mangopuree.support.util;
+package com.mangopuree.support.message;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;

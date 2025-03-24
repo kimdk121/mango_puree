@@ -39,6 +39,8 @@
                     username
                     , password
                     , name
+                    , tel_no
+                    , fax_no
                     , role_id
                 )
             values
@@ -46,6 +48,8 @@
                     #{username}
                     , #{password}
                     , #{name}
+                    , #{telNo}
+                    , #{faxNo}
                     , 2
                 )
     </insert>

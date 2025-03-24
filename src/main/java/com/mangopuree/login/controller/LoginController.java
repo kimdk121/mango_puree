@@ -1,7 +1,7 @@
 package com.mangopuree.login.controller;
 
 import com.mangopuree.support.base.BaseContoller;
-import com.mangopuree.support.util.MessageUtil;
+import com.mangopuree.support.message.MessageUtil;
 import com.mangopuree.user.dto.UserSignupDto;
 import com.mangopuree.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,18 +63,18 @@ public class LoginController extends BaseContoller {
             return "login/signup";
         }
         if (userService.existsByUsername(userSignupDto.getUsername())) {
-            bindingResult.rejectValue("username", "error.duplication.username");
+            bindingResult.rejectValue("username", "duplication.username");
             return "login/signup";
         }
         if (!userSignupDto.isPasswordMatching()) {
-            bindingResult.rejectValue("password", "error.mismatch.password");
+            bindingResult.rejectValue("password", "mismatch.password");
             return "login/signup";
         }
         // 회원가입 처리
         try {
             userService.insertUser(userSignupDto);
         } catch (DuplicateKeyException e) {
-            bindingResult.rejectValue("username", "error.duplication.username");
+            bindingResult.rejectValue("username", "duplication.username");
             return "login/signup";
         }
         request.getSession().setAttribute("successMessage","signup.success");
