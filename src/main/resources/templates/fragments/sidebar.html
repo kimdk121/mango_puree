@@ -21,26 +21,36 @@
         });
 
         function loadUserMenu() {
-            fetch("/admin/menu/loadUserMenu")
-                .then(response => response.json())
-                .then(data => {
-                    if (data.code === "00") {
-                        renderMenu(data.menuList);
-                    } else {
-                        console.error("메뉴 로딩 실패:", data.exceptionMessage);
-                    }
-                })
-                .catch(error => console.error("메뉴 데이터를 불러오는 중 오류 발생:", error));
+            fetch("/admin/menu/loadUserMenu", {
+                method: "GET"
+                , headers: {
+                    "Content-Type": "application/json"
+                    , "Accept": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === "00") {
+                    renderMenu(data.menuList);
+                } else {
+                    console.error("메뉴 로딩 실패:", data.exceptionMessage);
+                }
+            })
+            .catch(error => console.error("메뉴 데이터를 불러오는 중 오류 발생:", error));
         }
 
         function renderMenu(menuList) {
             let menuContainer = document.querySelector(".sb-sidenav-menu .nav");
+            const currentPath = window.location.pathname;
 
             menuContainer.innerHTML = menuList.map(menu => {
-                if (menu.subMenuList.length < 1) {
+                const subMenuList = menu.subMenuList || [];
+                const isActiveMenu = subMenuList.some(sub => sub.url === currentPath);
+
+                if (subMenuList.length < 1) {
                     return `
                         <div class="sb-sidenav-menu-heading">------------------------------</div>
-                            <a class="nav-link" href="${menu.url}">
+                            <a class="nav-link ${menu.url === currentPath ? 'active' : ''}" href="${menu.url}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-link"></i></div>
                                 ${menu.menuName}
                             </a>
@@ -48,14 +58,14 @@
                 } else {
                     return `
                         <div class="sb-sidenav-menu-heading">------------------------------</div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#menu${menu.menuId}">
+                            <a class="nav-link ${isActiveMenu ? '' : 'collapsed'}" href="#" data-bs-toggle="collapse" data-bs-target="#menu${menu.menuId}" aria-expanded="${isActiveMenu}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-folder"></i></div>
                                 ${menu.menuName}
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="collapse" id="menu${menu.menuId}">
+                            <div class="collapse ${isActiveMenu ? 'show' : ''}" id="menu${menu.menuId}">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    ${menu.subMenuList.map(sub => `<a class="nav-link" href="${sub.url}">${sub.menuName}</a>`).join('')}
+                                    ${subMenuList.map(sub => `<a class="nav-link ${sub.url === currentPath ? 'active' : ''}" href="${sub.url}">${sub.menuName}</a>`).join('')}
                                 </nav>
                             </div>
                         </div>`;

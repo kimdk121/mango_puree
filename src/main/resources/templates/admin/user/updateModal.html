@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="updateModalFragment">
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">회원정보 수정</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="userUpdateForm">
+                        <input type="hidden" name="userId" id="updateUserId" />
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" name="username" id="username" placeholder="아이디" readonly />
+                            <label for="username">아이디</label>
+                            <div id="usernameError" class="text-danger small"></div>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" name="name" id="name" placeholder="이름" />
+                            <label for="name">이름</label>
+                            <div id="nameError" class="text-danger small"></div>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" name="telNo" id="telNo" placeholder="전화번호" />
+                            <label for="telNo">전화번호</label>
+                            <div id="telNoError" class="text-danger small"></div>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" name="faxNo" id="faxNo" placeholder="팩스번호" />
+                            <label for="faxNo">팩스번호</label>
+                            <div id="faxNoError" class="text-danger small"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" onclick="fetchUserUpdate();" class="btn btn-primary btn-block">수정</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function fetchUserUpdate() {
+            const updateData = formToJson(document.getElementById('userUpdateForm'));
+            var confirmMessage = '[[#{update.confirm}]]';
+            if(confirm(confirmMessage)) {
+                fetch('/admin/user/update', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                        , "Accept": "application/json"
+                    },
+                    body: JSON.stringify(updateData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === "00") {
+                        alert('[[#{update.success}]]');
+
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('updateModal'));
+                        modal.hide();
+
+                    } else if (data.code === "99") {
+                        document.querySelectorAll(".text-danger").forEach(el => el.textContent = '');
+                        for (const field in data.fieldErrors) {
+                            const errorDiv = document.getElementById(`${field}Error`);
+                            if (errorDiv) {
+                                errorDiv.innerText = data.fieldErrors[field].join('\n');
+                            }
+                        }
+                    } else {
+                        alert(data.message || "오류가 발생했습니다.");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("요청 중 오류가 발생했습니다.");
+                });
+            }
+        }
+    </script>
+</th:block>
+</html>

@@ -1,9 +1,9 @@
 package com.mangopuree.user.service;
 
-import com.mangopuree.user.dto.UserCredentialsDto;
-import com.mangopuree.user.dto.UserSignupDto;
+import com.mangopuree.user.dto.*;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.exceptions.PersistenceException;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
@@ -13,4 +13,12 @@ public interface UserMapper {
     boolean existsByUsername(String username);
 
     int insertUser(UserSignupDto userSignupDto);
+
+    List<UserDto> findAll();
+
+    UserDto findByUserId(String userId);
+
+    int updateByUserId(UserUpdateDto userUpdateDto);
+
+    int updatePasswordByUserId(UserPasswordUpdateDto userPasswordUpdateDto);
 }

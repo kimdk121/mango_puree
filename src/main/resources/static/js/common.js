@@ -2,7 +2,7 @@
  * 공통 함수
  */
 
-/** ajax callback */
+// ajax callback
 function ajaxCallback(url, formData, callback) {
 	$.ajax({
 		url : url
@@ -17,4 +17,16 @@ function ajaxCallback(url, formData, callback) {
 			return callback(data);
 		}
 	});
+}
+
+// FormData -> JSON 변경
+function formToJson(formElement) {
+    const formData = new FormData(formElement);
+    const jsonObject = {};
+
+    formData.forEach((value, key) => {
+        jsonObject[key] = value;
+    });
+
+    return jsonObject;
 }

@@ -14,6 +14,6 @@ public class MainController extends BaseContoller {
      */
     @GetMapping
     public String mainForm() {
-        return "main";
+        return "admin/main";
     }
 }

@@ -9,10 +9,10 @@
         */
         select
             a.user_id
-            ,a.username
-            ,a.password
-            ,a.name
-            ,b.role_name
+            , a.username
+            , a.password
+            , a.name
+            , b.role_name
         from
             user a
         left join role b on a.role_id = b.role_id
@@ -31,7 +31,7 @@
     <insert id="insertUser">
         /*
         UserMapper.insertUser
-        조회
+        등록
         */
         insert into
             user
@@ -53,5 +53,71 @@
                     , 2
                 )
     </insert>
+
+    <select id="findAll" resultType="com.mangopuree.user.dto.UserDto">
+        /*
+        UserMapper.findAll
+        조회
+        */
+        select
+            a.user_id
+            , a.username
+            , a.name
+            , a.tel_no
+            , a.fax_no
+            , b.role_name
+            , a.reg_dt
+        from
+            user a
+            left join role b on a.role_id = b.role_id
+    </select>
+
+    <select id="findByUserId" resultType="com.mangopuree.user.dto.UserDto">
+        /*
+        UserMapper.findByUserId
+        조회
+        */
+        select
+            a.user_id
+            , a.username
+            , a.name
+            , a.tel_no
+            , a.fax_no
+            , b.role_name
+            , a.reg_dt
+        from
+            user a
+            left join role b on a.role_id = b.role_id
+        where
+            user_id = #{userId}
+    </select>
+
+    <update id="updateByUserId">
+        /*
+        UserMapper.update
+        수정
+        */
+        update
+            user
+        set
+            name = #{name}
+            , tel_no = #{telNo}
+            , fax_no = #{faxNo}
+        where
+            user_id = #{userId}
+    </update>
+
+    <update id="updatePasswordByUserId">
+        /*
+        UserMapper.updatePassword
+        수정
+        */
+        update
+            user
+        set
+            password = #{password}
+        where
+            user_id = #{userId}
+    </update>
 
 </mapper>

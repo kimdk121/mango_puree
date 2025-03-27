@@ -27,9 +27,8 @@ public class MenuController extends BaseContoller {
      */
     @GetMapping("/loadUserMenu")
     @ResponseBody
-    public Map<String, Object> loadUserMenu() {
+    public Map<String, Object> loadUserMenu(Authentication authentication) {
         ModelMap model = new ModelMap();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<MenuDto> menuList = menuService.findMenuListByUserId(authentication.getName());
 
         model.addAttribute("menuList",menuList);

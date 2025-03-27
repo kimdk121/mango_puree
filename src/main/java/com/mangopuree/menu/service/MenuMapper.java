@@ -9,4 +9,8 @@ import java.util.List;
 public interface MenuMapper {
 
     List<MenuDto> findMenuListByUserId(String userId);
+
+    MenuDto getMenuByUrl(String url);
+
+    MenuDto getMenuByMenuId(Long menuId);
 }
