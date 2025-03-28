@@ -1,8 +1,8 @@
 package com.mangopuree.user.controller;
 
 import com.mangopuree.support.base.BaseContoller;
-import com.mangopuree.user.dto.UserUpdateDto;
 import com.mangopuree.user.dto.UserPasswordUpdateDto;
+import com.mangopuree.user.dto.UserUpdateDto;
 import com.mangopuree.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -23,12 +23,18 @@ public class UserController extends BaseContoller {
 
     private final UserService userService;
 
+    /**
+     * 사용자 화면 호출
+     */
     @GetMapping
     public String listForm(Model model) {
         model.addAttribute("users", userService.findAll());
         return "admin/user/list";
     }
 
+    /**
+     * API 사용자 호출
+     */
     @GetMapping("/loadUserInfo")
     @ResponseBody
     public Map<String, Object> loadUserInfo(Authentication authentication) {
@@ -37,6 +43,9 @@ public class UserController extends BaseContoller {
         return setSuccessResult(model);
     }
 
+    /**
+     * API 사용자 수정
+     */
     @PostMapping("/update")
     @ResponseBody
     public Map<String, Object> update(@RequestBody @Validated UserUpdateDto userUpdateDto, BindingResult bindingResult) {
@@ -50,6 +59,9 @@ public class UserController extends BaseContoller {
         return setSuccessResult();
     }
 
+    /**
+     * API 비밀번호 수정
+     */
     @PostMapping("/updatePassword")
     @ResponseBody
     public Map<String, Object> updatePassword(@RequestBody @Validated UserPasswordUpdateDto userPasswordUpdateDto, BindingResult bindingResult) {

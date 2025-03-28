@@ -5,7 +5,6 @@ import com.mangopuree.menu.service.MenuService;
 import com.mangopuree.support.base.BaseContoller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +22,7 @@ public class MenuController extends BaseContoller {
     private final MenuService menuService;
 
     /**
-     * 메뉴 호출
+     * API 메뉴 호출
      */
     @GetMapping("/loadUserMenu")
     @ResponseBody

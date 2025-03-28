@@ -15,10 +15,20 @@ public class MenuService {
 
     private final MenuMapper menuMapper;
 
+    /**
+     * 유저아이디로 메뉴 리스트 호출
+     * @param userId
+     * @return List<MenuDto>
+     */
     public List<MenuDto> findMenuListByUserId(String userId) {
         return menuMapper.findMenuListByUserId(userId);
     }
 
+    /**
+     * URL로 현재 메뉴 1뎁스, 2뎁스 호출
+     * @param url
+     * @return MenuDto
+     */
     public MenuDto getCurrentMenuByUrl(String url) {
 
         MenuDto currentMenu = menuMapper.getMenuByUrl(url);

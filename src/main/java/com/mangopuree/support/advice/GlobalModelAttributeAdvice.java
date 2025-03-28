@@ -4,8 +4,6 @@ package com.mangopuree.support.advice;
 import com.mangopuree.menu.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +15,11 @@ public class GlobalModelAttributeAdvice {
 
     private final MenuService menuService;
 
+    /**
+     * 현재 메뉴 model에 저장
+     * @param request
+     * @param model
+     */
     @ModelAttribute
     public void addCurrentMenu(HttpServletRequest request, Model model) {
         if (MediaType.APPLICATION_JSON_VALUE.equals(request.getHeader("Accept"))) {

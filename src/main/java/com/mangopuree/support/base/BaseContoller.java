@@ -1,15 +1,9 @@
 package com.mangopuree.support.base;
 
-import com.mangopuree.menu.service.MenuService;
 import com.mangopuree.support.message.MessageUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,17 +15,31 @@ public class BaseContoller implements BaseConstant{
     @Autowired
     private MessageUtil messageUtil;
 
+    /**
+     * API 호출 성공 메세지 저장
+     * @return model
+     */
     public Map<String, Object> setSuccessResult() {
         ModelMap model = new ModelMap();
         return setSuccessResult(model);
     }
 
+    /**
+     * API 호출 성공 메세지 저장
+     * @param model
+     * @return model
+     */
     public Map<String, Object> setSuccessResult(Map<String, Object> model) {
         model.put(KEY_RESULT_CODE, CODE_SUCCESS);
         model.put(KEY_RESULT_MESSAGE, RESULT_SUCCESS);
         return model;
     }
 
+    /**
+     * API 에러메세지 저장 다중
+     * @param bindingResult
+     * @return fieldErrors
+     */
     public Map<String, List<String>> setFieldErrors(BindingResult bindingResult) {
         Map<String, List<String>> fieldErrors = new HashMap<>();
         bindingResult.getFieldErrors().stream().forEach(error -> fieldErrors.computeIfAbsent(error.getField()
@@ -39,6 +47,11 @@ public class BaseContoller implements BaseConstant{
         return fieldErrors;
     }
 
+    /**
+     * API 에러메세지 저장 1개
+     * @param bindingResult
+     * @return fieldErrors
+     */
     public Map<String, List<String>> setFieldError(BindingResult bindingResult) {
         Map<String, List<String>> fieldErrors = new HashMap<>();
         bindingResult.getFieldErrors().stream().forEach(error -> fieldErrors.computeIfAbsent(error.getField()
@@ -46,6 +59,12 @@ public class BaseContoller implements BaseConstant{
         return fieldErrors;
     }
 
+    /**
+     * API Exception 통한 에러메세지 저장
+     * @param model
+     * @param e
+     * @return model
+     */
     public Map<String, Object> setFailResult(Map<String, Object> model, Exception e) {
         model.put(KEY_RESULT_CODE, CODE_FAIL);
         model.put(KEY_RESULT_MESSAGE, RESULT_FAIL);
@@ -54,6 +73,12 @@ public class BaseContoller implements BaseConstant{
         return model;
     }
 
+    /**
+     * API 호출 실패 메세지 저장
+     * @param model
+     * @param fieldErrors
+     * @return model
+     */
     public Map<String, Object> setFailResult(Map<String, Object> model, Map<String, List<String>> fieldErrors) {
         model.put(KEY_RESULT_CODE, CODE_FAIL);
         model.put(KEY_RESULT_MESSAGE, RESULT_FAIL);
