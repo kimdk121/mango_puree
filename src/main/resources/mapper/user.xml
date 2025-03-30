@@ -92,6 +92,27 @@
             user_id = #{userId}
     </select>
 
+    <select id="userListByGrid" resultType="com.mangopuree.user.dto.UserGridDto">
+        /*
+        UserMapper.userListByGrid
+        조회
+        */
+        select
+            ROWNUM() as rnum
+            , count(*) over() as total_count
+            , a.user_id
+            , a.username
+            , a.name
+            , a.tel_no
+            , a.fax_no
+            , b.role_name
+            , a.reg_dt
+        from
+            user a
+            left join role b on a.role_id = b.role_id
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
     <update id="updateByUserId">
         /*
         UserMapper.update

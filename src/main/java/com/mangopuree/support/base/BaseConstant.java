@@ -19,4 +19,7 @@ public interface BaseConstant {
     String EXCEPTION_NAME = "exception_name";
     // ajax 호출 오류 메세지
     String EXCEPTION_MESSAGE = "exception_message";
+
+    // Toast grid 메세지
+    public static final String GRID_RESULT_KEY = "result";
 }

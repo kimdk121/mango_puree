@@ -1,9 +1,7 @@
 package com.mangopuree.user.service;
 
-import com.mangopuree.user.dto.UserDto;
-import com.mangopuree.user.dto.UserPasswordUpdateDto;
-import com.mangopuree.user.dto.UserSignupDto;
-import com.mangopuree.user.dto.UserUpdateDto;
+import com.mangopuree.support.base.dto.RequestGridDto;
+import com.mangopuree.user.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,5 +68,9 @@ public class UserService {
     public int updatePasswordByUserId(UserPasswordUpdateDto userPasswordUpdateDto) {
         userPasswordUpdateDto.setPassword(passwordEncoder.encode(userPasswordUpdateDto.getPassword()));
         return userMapper.updatePasswordByUserId(userPasswordUpdateDto);
+    }
+
+    public List<UserGridDto> userListByGrid(RequestGridDto requestGridDto) {
+        return userMapper.userListByGrid(requestGridDto);
     }
 }

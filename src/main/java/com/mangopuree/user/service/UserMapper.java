@@ -1,5 +1,6 @@
 package com.mangopuree.user.service;
 
+import com.mangopuree.support.base.dto.RequestGridDto;
 import com.mangopuree.user.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -55,4 +56,11 @@ public interface UserMapper {
      * @return int
      */
     int updatePasswordByUserId(UserPasswordUpdateDto userPasswordUpdateDto);
+
+    /**
+     * 그리드용 사용자 전체조회
+     * @param requestGridDto
+     * @return List<UserGridDto>
+     */
+    List<UserGridDto> userListByGrid(RequestGridDto requestGridDto);
 }

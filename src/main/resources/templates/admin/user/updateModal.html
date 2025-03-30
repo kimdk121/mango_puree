@@ -45,7 +45,7 @@
             const updateData = formToJson(document.getElementById('userUpdateForm'));
             var confirmMessage = '[[#{update.confirm}]]';
             if(confirm(confirmMessage)) {
-                fetch('/admin/user/update', {
+                fetch('/api/user/update', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"

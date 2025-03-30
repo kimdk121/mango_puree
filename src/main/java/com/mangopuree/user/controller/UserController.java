@@ -1,20 +1,12 @@
 package com.mangopuree.user.controller;
 
 import com.mangopuree.support.base.BaseContoller;
-import com.mangopuree.user.dto.UserPasswordUpdateDto;
-import com.mangopuree.user.dto.UserUpdateDto;
 import com.mangopuree.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/admin/user")
@@ -32,51 +24,4 @@ public class UserController extends BaseContoller {
         return "admin/user/list";
     }
 
-    /**
-     * API 사용자 호출
-     */
-    @GetMapping("/loadUserInfo")
-    @ResponseBody
-    public Map<String, Object> loadUserInfo(Authentication authentication) {
-        ModelMap model = new ModelMap();
-        model.addAttribute("user",userService.findByUserId(authentication.getName()));
-        return setSuccessResult(model);
-    }
-
-    /**
-     * API 사용자 수정
-     */
-    @PostMapping("/update")
-    @ResponseBody
-    public Map<String, Object> update(@RequestBody @Validated UserUpdateDto userUpdateDto, BindingResult bindingResult) {
-        ModelMap model = new ModelMap();
-        if (bindingResult.hasErrors()) {
-            Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-            return setFailResult(model, fieldErrors);
-        }
-
-        userService.updateByUserId(userUpdateDto);
-        return setSuccessResult();
-    }
-
-    /**
-     * API 비밀번호 수정
-     */
-    @PostMapping("/updatePassword")
-    @ResponseBody
-    public Map<String, Object> updatePassword(@RequestBody @Validated UserPasswordUpdateDto userPasswordUpdateDto, BindingResult bindingResult) {
-        ModelMap model = new ModelMap();
-        if (bindingResult.hasErrors()) {
-            Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-            return setFailResult(model, fieldErrors);
-        }
-        if (!userPasswordUpdateDto.isPasswordMatching()) {
-            bindingResult.rejectValue("password", "mismatch.password");
-            Map<String, List<String>> fieldErrors = setFieldError(bindingResult);
-            return setFailResult(model, fieldErrors);
-        }
-
-        userService.updatePasswordByUserId(userPasswordUpdateDto);
-        return setSuccessResult();
-    }
 }

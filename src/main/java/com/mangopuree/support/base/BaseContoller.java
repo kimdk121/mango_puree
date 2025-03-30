@@ -1,5 +1,6 @@
 package com.mangopuree.support.base;
 
+import com.mangopuree.support.base.dto.RequestGridDto;
 import com.mangopuree.support.message.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
@@ -14,6 +15,18 @@ public class BaseContoller implements BaseConstant{
 
     @Autowired
     private MessageUtil messageUtil;
+
+    public <T> Map<String, Object> setGridData(RequestGridDto requestGridDto, List<T> retrieveList, int totalCount) {
+        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> paginationMap = new HashMap<>();
+
+        paginationMap.put("page", requestGridDto.getPage());
+        paginationMap.put("totalCount",totalCount);
+
+        data.put("pagination", paginationMap);
+        data.put("contents", retrieveList);
+        return data;
+    }
 
     /**
      * API 호출 성공 메세지 저장
@@ -31,6 +44,7 @@ public class BaseContoller implements BaseConstant{
      */
     public Map<String, Object> setSuccessResult(Map<String, Object> model) {
         model.put(KEY_RESULT_CODE, CODE_SUCCESS);
+        model.put(GRID_RESULT_KEY, true);
         model.put(KEY_RESULT_MESSAGE, RESULT_SUCCESS);
         return model;
     }
@@ -67,6 +81,7 @@ public class BaseContoller implements BaseConstant{
      */
     public Map<String, Object> setFailResult(Map<String, Object> model, Exception e) {
         model.put(KEY_RESULT_CODE, CODE_FAIL);
+        model.put(GRID_RESULT_KEY, false);
         model.put(KEY_RESULT_MESSAGE, RESULT_FAIL);
         model.put(EXCEPTION_NAME, e.toString());
         model.put(EXCEPTION_MESSAGE, e.getMessage());
@@ -81,8 +96,21 @@ public class BaseContoller implements BaseConstant{
      */
     public Map<String, Object> setFailResult(Map<String, Object> model, Map<String, List<String>> fieldErrors) {
         model.put(KEY_RESULT_CODE, CODE_FAIL);
+        model.put(GRID_RESULT_KEY, false);
         model.put(KEY_RESULT_MESSAGE, RESULT_FAIL);
         model.put("fieldErrors",fieldErrors);
+        return model;
+    }
+
+    /**
+     * API 호출 실패 메세지 저장
+     * @param model
+     * @return model
+     */
+    public Map<String, Object> setFailResult(Map<String, Object> model) {
+        model.put(KEY_RESULT_CODE, CODE_FAIL);
+        model.put(GRID_RESULT_KEY, false);
+        model.put(KEY_RESULT_MESSAGE, RESULT_FAIL);
         return model;
     }
 

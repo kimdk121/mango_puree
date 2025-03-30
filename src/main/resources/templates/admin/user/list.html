@@ -17,59 +17,45 @@
                 </li>
             </ol>
             <div class="card mb-4">
-                <div class="card-body">
-                    DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the
-                    <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>
-                    .
-                </div>
-            </div>
-            <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table me-1"></i>
                     사용자 목록
                 </div>
                 <div class="card-body">
-                    <table id="datatablesSimple">
-                        <thead>
-                        <tr>
-                            <th>아이디</th>
-                            <th>사용자명</th>
-                            <th>전화번호</th>
-                            <th>팩스번호</th>
-                            <th>권한명</th>
-                            <th>등록일시</th>
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th>아이디</th>
-                            <th>사용자명</th>
-                            <th>전화번호</th>
-                            <th>팩스번호</th>
-                            <th>권한명</th>
-                            <th>등록일시</th>
-                        </tr>
-                        </tfoot>
-                        <tbody>
-                        <tr th:each="user : ${users}">
-                            <td th:text="${user.username}"></td>
-                            <td th:text="${user.name}"></td>
-                            <td th:text="${user.telNo}"></td>
-                            <td th:text="${user.faxNo}"></td>
-                            <td th:text="${user.roleName}"></td>
-                            <td th:text="${user.regDt}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div id="grid"></div>
                 </div>
             </div>
         </div>
     </main>
     <script type="text/javascript">
-        window.onload = function () {
-
-        };
-
+        document.addEventListener("DOMContentLoaded", function () {
+            setGrid();
+        });
+        function setGrid() {
+            const grid = new tui.Grid({
+                el: document.getElementById('grid'),
+                data: {
+                    api: {
+                        readData: { url: '/api/user/list', method: 'GET' }
+                    }
+                },
+                columns: [
+                    { header: '아이디', name: 'username', align: 'left' },
+                    { header: '이름', name: 'name', align: 'left' },
+                    { header: '전화번호', name: 'telNo', align: 'center'},
+                    { header: '팩스번호', name: 'faxNo', align: 'center'},
+                    { header: '권한', name: 'roleName', align: 'center'},
+                    { header: '등록일', name: 'regDt', align: 'center'}
+                ],
+                pageOptions: {
+                    useClient: true,
+                    perPage: 10
+                },
+                rowHeaders: ['rowNum'], // 행 번호
+                scrollX: false,
+                scrollY: true
+            });
+        }
     </script>
 </th:block>
 </html>
