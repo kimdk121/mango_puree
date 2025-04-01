@@ -22,7 +22,7 @@
                     사용자 목록
                 </div>
                 <div class="card-body">
-                    <div id="grid"></div>
+                    <div id="userGrid"></div>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
         });
         function setGrid() {
             const grid = new tui.Grid({
-                el: document.getElementById('grid'),
+                el: document.getElementById('userGrid'),
                 data: {
                     api: {
                         readData: { url: '/api/user/list', method: 'GET' }

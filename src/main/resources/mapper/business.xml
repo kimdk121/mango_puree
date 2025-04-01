@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangopuree.business.service.BusinessMapper">
+
+    <sql id="searchConditions">
+        <if test="businessName != null and businessName != ''">
+            AND business_name LIKE CONCAT('%', #{businessName}, '%')
+        </if>
+        <if test="representativeName != null and representativeName != ''">
+            AND representative_name LIKE CONCAT('%', #{representativeName}, '%')
+        </if>
+    </sql>
+
+    <select id="businessListByGrid" resultType="com.mangopuree.business.dto.BusinessGridDto">
+        /*
+        BusinessMapper.businessListByGrid
+        조회
+        */
+        select
+            ROWNUM() as rnum
+            , count(*) over() as total_count
+            , business_id
+            , business_name
+            , representative_name
+            , registration_number
+            , address
+            , tel_no
+            , fax_no
+            , business_type
+            , industry_type
+        from
+            business
+        where
+            1=1
+            <include refid="searchConditions" />
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+</mapper>

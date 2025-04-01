@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserApiController extends BaseContoller {
@@ -28,7 +28,6 @@ public class UserApiController extends BaseContoller {
      * API 사용자전체 Grid 호출
      */
     @GetMapping("/list")
-    @ResponseBody
     public Map<String, Object> list(@ModelAttribute RequestGridDto requestGridDto) {
         ModelMap model = new ModelMap();
         requestGridDto.calculatePaging();
@@ -48,7 +47,6 @@ public class UserApiController extends BaseContoller {
      * API 사용자 호출
      */
     @GetMapping("/loadUserInfo")
-    @ResponseBody
     public Map<String, Object> loadUserInfo(Authentication authentication) {
         ModelMap model = new ModelMap();
         model.addAttribute("user",userService.findByUserId(authentication.getName()));
@@ -59,7 +57,6 @@ public class UserApiController extends BaseContoller {
      * API 사용자 수정
      */
     @PostMapping("/update")
-    @ResponseBody
     public Map<String, Object> update(@RequestBody @Validated UserUpdateDto userUpdateDto, BindingResult bindingResult) {
         ModelMap model = new ModelMap();
         if (bindingResult.hasErrors()) {
@@ -75,7 +72,6 @@ public class UserApiController extends BaseContoller {
      * API 비밀번호 수정
      */
     @PostMapping("/updatePassword")
-    @ResponseBody
     public Map<String, Object> updatePassword(@RequestBody @Validated UserPasswordUpdateDto userPasswordUpdateDto, BindingResult bindingResult) {
         ModelMap model = new ModelMap();
         if (bindingResult.hasErrors()) {

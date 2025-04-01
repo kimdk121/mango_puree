@@ -10,11 +10,12 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/menu")
 public class MenuApiController extends BaseContoller {
@@ -25,7 +26,6 @@ public class MenuApiController extends BaseContoller {
      * API 메뉴 호출
      */
     @GetMapping("/loadUserMenu")
-    @ResponseBody
     public Map<String, Object> loadUserMenu(Authentication authentication) {
         ModelMap model = new ModelMap();
         List<MenuDto> menuList = menuService.findMenuListByUserId(authentication.getName());

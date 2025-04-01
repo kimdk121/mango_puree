@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="businessModalFragment">
+    <div class="modal fade" id="businessModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">사업자 선택</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="businessGrid"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="selectItems()">선택</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('businessModal').addEventListener('shown.bs.modal', function () {
+            if (!businessGrid) {
+                setBusinessGrid();
+            } else {
+                businessGrid.refreshLayout();
+            }
+        });
+
+        var businessGrid = null;
+
+        function setBusinessGrid() {
+            businessGrid = new tui.Grid({
+                el: document.getElementById('businessGrid'),
+                data: {
+                    api: {
+                        readData: { url: '/api/business/list', method: 'GET' }
+                    }
+                },
+                columns: [
+                    { header: '사업자아이디', name: 'businessId', align: 'left', hidden: true},
+                    { header: '상호명', name: 'businessName', align: 'left', resizable: true },
+                    { header: '대표자명', name: 'representativeName', align: 'left', resizable: true },
+                    { header: '사업자등록번호', name: 'registrationNumber', align: 'center', resizable: true},
+                    { header: '주소', name: 'address', align: 'left', resizable: true},
+                    { header: '전화번호', name: 'telNo', align: 'center', resizable: true},
+                    { header: '팩스번호', name: 'faxNo', align: 'center', resizable: true},
+                    { header: '업태', name: 'businessType', align: 'center', resizable: true},
+                    { header: '종목', name: 'industryType', align: 'center', resizable: true}
+                ],
+                pageOptions: {
+                    useClient: true,
+                    perPage: 10
+                },
+                rowHeaders: [
+                    {
+                        header: '선택',
+                        renderer: {
+                            type: customRadioRenderer
+                        }
+                    }
+                ],
+                scrollX: false,
+                scrollY: false
+            });
+
+            businessGrid.on('click', function (ev) {
+                if (ev.rowKey != null) {
+                    const radio = document.querySelector(`input[name="rowRadio"][data-row-key="${ev.rowKey}"]`);
+                    if (radio) {
+                        radio.checked = true;
+                        radio.dispatchEvent(new Event('change')); // ← change 이벤트도 수동 발생시켜줘야 render() 반영 가능
+                    }
+                }
+            });
+        }
+
+        function selectItems() {
+            const selectedRadio = document.querySelector('#businessModal input[type="radio"]:checked');
+            if (!selectedRadio) {
+                alert("선택된 항목이 없습니다.");
+                return;
+            }
+            const rowData = businessGrid.getRow(Number(selectedRadio.dataset.rowKey));
+            const estimateForm = document.getElementById('estimateForm');
+            const fieldMap = {
+                businessId : 'businessId'
+                , businessName : 'businessName'
+                , representativeName : 'representativeName'
+                , registrationNumber : 'registrationNumber'
+                , address : 'businessAddress'
+                , telNo : 'businessTelNo'
+                , faxNo : 'businessFaxNo'
+                , businessType : 'businessType'
+                , industryType : 'industryType'
+            }
+            setFields(rowData, estimateForm, fieldMap);
+
+            bootstrap.Modal.getInstance(document.getElementById('businessModal')).hide();
+
+        }
+
+
+    </script>
+</th:block>
+</html>

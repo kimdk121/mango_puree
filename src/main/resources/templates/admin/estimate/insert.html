@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutDefault}">
+
+<th:block layout:fragment="content">
+    <th:block th:replace="~{admin/item/itemModal :: itemModalFragment}"></th:block>
+    <th:block th:replace="~{admin/business/businessModal :: businessModalFragment}"></th:block>
+    <th:block th:replace="~{admin/vendor/vendorModal :: vendorModalFragment}"></th:block>
+    <main>
+        <div class="container-fluid px-4">
+            <h1 th:text="${currentMenu.subMenuList == null ? currentMenu.menuName : currentMenu.subMenuList[0].menuName}"></h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item">
+                    <span th:text="${currentMenu.menuName}">1뎁스</span>
+                </li>
+                <li class="breadcrumb-item active"
+                    th:if="${currentMenu.subMenuList != null and #lists.size(currentMenu.subMenuList) > 0}">
+                    <span th:text="${currentMenu.subMenuList[0].menuName}">2뎁스</span>
+                </li>
+            </ol>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form id="estimateForm">
+                        <input type="hidden" name="businessId">
+                        <p class="text-danger small">*는 필수입력사항입니다.</p>
+                        <table class="table table-bordered align-middle">
+                            <tbody>
+                            <tr>
+                                <th class="text-center">상호명*</th>
+                                <td>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="businessName">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="searchBusiness()">
+                                            <span class="material-symbols-outlined">search</span>
+                                        </button>
+                                    </div>
+                                </td>
+                                <th class="text-center">대표자명*</th>
+                                <td><input type="text" class="form-control" name="representativeName"></td>
+                                <th class="text-center">사업자등록번호*</th>
+                                <td><input type="text" class="form-control" name="registrationNumber"></td>
+                                <th class="text-center">견적서번호</th>
+                                <td><input type="text" class="form-control" name="estimateId" value="시스템자동입력" readonly></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">사업자주소*</th>
+                                <td colspan="3"><input type="text" class="form-control" name="businessAddress"></td>
+
+                                <th class="text-center">사업자전화번호*</th>
+                                <td><input type="text" class="form-control" name="businessTelNo"></td>
+
+                                <th class="text-center">견적일자*</th>
+                                <td><input type="date" class="form-control" name="estimateDate"></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">업태*</th>
+                                <td><input type="text" class="form-control" name="businessType"></td>
+                                <th class="text-center">종목*</th>
+                                <td><input type="text" class="form-control" name="industryType"></td>
+                                <th class="text-center">사업자팩스번호*</th>
+                                <td><input type="text" class="form-control" name="businessFaxNo"></td>
+                                <th class="text-center">견적서상태</th>
+                                <td>
+                                    <select name="estimateStatusCd" id="estimateStatusCd" class="form-select">
+                                        <option value="">선택</option>
+                                        <option th:each="code : ${estimateStatusList}"
+                                                th:value="${code.codeId}"
+                                                th:text="${code.codeName}">
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">담당자*</th>
+                                <td>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="managerName">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="searchManager()">
+                                            <span class="material-symbols-outlined">search</span>
+                                        </button>
+                                    </div>
+                                </td>
+                                <th class="text-center">담당자전화번호*</th>
+                                <td><input type="text" class="form-control" name="managerTelNo"></td>
+                                <th class="text-center">담당자팩스번호*</th>
+                                <td><input type="email" class="form-control" name="managerFaxNo"></td>
+                                <th class="text-center">유효기간*</th>
+                                <td>
+                                    <select name="validDateCd" id="validDateCd" class="form-select">
+                                        <option value="">선택</option>
+                                        <option th:each="code : ${validDateList}"
+                                                th:value="${code.codeId}"
+                                                th:text="${code.codeName}">
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">거래처*</th>
+                                <td>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="vendorName">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="searchVendor()">
+                                            <span class="material-symbols-outlined">search</span>
+                                        </button>
+                                    </div>
+                                </td>
+                                <th class="text-center">거래처전화번호*</th>
+                                <td><input type="text" class="form-control" name="vendorTelNo"></td>
+                                <th class="text-center">거래처팩스번호*</th>
+                                <td><input type="text" class="form-control" name="vendorFaxNo"></td>
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">비고</th>
+                                <td colspan="7"><textarea class="form-control" name="remark" rows="2"></textarea></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+
+        function searchBusiness() {
+            const businessModal = new bootstrap.Modal(document.getElementById('businessModal'));
+            businessModal.show();
+        }
+        function searchManager() {
+            const managerModal = new bootstrap.Modal(document.getElementById('managerModal'));
+            managerModal.show();
+        }
+        function searchVender() {
+            const vendorModal = new bootstrap.Modal(document.getElementById('vendorModal'));
+            vendorModal.show();
+        }
+
+    </script>
+</th:block>
+</html>

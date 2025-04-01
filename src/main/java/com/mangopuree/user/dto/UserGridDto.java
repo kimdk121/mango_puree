@@ -1,11 +1,12 @@
 package com.mangopuree.user.dto;
 
+import com.mangopuree.support.base.dto.ResponseGridDto;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserGridDto {
+public class UserGridDto extends ResponseGridDto {
 
     private Long userId;
     private String username;
@@ -14,6 +15,4 @@ public class UserGridDto {
     private String faxNo;
     private String roleName;
     private String regDt;
-    private int rnum;
-    private int totalCount;
 }

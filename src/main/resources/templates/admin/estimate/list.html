@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutDefault}">
+
+<th:block layout:fragment="content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 th:text="${currentMenu.subMenuList == null ? currentMenu.menuName : currentMenu.subMenuList[0].menuName}"></h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item">
+                    <span th:text="${currentMenu.menuName}">1뎁스</span>
+                </li>
+                <li class="breadcrumb-item active"
+                    th:if="${currentMenu.subMenuList != null and #lists.size(currentMenu.subMenuList) > 0}">
+                    <span th:text="${currentMenu.subMenuList[0].menuName}">2뎁스</span>
+                </li>
+            </ol>
+        </div>
+    </main>
+</th:block>
+</html>
