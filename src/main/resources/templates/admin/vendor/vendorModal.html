@@ -2,25 +2,117 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="vendorModalFragment">
     <div class="modal fade" id="vendorModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">품목 선택</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">거래처 선택</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- TOAST GRID 컨테이너 -->
-                    <div id="itemGrid"></div>
+                    <form id="vendorSearchForm" class="mb-3">
+                        <table class="table table-bordered table-sm align-middle mb-2">
+                            <tbody>
+                            <tr>
+                                <th class="text-center" style="width: 100px;">거래처명</th>
+                                <td><input type="text" name="vendorName" class="form-control form-control-sm"></td>
+                                <th class="text-center" style="width: 100px;">대표자명</th>
+                                <td><input type="text" name="representativeName" class="form-control form-control-sm"></td>
+                                <td style="width: 80px;">
+                                    <button type="button" class="btn btn-primary btn-sm w-100" onclick="searchVendorList()">조회</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+
+                    <div id="vendorGrid"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="selectItems()">선택</button>
+                    <button type="button" class="btn btn-primary" onclick="selectVendor()">선택</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                 </div>
             </div>
         </div>
     </div>
     <script>
+        document.getElementById('vendorModal').addEventListener('shown.bs.modal', function () {
+            if (!vendorGrid) {
+                setVendorGrid();
+            } else {
+                vendorGrid.refreshLayout();
+            }
+        });
 
+        var vendorGrid = null;
+
+        function setVendorGrid() {
+            vendorGrid = new tui.Grid({
+                el: document.getElementById('vendorGrid'),
+                data: {
+                    api: {
+                        readData: { url: '/api/vendor/list', method: 'GET' }
+                    }
+                },
+                columns: [
+                    { header: '거래처아이디', name: 'vendorId', align: 'left', hidden: true},
+                    { header: '거래처명', name: 'vendorName', align: 'left', resizable: true },
+                    { header: '대표자명', name: 'representativeName', align: 'left', resizable: true },
+                    { header: '사업자등록번호', name: 'registrationNumber', align: 'center', resizable: true},
+                    { header: '주소', name: 'address', align: 'left', resizable: true},
+                    { header: '전화번호', name: 'telNo', align: 'center', resizable: true},
+                    { header: '팩스번호', name: 'faxNo', align: 'center', resizable: true},
+                    { header: '업태', name: 'businessType', align: 'center', resizable: true},
+                    { header: '종목', name: 'industryType', align: 'center', resizable: true}
+                ],
+                pageOptions: {
+                    useClient: true,
+                    perPage: 10
+                },
+                rowHeaders: [
+                    {
+                        header: '선택',
+                        renderer: {
+                            type: customRadioRenderer('rowRadioVendor')
+                        }
+                    }
+                ],
+                scrollX: false,
+                scrollY: false
+            });
+
+            vendorGrid.on('click', function (ev) {
+                if (ev.rowKey != null) {
+                    const radio = document.querySelector(`input[name="rowRadioVendor"][data-row-key="${ev.rowKey}"]`);
+                    if (radio) {
+                        radio.checked = true;
+                        radio.dispatchEvent(new Event('change'));
+                    }
+                }
+            });
+        }
+
+        function searchVendorList() {
+            const params = formToObject(document.getElementById('vendorSearchForm'));
+            vendorGrid.readData(1, params, true);
+        }
+
+        function selectVendor() {
+            const selectedRadio = document.querySelector('#vendorModal input[name="rowRadioVendor"]:checked');
+            if (!selectedRadio) {
+                alert("선택된 항목이 없습니다.");
+                return;
+            }
+            const rowData = vendorGrid.getRow(Number(selectedRadio.dataset.rowKey));
+            const estimateForm = document.getElementById('estimateForm');
+            const fieldMap = {
+                vendorId : 'vendorId'
+                , vendorName : 'vendorName'
+                , telNo : 'vendorTelNo'
+                , faxNo : 'vendorFaxNo'
+            }
+            setFields(rowData, estimateForm, fieldMap);
+            bootstrap.Modal.getInstance(document.getElementById('vendorModal')).hide();
+        }
     </script>
 </th:block>
 </html>

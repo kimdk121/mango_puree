@@ -14,25 +14,37 @@ function formToJson(formElement) {
     return jsonObject;
 }
 
+// Formdata -> Object 변경
+function formToObject(form) {
+    const formData = new FormData(form);
+    const obj = {};
+    for (const [key, value] of formData.entries()) {
+        obj[key] = value;
+    }
+    return obj;
+}
+
 // Toast UI grid 라디오버튼 커스텀 렌더러
-class customRadioRenderer {
-    constructor(props) {
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'rowRadio';
-        radio.dataset.rowKey = props.rowKey;
-        radio.className = 'form-check-input';
+function customRadioRenderer(radioName) {
+    return class {
+        constructor(props) {
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = radioName;  // ← name 적용됨
+            radio.dataset.rowKey = props.rowKey;
+            radio.className = 'form-check-input';
 
-    this.el = radio;
-    }
+            this.el = radio;
+        }
 
-    getElement() {
-        return this.el;
-    }
+        getElement() {
+            return this.el;
+        }
 
-    render(props) {
-        const selected = document.querySelector('input[name="rowRadio"]:checked');
-        this.el.checked = selected?.dataset.rowKey == props.rowKey;
+        render(props) {
+            const selected = document.querySelector(`input[name="${radioName}"]:checked`);
+            this.el.checked = selected?.dataset.rowKey == props.rowKey;
+        }
     }
 }
 

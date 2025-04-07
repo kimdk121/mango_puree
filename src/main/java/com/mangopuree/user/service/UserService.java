@@ -70,7 +70,12 @@ public class UserService {
         return userMapper.updatePasswordByUserId(userPasswordUpdateDto);
     }
 
-    public List<UserGridDto> userListByGrid(RequestGridDto requestGridDto) {
-        return userMapper.userListByGrid(requestGridDto);
+    /**
+     * 그리드용 사용자 전체조회
+     * @param userSearchDto
+     * @return List<UserGridDto>
+     */
+    public List<UserGridDto> userListByGrid(UserSearchDto userSearchDto) {
+        return userMapper.userListByGrid(userSearchDto);
     }
 }

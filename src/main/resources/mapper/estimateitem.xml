@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangopuree.estimateitem.service.EstimateItemMapper">
+
+    <insert id="bulkInsert">
+        /*
+        EstimateItemMapper.bulkInsert
+        저장
+        */
+        INSERT INTO estimate_item (
+            estimate_id
+            , item_id
+            , item_name
+            , unit_cd
+            , due_date
+            , price
+            , quantity
+            , supply_amount
+            , vat_amount
+            , total_amount
+            , reg_id
+            , reg_dt
+        )
+        VALUES
+        <foreach collection="itemList" item="item" separator=",">
+            (
+                #{estimateId}
+                , #{item.itemId}
+                , #{item.itemName}
+                , #{item.unitCd}
+                , #{item.dueDate}
+                , #{item.price}
+                , #{item.quantity}
+                , #{item.supplyAmount}
+                , #{item.vatAmount}
+                , #{item.totalAmount}
+                , #{regId}
+                , NOW()
+            )
+        </foreach>
+    </insert>
+
+
+
+</mapper>

@@ -1,9 +1,6 @@
 package com.mangopuree.support.config;
 
-import com.mangopuree.support.security.CustomAuthenticationFailureHandler;
-import com.mangopuree.support.security.CustomAuthenticationProvider;
-import com.mangopuree.support.security.CustomAuthenticationSuccessHandler;
-import com.mangopuree.support.security.CustomUserDetailsService;
+import com.mangopuree.support.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -16,10 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
-public class SpringSecurityConfig {
+public class SpringSecurityConfig implements WebMvcConfigurer {
 
     private final CustomUserDetailsService userDetailsService;
 
@@ -68,4 +67,9 @@ public class SpringSecurityConfig {
         return new CustomAuthenticationProvider(userDetailsService , passwordEncoder());
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new SetUserIdInterceptor())
+                .addPathPatterns("/api/**/insert/**","/api/**/update/**");
+    }
 }

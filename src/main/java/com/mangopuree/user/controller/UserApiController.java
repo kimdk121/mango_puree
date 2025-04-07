@@ -1,9 +1,11 @@
 package com.mangopuree.user.controller;
 
+import com.mangopuree.business.dto.BusinessGridDto;
 import com.mangopuree.support.base.BaseContoller;
 import com.mangopuree.support.base.dto.RequestGridDto;
 import com.mangopuree.user.dto.UserGridDto;
 import com.mangopuree.user.dto.UserPasswordUpdateDto;
+import com.mangopuree.user.dto.UserSearchDto;
 import com.mangopuree.user.dto.UserUpdateDto;
 import com.mangopuree.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,16 +30,16 @@ public class UserApiController extends BaseContoller {
      * API 사용자전체 Grid 호출
      */
     @GetMapping("/list")
-    public Map<String, Object> list(@ModelAttribute RequestGridDto requestGridDto) {
+    public Map<String, Object> list(@ModelAttribute UserSearchDto userSearchDto) {
         ModelMap model = new ModelMap();
-        requestGridDto.calculatePaging();
-        List<UserGridDto> userGridDtos = userService.userListByGrid(requestGridDto);
+        userSearchDto.calculatePaging();
+        List<UserGridDto> userGridDtos = userService.userListByGrid(userSearchDto);
         if (userGridDtos == null) {
             return setFailResult(model);
         }
         int totalCount = userGridDtos.get(0).getTotalCount();
 
-        Map<String, Object> data = setGridData(requestGridDto, userGridDtos, totalCount);
+        Map<String, Object> data = setGridData(userSearchDto, userGridDtos, totalCount);
         model.addAttribute("data", data);
 
         return setSuccessResult(model);

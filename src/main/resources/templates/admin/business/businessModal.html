@@ -9,10 +9,26 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
                 </div>
                 <div class="modal-body">
+                    <form id="businessSearchForm" class="mb-3">
+                        <table class="table table-bordered table-sm align-middle mb-2">
+                            <tbody>
+                            <tr>
+                                <th class="text-center" style="width: 100px;">상호명</th>
+                                <td><input type="text" name="businessName" class="form-control form-control-sm"></td>
+                                <th class="text-center" style="width: 100px;">대표자명</th>
+                                <td><input type="text" name="representativeName" class="form-control form-control-sm"></td>
+                                <td style="width: 80px;">
+                                    <button type="button" class="btn btn-primary btn-sm w-100" onclick="searchBusinessList()">조회</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+
                     <div id="businessGrid"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="selectItems()">선택</button>
+                    <button type="button" class="btn btn-primary" onclick="selectBusiness()">선택</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                 </div>
             </div>
@@ -56,7 +72,7 @@
                     {
                         header: '선택',
                         renderer: {
-                            type: customRadioRenderer
+                            type: customRadioRenderer('rowRadioBusiness')
                         }
                     }
                 ],
@@ -66,17 +82,22 @@
 
             businessGrid.on('click', function (ev) {
                 if (ev.rowKey != null) {
-                    const radio = document.querySelector(`input[name="rowRadio"][data-row-key="${ev.rowKey}"]`);
+                    const radio = document.querySelector(`input[name="rowRadioBusiness"][data-row-key="${ev.rowKey}"]`);
                     if (radio) {
                         radio.checked = true;
-                        radio.dispatchEvent(new Event('change')); // ← change 이벤트도 수동 발생시켜줘야 render() 반영 가능
+                        radio.dispatchEvent(new Event('change'));
                     }
                 }
             });
         }
 
-        function selectItems() {
-            const selectedRadio = document.querySelector('#businessModal input[type="radio"]:checked');
+        function searchBusinessList() {
+            const params = formToObject(document.getElementById('businessSearchForm'));
+            businessGrid.readData(1, params, true);
+        }
+
+        function selectBusiness() {
+            const selectedRadio = document.querySelector('#businessModal input[name="rowRadioBusiness"]:checked');
             if (!selectedRadio) {
                 alert("선택된 항목이 없습니다.");
                 return;
@@ -95,12 +116,8 @@
                 , industryType : 'industryType'
             }
             setFields(rowData, estimateForm, fieldMap);
-
             bootstrap.Modal.getInstance(document.getElementById('businessModal')).hide();
-
         }
-
-
     </script>
 </th:block>
 </html>

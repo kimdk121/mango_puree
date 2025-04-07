@@ -1,7 +1,11 @@
 package com.mangopuree.item.controller;
 
+import com.mangopuree.business.dto.BusinessGridDto;
 import com.mangopuree.business.dto.BusinessSearchDto;
+import com.mangopuree.item.dto.ItemGridDto;
+import com.mangopuree.item.dto.ItemSearchDto;
 import com.mangopuree.item.service.ItemService;
+import com.mangopuree.support.base.BaseContoller;
 import com.mangopuree.user.dto.UserGridDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.ModelMap;
@@ -16,7 +20,26 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/item")
-public class ItemApiController {
+public class ItemApiController extends BaseContoller {
 
     private final ItemService itemService;
+
+    /**
+     * API 사업자 Grid 호출
+     */
+    @GetMapping("/list")
+    public Map<String, Object> list(@ModelAttribute ItemSearchDto itemSearchDto) {
+        ModelMap model = new ModelMap();
+        itemSearchDto.calculatePaging();
+        List<ItemGridDto> itemGridDtos = itemService.businessListByGrid(itemSearchDto);
+        if (itemGridDtos == null) {
+            return setFailResult(model);
+        }
+        int totalCount = itemGridDtos.get(0).getTotalCount();
+
+        Map<String, Object> data = setGridData(itemSearchDto, itemGridDtos, totalCount);
+        model.addAttribute("data", data);
+
+        return setSuccessResult(model);
+    }
 }

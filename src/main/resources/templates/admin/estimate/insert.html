@@ -7,6 +7,7 @@
     <th:block th:replace="~{admin/item/itemModal :: itemModalFragment}"></th:block>
     <th:block th:replace="~{admin/business/businessModal :: businessModalFragment}"></th:block>
     <th:block th:replace="~{admin/vendor/vendorModal :: vendorModalFragment}"></th:block>
+    <th:block th:replace="~{admin/user/managerModal :: managerModalFragment}"></th:block>
     <main>
         <div class="container-fluid px-4">
             <h1 th:text="${currentMenu.subMenuList == null ? currentMenu.menuName : currentMenu.subMenuList[0].menuName}"></h1>
@@ -21,9 +22,19 @@
             </ol>
             <div class="card mb-4">
                 <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0 fw-bold"><span class="material-symbols-outlined align-middle me-1 fs-6">description</span> 견적서</h6>
+                        <div>
+                            <button type="button" class="btn btn-success btn-sm" onclick="insertEstimate('ESS001')">임시저장</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="insertEstimate('ESS002')">작성완료</button>
+                        </div>
+                    </div>
+                    <p class="text-danger small">*는 필수입력사항입니다.</p>
+
                     <form id="estimateForm">
                         <input type="hidden" name="businessId">
-                        <p class="text-danger small">*는 필수입력사항입니다.</p>
+                        <input type="hidden" name="vendorId">
+                        <input type="hidden" name="managerId">
                         <table class="table table-bordered align-middle">
                             <tbody>
                             <tr>
@@ -46,10 +57,8 @@
                             <tr>
                                 <th class="text-center">사업자주소*</th>
                                 <td colspan="3"><input type="text" class="form-control" name="businessAddress"></td>
-
                                 <th class="text-center">사업자전화번호*</th>
                                 <td><input type="text" class="form-control" name="businessTelNo"></td>
-
                                 <th class="text-center">견적일자*</th>
                                 <td><input type="date" class="form-control" name="estimateDate"></td>
                             </tr>
@@ -62,7 +71,7 @@
                                 <td><input type="text" class="form-control" name="businessFaxNo"></td>
                                 <th class="text-center">견적서상태</th>
                                 <td>
-                                    <select name="estimateStatusCd" id="estimateStatusCd" class="form-select">
+                                    <select name="estimateStatusCd" id="estimateStatusCd" class="form-select" disabled>
                                         <option value="">선택</option>
                                         <option th:each="code : ${estimateStatusList}"
                                                 th:value="${code.codeId}"
@@ -119,25 +128,224 @@
                             </tbody>
                         </table>
                     </form>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0 fw-bold"><span class="material-symbols-outlined align-middle me-1 fs-6">shopping_cart</span> 품목</h6>
+                        <div>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="searchItem()">+ 추가</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteSelectedItems()">- 삭제</button>
+                        </div>
+                    </div>
+                    <div id="estimateItemGrid"></div>
                 </div>
             </div>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                setEstimateItemGrid();
+            });
+
+            function searchBusiness() {
+                const businessModal = new bootstrap.Modal(document.getElementById('businessModal'));
+                businessModal.show();
+            }
+            function searchManager() {
+                const managerModal = new bootstrap.Modal(document.getElementById('managerModal'));
+                managerModal.show();
+            }
+            function searchVendor() {
+                const vendorModal = new bootstrap.Modal(document.getElementById('vendorModal'));
+                vendorModal.show();
+            }
+            function searchItem() {
+                const itemModal = new bootstrap.Modal(document.getElementById('itemModal'));
+                itemModal.show();
+            }
+
+            var estimateItemGrid = null;
+
+            function setEstimateItemGrid() {
+                estimateItemGrid = new tui.Grid({
+                    el: document.getElementById('estimateItemGrid'),
+                    data: [],
+                    columns: [
+                        { header: '품목아이디', name: 'itemId', align: 'center'},
+                        { header: '품목명', name: 'itemName', align: 'left', resizable: true },
+                        { header: '단위코드', name: 'unitCd', align: 'center', resizable: true, hidden: true},
+                        { header: '단위', name: 'unitCdName', align: 'center', resizable: true },
+                        { header: '납기일자', name: 'dueDate', align: 'center', resizable: true,
+                            editor: {
+                                type: 'datePicker',
+                                options: {
+                                    format: 'yyyy-MM-dd'
+                                }
+                            }
+                        },
+                        { header: '단가', name: 'price', align: 'right', resizable: true, editor: 'text',
+                            formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
+                        },
+                        { header: '수량', name: 'quantity', align: 'right', resizable: true, editor: 'text',
+                            formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
+                        },
+                        { header: '공급가액', name: 'supplyAmount', align: 'right', resizable: true,
+                            formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
+                        },
+                        { header: '부가세', name: 'vatAmount', align: 'right', resizable: true,
+                            formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
+                        },
+                        { header: '총액', name: 'totalAmount', align: 'right', resizable: true,
+                            formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
+                        },
+                    ],
+                    rowHeaders: ['checkbox'],
+                    summary: {
+                        height: 40,
+                        columnContent: {
+                            price: {
+                                template: (valueMap) => `<div style="text-align: left; font-weight: bold;"><span>합계</span></div>`
+                            },
+                            quantity: {
+                                template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
+                            },
+                            supplyAmount: {
+                                template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
+                            },
+                            vatAmount: {
+                                template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
+                            },
+                            totalAmount: {
+                                template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
+                            }
+                        }
+                    },
+                    bodyHeight: 300,
+                    scrollX: true,
+                    scrollY: false
+                });
+
+                estimateItemGrid.on('afterChange', function (ev) {
+                    ev.changes.forEach(change => {
+                        const { rowKey, columnName, value } = change;
+
+                        if (columnName === 'quantity' || columnName === 'price') {
+                            const row = estimateItemGrid.getRow(rowKey);
+                            const quantity = parseFloat(columnName === 'quantity' ? value : row.quantity) || 0;
+                            const price = parseFloat(columnName === 'price' ? value : row.price) || 0;
+
+                            const supplyAmount = Math.floor(quantity * price);
+                            const vatAmount = Math.floor(supplyAmount * 0.1);
+                            const totalAmount = supplyAmount + vatAmount;
+
+                            estimateItemGrid.setValue(rowKey, 'supplyAmount', supplyAmount);
+                            estimateItemGrid.setValue(rowKey, 'vatAmount', vatAmount);
+                            estimateItemGrid.setValue(rowKey, 'totalAmount', totalAmount);
+                        }
+                    });
+                });
+            }
+
+            function deleteSelectedItems() {
+                const checkedRowKeys = estimateItemGrid.getCheckedRowKeys();
+
+                if (checkedRowKeys.length === 0) {
+                    alert('[[#{select.item.delete}]]');
+                    return;
+                }
+
+                checkedRowKeys.forEach(rowKey => {
+                    estimateItemGrid.removeRow(rowKey);
+                });
+            }
+
+            function insertEstimate(estimateStatusCd) {
+                var confirmMessage = '[[#{insert.confirm}]]';
+                const url = estimateStatusCd === 'ESS001' ? '/api/estimate/insert/temp' : '/api/estimate/insert/done';
+                const formData = formToJson(document.getElementById('estimateForm'));
+                const itemData = estimateItemGrid.getData();
+
+                formData.estimateStatusCd = estimateStatusCd;
+
+                if (estimateStatusCd === 'ESS002' && !validateEstimate(formData, itemData)) {
+                    return;
+                }
+
+                if(confirm(confirmMessage)) {
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ...formData,
+                            itemList: itemData
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.code === '00') {
+                            alert('[[#{insert.success}]]');
+                            location.href = '/estimate';
+                        } else {
+                            var fieldErrors = data.fieldErrors;
+                            var messages = [];
+                            for (const field in fieldErrors) {
+                                if (fieldErrors.hasOwnProperty(field)) {
+                                    messages.push(...fieldErrors[field]);
+                                }
+                            }
+                            if (messages.length > 0) {
+                                alert(messages.join('\n'));
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('[[#{common.error.request}]]');
+                    });
+                }
+            }
+
+            function validateEstimate(formData, itemData) {
+
+                const MSG_REQUIRED = '[[#{form.required}]]';
+                const MSG_ITEM_REQUIRED = '[[#{item.required}]]';
+
+                const requiredEstimateFields = {
+                    businessName: "상호명", representativeName: "대표자명", registrationNumber: "사업자등록번호", businessAddress: "사업자주소"
+                    , businessTelNo: "사업자전화번호", estimateDate: "견적일자", businessType: "업태", industryType: "종목", businessFaxNo: "사업자팩스번호"
+                    , estimateStatusCd: "견적서상태", managerName: "담당자명", managerTelNo: "담당자전화번호", managerFaxNo: "담당자팩스번호"
+                    , validDateCd: "유효기간", vendorName: "거래처명", vendorTelNo: "거래처전화번호", vendorFaxNo: "거래처팩스번호"
+                };
+
+                const requiredItemsFields = {
+                    dueDate : "납기일자", price : "단가", quantity : "수량"
+                };
+
+                for (const [field, label] of Object.entries(requiredEstimateFields)) {
+                    if (!formData[field] || formData[field].toString().trim() === '') {
+                        alert(MSG_REQUIRED.replace('{0}', label));
+                        return false;
+                    }
+                }
+
+                if (!itemData || itemData.length === 0) {
+                    alert('[[#{NotEmpty.estimateSubmitDto.itemList}]]');
+                    return false;
+                }
+
+                for (let i = 0; i < itemData.length; i++) {
+                    const item = itemData[i];
+                    for (const [field, label] of Object.entries(requiredItemsFields)) {
+                        if (!item[field] || item[field].toString().trim() === '') {
+                            alert(MSG_ITEM_REQUIRED.replace('{0}', i + 1).replace('{1}', label));
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+        </script>
     </main>
-    <script>
-
-        function searchBusiness() {
-            const businessModal = new bootstrap.Modal(document.getElementById('businessModal'));
-            businessModal.show();
-        }
-        function searchManager() {
-            const managerModal = new bootstrap.Modal(document.getElementById('managerModal'));
-            managerModal.show();
-        }
-        function searchVender() {
-            const vendorModal = new bootstrap.Modal(document.getElementById('vendorModal'));
-            vendorModal.show();
-        }
-
-    </script>
 </th:block>
 </html>

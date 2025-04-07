@@ -13,6 +13,11 @@ public class BusinessService {
 
     private final BusinessMapper businessMapper;
 
+    /**
+     * Grid용 사업자 전체조회
+     * @param businessSearchDto
+     * @return List<BusinessGridDto>
+     */
     public List<BusinessGridDto> businessListByGrid(BusinessSearchDto businessSearchDto) {
         return businessMapper.businessListByGrid(businessSearchDto);
     }

@@ -22,6 +22,22 @@
                     사용자 목록
                 </div>
                 <div class="card-body">
+                    <form id="userSearchForm" class="mb-3">
+                        <table class="table table-bordered table-sm align-middle mb-2">
+                            <tbody>
+                            <tr>
+                                <th class="text-center" style="width: 100px;">아이디</th>
+                                <td><input type="text" name="username" class="form-control form-control-sm"></td>
+                                <th class="text-center" style="width: 100px;">이름</th>
+                                <td><input type="text" name="name" class="form-control form-control-sm"></td>
+                                <td style="width: 80px;">
+                                    <button type="button" class="btn btn-primary btn-sm w-100" onclick="searchUserList()">조회</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+
                     <div id="userGrid"></div>
                 </div>
             </div>
@@ -31,8 +47,11 @@
         document.addEventListener("DOMContentLoaded", function () {
             setGrid();
         });
+
+        var userGrid = null;
+
         function setGrid() {
-            const grid = new tui.Grid({
+            userGrid = new tui.Grid({
                 el: document.getElementById('userGrid'),
                 data: {
                     api: {
@@ -55,6 +74,11 @@
                 scrollX: false,
                 scrollY: true
             });
+        }
+
+        function searchUserList() {
+            const params = formToObject(document.getElementById('userSearchForm'));
+            userGrid.readData(1, params, true);
         }
     </script>
 </th:block>

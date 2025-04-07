@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangopuree.estimate.service.EstimateMapper">
+
+    <sql id="searchConditions">
+        <if test="businessName != null and businessName != ''">
+            AND business_name LIKE CONCAT('%', #{businessName}, '%')
+        </if>
+        <if test="representativeName != null and representativeName != ''">
+            AND representative_name LIKE CONCAT('%', #{representativeName}, '%')
+        </if>
+    </sql>
+
+    <select id="businessListByGrid" resultType="com.mangopuree.business.dto.BusinessGridDto">
+        /*
+        EstimateMapper.businessListByGrid
+        조회
+        */
+        select
+            ROWNUM() as rnum
+            , count(*) over() as total_count
+            , business_id
+            , business_name
+            , representative_name
+            , registration_number
+            , address
+            , tel_no
+            , fax_no
+            , business_type
+            , industry_type
+        from
+            business
+        where
+            1=1
+            <include refid="searchConditions" />
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findNextEstimateId" resultType="String">
+        /*
+        EstimateMapper.findNextEstimateId
+        조회
+        */
+        select
+            case
+                when
+                    max(estimate_id) is null then
+                    concat('EST', date_format(now(), '%y%m%d'), '00001')
+                else
+                    CONCAT(
+                        'EST',
+                        DATE_FORMAT(NOW(), '%y%m%d'),
+                        LPAD(SUBSTRING(MAX(estimate_id), 10) + 1, 5, '0')
+                    )
+            end as estimate_id
+        from
+            estimate
+        where
+            estimate_id like concat('EST', date_format(now(), '%y%m%d'), '%')
+    </select>
+
+    <insert id="insert" parameterType="com.mangopuree.estimate.dto.EstimateInsertDto">
+        /*
+        EstimateMapper.insert
+        등록
+        */
+        insert into estimate (
+            estimate_id
+            , estimate_date
+            , valid_date_cd
+            , estimate_status_cd
+            , manager_id
+            , manager_name
+            , manager_tel_no
+            , manager_fax_no
+            , vendor_id
+            , vendor_name
+            , vendor_tel_no
+            , vendor_fax_no
+            , business_id
+            , business_name
+            , representative_name
+            , registration_number
+            , business_address
+            , business_tel_no
+            , business_fax_no
+            , business_type
+            , industry_type
+            , remark
+            , reg_id
+            , reg_dt
+        ) values (
+            #{estimateId}
+            , #{estimateDate}
+            , #{validDateCd}
+            , #{estimateStatusCd}
+            , #{managerId}
+            , #{managerName}
+            , #{managerTelNo}
+            , #{managerFaxNo}
+            , #{vendorId}
+            , #{vendorName}
+            , #{vendorTelNo}
+            , #{vendorFaxNo}
+            , #{businessId}
+            , #{businessName}
+            , #{representativeName}
+            , #{registrationNumber}
+            , #{businessAddress}
+            , #{businessTelNo}
+            , #{businessFaxNo}
+            , #{businessType}
+            , #{industryType}
+            , #{remark}
+            , #{regId}
+            , now()
+        )
+    </insert>
+</mapper>

@@ -2,14 +2,29 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="itemModalFragment">
     <div class="modal fade" id="itemModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">품목 선택</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- TOAST GRID 컨테이너 -->
+                    <form id="itemSearchForm" class="mb-3">
+                        <table class="table table-bordered table-sm align-middle mb-2">
+                            <tbody>
+                            <tr>
+                                <th class="text-center" style="width: 100px;">품목아이디</th>
+                                <td><input type="text" name="itemId" class="form-control form-control-sm"></td>
+                                <th class="text-center" style="width: 100px;">품목명</th>
+                                <td><input type="text" name="itemName" class="form-control form-control-sm"></td>
+                                <td style="width: 80px;">
+                                    <button type="button" class="btn btn-primary btn-sm w-100" onclick="searchItemList()">조회</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+
                     <div id="itemGrid"></div>
                 </div>
                 <div class="modal-footer">
@@ -20,7 +35,65 @@
         </div>
     </div>
     <script>
+        document.getElementById('itemModal').addEventListener('shown.bs.modal', function () {
+            setItemGrid();
+        });
 
+        function setItemGrid() {
+            itemGrid = new tui.Grid({
+                el: document.getElementById('itemGrid'),
+                data: {
+                    api: {
+                        readData: { url: '/api/item/list', method: 'GET' }
+                    }
+                },
+                columns: [
+                    { header: '품목아이디', name: 'itemId', align: 'center'},
+                    { header: '품목명', name: 'itemName', align: 'left', resizable: true },
+                    { header: '단위코드', name: 'unitCdName', align: 'center', resizable: true, hidden: true },
+                    { header: '단위', name: 'unitCdName', align: 'center', resizable: true },
+                    { header: '표준단가', name: 'standardPrice', align: 'right', resizable: true},
+                    { header: '등록자', name: 'regUsername', align: 'left', resizable: true},
+                    { header: '등록일시', name: 'regDt', align: 'center', resizable: true}
+                ],
+                pageOptions: {
+                    useClient: true,
+                    perPage: 10
+                },
+                rowHeaders: ['checkbox'],
+                scrollX: false,
+                scrollY: false
+            });
+        }
+
+        function searchItemList() {
+            const params = formToObject(document.getElementById('itemSearchForm'));
+            itemGrid.readData(1, params, true);
+        }
+
+        function selectItems() {
+            const selectedItems = itemGrid.getCheckedRows();
+            if (selectedItems.length === 0) {
+                alert("선택된 품목이 없습니다.");
+                return;
+            }
+            const existingItemIds = estimateItemGrid.getData().map(row => row.itemId);
+
+            selectedItems.forEach(item => {
+                if (existingItemIds.includes(item.itemId)) {
+                    return;
+                }
+                estimateItemGrid.appendRow({
+                    itemId: item.itemId,
+                    itemName: item.itemName,
+                    unitCd: item.unitCd,
+                    unitCdName: item.unitCdName,
+                    price: item.standardPrice,
+                });
+            });
+            bootstrap.Modal.getInstance(document.getElementById('itemModal')).hide();
+            itemGrid.destroy();
+        }
     </script>
 </th:block>
 </html>

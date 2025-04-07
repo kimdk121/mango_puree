@@ -2,23 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mangopuree.item.service.ItemMapper">
 
-    <select id="getCodeListByCodeGroupId" resultType="com.mangopuree.code.dto.CodeDto">
+    <sql id="searchConditions">
+        <if test="itemId != null and itemId != ''">
+            AND item_id LIKE CONCAT('%', #{itemId}, '%')
+        </if>
+        <if test="itemName != null and itemName != ''">
+            AND item_name LIKE CONCAT('%', #{itemName}, '%')
+        </if>
+    </sql>
+
+    <select id="itemListByGrid" resultType="com.mangopuree.item.dto.ItemGridDto">
         /*
-        CodeMapper.getCodeListByCodeGroupId
+        BusinessMapper.businessListByGrid
         조회
         */
         select
-            code_id
-            , code_group_id
-            , code_name
-            , code_value
+            ROWNUM() as rnum
+            , count(*) over() as total_count
+            , item_id
+            , item_name
+            , unit_cd
+            , (select a.code_name from code a where a.code_id = unit_cd) as unit_cd_name
+            , standard_price
+            , reg_id
+            , (select a.username from user a where a.user_id = reg_id) as reg_username
+            , reg_dt
         from
-            code
+            item
         where
-            code_group_id = #{codeGroupId}
-            and is_active = true
-        order by
-            order_index
+            1=1
+            <include refid="searchConditions" />
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
 </mapper>

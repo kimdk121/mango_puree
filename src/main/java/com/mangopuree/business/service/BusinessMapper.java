@@ -9,5 +9,10 @@ import java.util.List;
 @Mapper
 public interface BusinessMapper {
 
+    /**
+     * Grid용 사업자 전체조회
+     * @param businessSearchDto
+     * @return List<BusinessGridDto>
+     */
     List<BusinessGridDto> businessListByGrid(BusinessSearchDto businessSearchDto);
 }

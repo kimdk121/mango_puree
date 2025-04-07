@@ -1,8 +1,11 @@
 package com.mangopuree.vendor.controller;
 
+import com.mangopuree.business.dto.BusinessGridDto;
 import com.mangopuree.business.dto.BusinessSearchDto;
 import com.mangopuree.support.base.BaseContoller;
 import com.mangopuree.user.dto.UserGridDto;
+import com.mangopuree.vendor.dto.VendorGridDto;
+import com.mangopuree.vendor.dto.VendorSearchDto;
 import com.mangopuree.vendor.service.VendorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.ModelMap;
@@ -21,4 +24,22 @@ public class VendorApiController extends BaseContoller {
 
     private final VendorService vendorService;
 
+    /**
+     * API 거래처 Grid 호출
+     */
+    @GetMapping("/list")
+    public Map<String, Object> list(@ModelAttribute VendorSearchDto vendorSearchDto) {
+        ModelMap model = new ModelMap();
+        vendorSearchDto.calculatePaging();
+        List<VendorGridDto> vendorGridDtos = vendorService.vendorListByGrid(vendorSearchDto);
+        if (vendorGridDtos == null) {
+            return setFailResult(model);
+        }
+        int totalCount = vendorGridDtos.get(0).getTotalCount();
+
+        Map<String, Object> data = setGridData(vendorSearchDto, vendorGridDtos, totalCount);
+        model.addAttribute("data", data);
+
+        return setSuccessResult(model);
+    }
 }

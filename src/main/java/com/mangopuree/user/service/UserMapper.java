@@ -59,8 +59,8 @@ public interface UserMapper {
 
     /**
      * 그리드용 사용자 전체조회
-     * @param requestGridDto
+     * @param userSearchDto
      * @return List<UserGridDto>
      */
-    List<UserGridDto> userListByGrid(RequestGridDto requestGridDto);
+    List<UserGridDto> userListByGrid(UserSearchDto userSearchDto);
 }
