@@ -3,6 +3,7 @@ package com.mangopuree.estimate.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mangopuree.estimateitem.dto.EstimateItemDraftDto;
 import com.mangopuree.estimateitem.dto.EstimateItemInsertDto;
+import com.mangopuree.estimateitem.dto.EstimateItemUpdateDto;
 import com.mangopuree.support.base.dto.BaseAuditDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -79,6 +80,41 @@ public class EstimateDraftDto extends BaseAuditDto {
                 .remark(this.remark)
                 .regId(regId)
                 .itemList(insertItems)
+                .build();
+    }
+
+    public EstimateUpdateDto toEstimateUpdateDto(Long updId) {
+
+        List<EstimateItemUpdateDto> updateItems = null;
+        if (this.itemList != null) {
+            updateItems = this.itemList.stream().map(item -> item.toUpdateDto(updId)).toList();
+        }
+
+        return EstimateUpdateDto.builder()
+                .estimateId(this.estimateId)
+                .estimateDate(this.estimateDate)
+                .validDateCd(this.validDateCd)
+                .estimateStatusCd(this.estimateStatusCd)
+                .managerId(this.managerId)
+                .managerName(this.managerName)
+                .managerTelNo(this.managerTelNo)
+                .managerFaxNo(this.managerFaxNo)
+                .vendorId(this.vendorId)
+                .vendorName(this.vendorName)
+                .vendorTelNo(this.vendorTelNo)
+                .vendorFaxNo(this.vendorFaxNo)
+                .businessId(this.businessId)
+                .businessName(this.businessName)
+                .representativeName(this.representativeName)
+                .registrationNumber(this.registrationNumber)
+                .businessAddress(this.businessAddress)
+                .businessTelNo(this.businessTelNo)
+                .businessFaxNo(this.businessFaxNo)
+                .businessType(this.businessType)
+                .industryType(this.industryType)
+                .remark(this.remark)
+                .updId(updId)
+                .itemList(updateItems)
                 .build();
     }
 }

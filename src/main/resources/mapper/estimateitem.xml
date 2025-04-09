@@ -2,6 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mangopuree.estimateitem.service.EstimateItemMapper">
 
+    <select id="findByEstimateId" resultType="com.mangopuree.estimateitem.dto.EstimateItemDto">
+        /*
+        EstimateItemMapper.findByEstimateId
+        견적서아이디로 조회
+        */
+        select
+            estimate_id
+            , item_id
+            , item_name
+            , unit_cd
+            , (select a.code_name from code a where a.code_id = unit_cd) as unit_cd_name
+            , due_date
+            , price
+            , quantity
+            , supply_amount
+            , vat_amount
+            , total_amount
+        from
+            estimate_item
+        where
+            estimate_id = #{estimateId}
+    </select>
+
     <insert id="bulkInsert">
         /*
         EstimateItemMapper.bulkInsert
@@ -40,6 +63,16 @@
         </foreach>
     </insert>
 
+    <delete id="deleteByEstimateId">
+        /*
+        EstimateItemMapper.deleteByEstimateId
+        견적서아이디로 삭제
+        */
+        delete from
+            estimate_item
+        where
+            estimate_id = #{estimateId}
+    </delete>
 
 
 </mapper>

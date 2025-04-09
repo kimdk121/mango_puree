@@ -3,36 +3,53 @@
 <mapper namespace="com.mangopuree.estimate.service.EstimateMapper">
 
     <sql id="searchConditions">
-        <if test="businessName != null and businessName != ''">
-            AND business_name LIKE CONCAT('%', #{businessName}, '%')
+        <if test="estimateId != null and estimateId != ''">
+            AND a.estimate_id LIKE CONCAT('%', #{estimateId}, '%')
         </if>
-        <if test="representativeName != null and representativeName != ''">
-            AND representative_name LIKE CONCAT('%', #{representativeName}, '%')
+        <if test="estimateStartDate != null">
+            AND a.estimate_date >= #{estimateStartDate}
+        </if>
+        <if test="estimateEndDate != null">
+            AND a.estimate_date &lt;= #{estimateEndDate}
+        </if>
+        <if test="estimateStatusCd != null and estimateStatusCd != ''">
+            AND a.estimate_status_cd LIKE CONCAT('%', #{estimateStatusCd}, '%')
         </if>
     </sql>
 
-    <select id="businessListByGrid" resultType="com.mangopuree.business.dto.BusinessGridDto">
+    <select id="estimateListByGrid" resultType="com.mangopuree.estimate.dto.EstimateGridDto">
         /*
-        EstimateMapper.businessListByGrid
+        EstimateMapper.estimateListByGrid
         조회
         */
         select
             ROWNUM() as rnum
             , count(*) over() as total_count
-            , business_id
-            , business_name
-            , representative_name
-            , registration_number
-            , address
-            , tel_no
-            , fax_no
-            , business_type
-            , industry_type
+            , a.business_name
+            , a.estimate_date
+            , a.estimate_id
+            , (select code_name from code where code_id = a.estimate_status_cd) as estimate_status_cd_name
+            , a.vendor_name
+            , a.manager_name
+            , (select code_name from code where code_id = a.valid_date_cd) as valid_date_cd_name
+            , b.item_id
+            , b.item_name
+            , b.due_date
+            , b.price
+            , b.quantity
+            , b.supply_amount
+            , b.vat_amount
+            , b.total_amount
+            , (select username from user where user_id = a.reg_id) as reg_username
+            , date_format(a.reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
         from
-            business
+            estimate a
+            left join estimate_item b on a.estimate_id = b.estimate_id
         where
             1=1
             <include refid="searchConditions" />
+        order by
+            a.reg_dt desc , a.estimate_id asc
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -57,6 +74,40 @@
             estimate
         where
             estimate_id like concat('EST', date_format(now(), '%y%m%d'), '%')
+    </select>
+
+    <select id="findByEstimateId" resultType="com.mangopuree.estimate.dto.EstimateDto">
+        /*
+        EstimateMapper.findByEstimateId
+        견적서아이디로 조회
+        */
+        select
+            estimate_id
+            , estimate_date
+            , valid_date_cd
+            , estimate_status_cd
+            , manager_id
+            , manager_name
+            , manager_tel_no
+            , manager_fax_no
+            , vendor_id
+            , vendor_name
+            , vendor_tel_no
+            , vendor_fax_no
+            , business_id
+            , business_name
+            , representative_name
+            , registration_number
+            , business_address
+            , business_tel_no
+            , business_fax_no
+            , business_type
+            , industry_type
+            , remark
+        from
+            estimate
+        where
+            estimate_id = #{estimateId}
     </select>
 
     <insert id="insert" parameterType="com.mangopuree.estimate.dto.EstimateInsertDto">
@@ -116,4 +167,39 @@
             , now()
         )
     </insert>
+
+    <update id="update" parameterType="com.mangopuree.estimate.dto.EstimateUpdateDto">
+        /*
+        EstimateMapper.update
+        수정
+        */
+        update
+            estimate
+        set
+            estimate_date = #{estimateDate}
+            , valid_date_cd = #{validDateCd}
+            , estimate_status_cd = #{estimateStatusCd}
+            , manager_id = #{managerId}
+            , manager_name = #{managerName}
+            , manager_tel_no = #{managerTelNo}
+            , manager_fax_no = #{managerFaxNo}
+            , vendor_id = #{vendorId}
+            , vendor_name = #{vendorName}
+            , vendor_tel_no = #{vendorTelNo}
+            , vendor_fax_no = #{vendorFaxNo}
+            , business_id = #{businessId}
+            , business_name = #{businessName}
+            , representative_name = #{representativeName}
+            , registration_number = #{registrationNumber}
+            , business_address = #{businessAddress}
+            , business_tel_no = #{businessTelNo}
+            , business_fax_no = #{businessFaxNo}
+            , business_type = #{businessType}
+            , industry_type = #{industryType}
+            , remark = #{remark}
+            , upd_id = #{updId}
+            , upd_dt = now()
+        where
+            estimate_id = #{estimateId}
+    </update>
 </mapper>

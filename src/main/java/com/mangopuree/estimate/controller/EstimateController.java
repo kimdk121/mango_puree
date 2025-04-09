@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -17,7 +18,9 @@ public class EstimateController {
     private final CodeService codeService;
 
     @GetMapping
-    public String listForm() {
+    public String listForm(Model model) {
+        model.addAttribute("estimateStatusList",codeService.getCodeListByCodeGroupId("ESTIMATE_STATUS"));
+        model.addAttribute("validDateList",codeService.getCodeListByCodeGroupId("VALID_DATE"));
         return "admin/estimate/list";
     }
 
@@ -26,16 +29,6 @@ public class EstimateController {
         model.addAttribute("estimateStatusList",codeService.getCodeListByCodeGroupId("ESTIMATE_STATUS"));
         model.addAttribute("validDateList",codeService.getCodeListByCodeGroupId("VALID_DATE"));
         return "admin/estimate/insert";
-    }
-
-    @GetMapping("/{id}")
-    public String detailForm() {
-        return "admin/estimate/detail";
-    }
-
-    @GetMapping("/{id}/edit")
-    public String edltForm() {
-        return "admin/estimate/edit";
     }
 
 }

@@ -71,7 +71,7 @@
                                 <td><input type="text" class="form-control" name="businessFaxNo"></td>
                                 <th class="text-center">견적서상태</th>
                                 <td>
-                                    <select name="estimateStatusCd" id="estimateStatusCd" class="form-select" disabled>
+                                    <select name="estimateStatusCd" class="form-select" disabled>
                                         <option value="">선택</option>
                                         <option th:each="code : ${estimateStatusList}"
                                                 th:value="${code.codeId}"
@@ -96,7 +96,7 @@
                                 <td><input type="email" class="form-control" name="managerFaxNo"></td>
                                 <th class="text-center">유효기간*</th>
                                 <td>
-                                    <select name="validDateCd" id="validDateCd" class="form-select">
+                                    <select name="validDateCd" class="form-select">
                                         <option value="">선택</option>
                                         <option th:each="code : ${validDateList}"
                                                 th:value="${code.codeId}"
@@ -258,7 +258,6 @@
 
             function insertEstimate(estimateStatusCd) {
                 var confirmMessage = '[[#{insert.confirm}]]';
-                const url = estimateStatusCd === 'ESS001' ? '/api/estimate/insert/temp' : '/api/estimate/insert/done';
                 const formData = formToJson(document.getElementById('estimateForm'));
                 const itemData = estimateItemGrid.getData();
 
@@ -269,7 +268,7 @@
                 }
 
                 if(confirm(confirmMessage)) {
-                    fetch(url, {
+                    fetch('/api/estimate/insert', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -284,7 +283,7 @@
                     .then(data => {
                         if (data.code === '00') {
                             alert('[[#{insert.success}]]');
-                            location.href = '/estimate';
+                            location.href = '/admin/estimate';
                         } else {
                             var fieldErrors = data.fieldErrors;
                             var messages = [];
@@ -313,8 +312,8 @@
                 const requiredEstimateFields = {
                     businessName: "상호명", representativeName: "대표자명", registrationNumber: "사업자등록번호", businessAddress: "사업자주소"
                     , businessTelNo: "사업자전화번호", estimateDate: "견적일자", businessType: "업태", industryType: "종목", businessFaxNo: "사업자팩스번호"
-                    , estimateStatusCd: "견적서상태", managerName: "담당자명", managerTelNo: "담당자전화번호", managerFaxNo: "담당자팩스번호"
-                    , validDateCd: "유효기간", vendorName: "거래처명", vendorTelNo: "거래처전화번호", vendorFaxNo: "거래처팩스번호"
+                    , managerName: "담당자명", managerTelNo: "담당자전화번호", managerFaxNo: "담당자팩스번호", validDateCd: "유효기간", vendorName: "거래처명"
+                    , vendorTelNo: "거래처전화번호", vendorFaxNo: "거래처팩스번호"
                 };
 
                 const requiredItemsFields = {

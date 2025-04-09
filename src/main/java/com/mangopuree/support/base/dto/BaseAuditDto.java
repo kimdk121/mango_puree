@@ -13,4 +13,5 @@ import lombok.experimental.SuperBuilder;
 public class BaseAuditDto {
 
     private Long regId;
+    private Long updId;
 }

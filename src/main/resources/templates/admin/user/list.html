@@ -67,13 +67,14 @@
                     { header: '등록일', name: 'regDt', align: 'center'}
                 ],
                 pageOptions: {
-                    useClient: true,
+                    useClient: false,
                     perPage: 10
                 },
                 rowHeaders: ['rowNum'], // 행 번호
-                scrollX: false,
+                scrollX: true,
                 scrollY: true
             });
+            tui.Grid.applyTheme('striped');
         }
 
         function searchUserList() {

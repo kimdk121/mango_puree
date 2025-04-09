@@ -19,8 +19,7 @@ public class UserController extends BaseContoller {
      * 사용자 화면 호출
      */
     @GetMapping
-    public String listForm(Model model) {
-        model.addAttribute("users", userService.findAll());
+    public String listForm() {
         return "admin/user/list";
     }
 

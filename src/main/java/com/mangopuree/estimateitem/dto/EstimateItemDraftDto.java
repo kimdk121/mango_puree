@@ -43,4 +43,20 @@ public class EstimateItemDraftDto extends BaseAuditDto {
                 .regId(regId)
                 .build();
     }
+
+    public EstimateItemUpdateDto toUpdateDto(Long regId) {
+        return EstimateItemUpdateDto.builder()
+                .estimateId(this.estimateId)
+                .itemId(this.itemId)
+                .itemName(this.itemName)
+                .unitCd(this.unitCd)
+                .dueDate(this.dueDate)
+                .price(this.price)
+                .quantity(this.quantity)
+                .supplyAmount(this.supplyAmount)
+                .vatAmount(this.vatAmount)
+                .totalAmount(this.totalAmount)
+                .regId(regId)
+                .build();
+    }
 }

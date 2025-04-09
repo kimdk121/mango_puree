@@ -1,8 +1,11 @@
 package com.mangopuree.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mangopuree.support.base.dto.ResponseGridDto;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,5 +17,6 @@ public class UserGridDto extends ResponseGridDto {
     private String telNo;
     private String faxNo;
     private String roleName;
-    private String regDt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime regDt;
 }

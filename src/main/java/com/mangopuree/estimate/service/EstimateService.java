@@ -1,15 +1,17 @@
 package com.mangopuree.estimate.service;
 
-import com.mangopuree.estimate.dto.EstimateDraftDto;
-import com.mangopuree.estimate.dto.EstimateInsertDto;
-import com.mangopuree.estimate.dto.EstimateSubmitDto;
+import com.mangopuree.estimate.dto.*;
+import com.mangopuree.estimateitem.dto.EstimateItemDto;
 import com.mangopuree.estimateitem.service.EstimateItemMapper;
 import com.mangopuree.support.security.LoginUserHolder;
+import com.mangopuree.user.dto.UserGridDto;
+import com.mangopuree.user.dto.UserSearchDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,12 +31,28 @@ public class EstimateService {
     }
 
     @Transactional
-    public int insertDone(EstimateSubmitDto EstimateSubmitDto) {
+    public int insertDone(EstimateSubmitDto estimateSubmitDto) {
         String estimateId = estimateMapper.findNextEstimateId();
         Long regId = LoginUserHolder.getAsLong();
 
-        EstimateInsertDto estimateInsertDto = EstimateSubmitDto.toEstimateInsertDto(estimateId, regId);
+        EstimateInsertDto estimateInsertDto = estimateSubmitDto.toEstimateInsertDto(estimateId, regId);
         return insertInternal(estimateInsertDto);
+    }
+
+    @Transactional
+    public int updateTemp(EstimateDraftDto estimateDraftDto) {
+        Long updId = LoginUserHolder.getAsLong();
+
+        EstimateUpdateDto estimateUpdateDto = estimateDraftDto.toEstimateUpdateDto(updId);
+        return updateInternal(estimateUpdateDto);
+    }
+
+    @Transactional
+    public int updateDone(EstimateSubmitDto estimateSubmitDto) {
+        Long updId = LoginUserHolder.getAsLong();
+
+        EstimateUpdateDto estimateUpdateDto = estimateSubmitDto.toEstimateUpdateDto(updId);
+        return updateInternal(estimateUpdateDto);
     }
 
     private int insertInternal(EstimateInsertDto estimateInsertDto) {
@@ -50,4 +68,33 @@ public class EstimateService {
         return result;
     }
 
+    private int updateInternal(EstimateUpdateDto estimateUpdateDto) {
+        int result = estimateMapper.update(estimateUpdateDto);
+
+        if (estimateUpdateDto.getItemList() != null && !estimateUpdateDto.getItemList().isEmpty()) {
+            estimateItemMapper.deleteByEstimateId(estimateUpdateDto.getEstimateId());
+
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("estimateId", estimateUpdateDto.getEstimateId());
+            paramMap.put("itemList", estimateUpdateDto.getItemList());
+            paramMap.put("regId", estimateUpdateDto.getRegId());
+            estimateItemMapper.bulkInsert(paramMap);
+        }
+        return result;
+    }
+
+    /**
+     * 그리드용 견적서 전체조회
+     * @param estimateSearchDto
+     * @return List<EstimateGridDto>
+     */
+    public List<EstimateGridDto> estimateListByGrid(EstimateSearchDto estimateSearchDto) {
+        return estimateMapper.estimateListByGrid(estimateSearchDto);
+    }
+
+    public EstimateDto findEstimateDetail(String estimateId) {
+        EstimateDto estimateDto = estimateMapper.findByEstimateId(estimateId);
+        estimateDto.setItemList(estimateItemMapper.findByEstimateId(estimateId));
+        return estimateDto;
+    }
 }

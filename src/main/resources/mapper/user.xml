@@ -75,7 +75,7 @@
             , a.tel_no
             , a.fax_no
             , b.role_name
-            , a.reg_dt
+            , date_format(a.reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
         from
             user a
             left join role b on a.role_id = b.role_id
@@ -93,7 +93,7 @@
             , a.tel_no
             , a.fax_no
             , b.role_name
-            , a.reg_dt
+            , date_format(a.reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
         from
             user a
             left join role b on a.role_id = b.role_id
@@ -115,7 +115,7 @@
             , a.tel_no
             , a.fax_no
             , b.role_name
-            , a.reg_dt
+            , date_format(a.reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
         from
             user a
             left join role b on a.role_id = b.role_id
