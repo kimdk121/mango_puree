@@ -14,7 +14,7 @@ public interface EstimateMapper {
 
     int insert(EstimateInsertDto estimateInsertDto);
 
-    int update(EstimateUpdateDto estimateUpdateDto);
+    int update(EstimateInsertDto estimateUpdateDto);
 
     EstimateDto findByEstimateId(String EstimateId);
 

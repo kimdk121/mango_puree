@@ -168,7 +168,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.mangopuree.estimate.dto.EstimateUpdateDto">
+    <update id="update" parameterType="com.mangopuree.estimate.dto.EstimateInsertDto">
         /*
         EstimateMapper.update
         수정

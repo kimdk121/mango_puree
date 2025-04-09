@@ -325,6 +325,7 @@
             var confirmMessage = '[[#{update.confirm}]]';
             const formData = formToJson(document.getElementById('estimateForm'));
             const itemData = estimateItemGrid.getData();
+            const estimateId = document.querySelector('input[name="estimateId"]').value;
 
             formData.estimateStatusCd = estimateStatusCd;
 
@@ -393,7 +394,7 @@
             }
 
             if (!itemData || itemData.length === 0) {
-                alert('[[#{NotEmpty.estimateSubmitDto.itemList}]]');
+                alert('[[#{NotEmpty.estimateInsertDto.itemList}]]');
                 return false;
             }
 

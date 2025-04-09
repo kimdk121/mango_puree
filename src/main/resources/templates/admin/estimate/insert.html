@@ -263,10 +263,11 @@
 
                 formData.estimateStatusCd = estimateStatusCd;
 
+/*
                 if (estimateStatusCd === 'ESS002' && !validateEstimate(formData, itemData)) {
                     return;
                 }
-
+*/
                 if(confirm(confirmMessage)) {
                     fetch('/api/estimate/insert', {
                         method: 'POST',
@@ -328,7 +329,7 @@
                 }
 
                 if (!itemData || itemData.length === 0) {
-                    alert('[[#{NotEmpty.estimateSubmitDto.itemList}]]');
+                    alert('[[#{NotEmpty.estimateInsertDto.itemList}]]');
                     return false;
                 }
 

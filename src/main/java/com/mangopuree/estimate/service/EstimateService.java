@@ -22,62 +22,39 @@ public class EstimateService {
     private final EstimateItemMapper estimateItemMapper;
 
     @Transactional
-    public int insertTemp(EstimateDraftDto estimateDraftDto) {
+    public int insert(EstimateInsertDto estimateInsertDto) {
         String estimateId = estimateMapper.findNextEstimateId();
         Long regId = LoginUserHolder.getAsLong();
+        estimateInsertDto.setEstimateId(estimateId);
+        estimateInsertDto.setRegId(regId);
 
-        EstimateInsertDto estimateInsertDto = estimateDraftDto.toEstimateInsertDto(estimateId, regId);
-        return insertInternal(estimateInsertDto);
-    }
-
-    @Transactional
-    public int insertDone(EstimateSubmitDto estimateSubmitDto) {
-        String estimateId = estimateMapper.findNextEstimateId();
-        Long regId = LoginUserHolder.getAsLong();
-
-        EstimateInsertDto estimateInsertDto = estimateSubmitDto.toEstimateInsertDto(estimateId, regId);
-        return insertInternal(estimateInsertDto);
-    }
-
-    @Transactional
-    public int updateTemp(EstimateDraftDto estimateDraftDto) {
-        Long updId = LoginUserHolder.getAsLong();
-
-        EstimateUpdateDto estimateUpdateDto = estimateDraftDto.toEstimateUpdateDto(updId);
-        return updateInternal(estimateUpdateDto);
-    }
-
-    @Transactional
-    public int updateDone(EstimateSubmitDto estimateSubmitDto) {
-        Long updId = LoginUserHolder.getAsLong();
-
-        EstimateUpdateDto estimateUpdateDto = estimateSubmitDto.toEstimateUpdateDto(updId);
-        return updateInternal(estimateUpdateDto);
-    }
-
-    private int insertInternal(EstimateInsertDto estimateInsertDto) {
         int result = estimateMapper.insert(estimateInsertDto);
 
         if (estimateInsertDto.getItemList() != null && !estimateInsertDto.getItemList().isEmpty()) {
             Map<String, Object> paramMap = new HashMap<>();
-            paramMap.put("estimateId", estimateInsertDto.getEstimateId());
+            paramMap.put("estimateId", estimateId);
             paramMap.put("itemList", estimateInsertDto.getItemList());
-            paramMap.put("regId", estimateInsertDto.getRegId());
+            paramMap.put("regId", regId);
             estimateItemMapper.bulkInsert(paramMap);
         }
         return result;
     }
 
-    private int updateInternal(EstimateUpdateDto estimateUpdateDto) {
-        int result = estimateMapper.update(estimateUpdateDto);
+    @Transactional
+    public int update(EstimateInsertDto estimateInsertDto) {
+        Long updId = LoginUserHolder.getAsLong();
+        String estimateId = estimateInsertDto.getEstimateId();
+        estimateInsertDto.setUpdId(updId);
 
-        if (estimateUpdateDto.getItemList() != null && !estimateUpdateDto.getItemList().isEmpty()) {
-            estimateItemMapper.deleteByEstimateId(estimateUpdateDto.getEstimateId());
+        int result = estimateMapper.update(estimateInsertDto);
+
+        if (estimateInsertDto.getItemList() != null && !estimateInsertDto.getItemList().isEmpty()) {
+            estimateItemMapper.deleteByEstimateId(estimateId);
 
             Map<String, Object> paramMap = new HashMap<>();
-            paramMap.put("estimateId", estimateUpdateDto.getEstimateId());
-            paramMap.put("itemList", estimateUpdateDto.getItemList());
-            paramMap.put("regId", estimateUpdateDto.getRegId());
+            paramMap.put("estimateId", estimateId);
+            paramMap.put("itemList", estimateInsertDto.getItemList());
+            paramMap.put("regId", updId);
             estimateItemMapper.bulkInsert(paramMap);
         }
         return result;

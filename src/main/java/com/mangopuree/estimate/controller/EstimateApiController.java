@@ -4,6 +4,7 @@ import com.mangopuree.estimate.dto.*;
 import com.mangopuree.estimate.service.EstimateService;
 import com.mangopuree.support.base.BaseContoller;
 import com.mangopuree.support.security.LoginUserHolder;
+import com.mangopuree.support.validator.EstimateDtoValidator;
 import com.mangopuree.user.dto.UserGridDto;
 import com.mangopuree.user.dto.UserSearchDto;
 import jakarta.validation.Validator;
@@ -22,49 +23,35 @@ import java.util.Map;
 public class EstimateApiController extends BaseContoller {
 
     private final EstimateService estimateService;
-    private final Validator validator;
+    private final EstimateDtoValidator estimateDtoValidator;
 
-    @PostMapping("/insert/temp")
-    public Map<String, Object> insertTemp(@RequestBody EstimateDraftDto estimateDraftDto, BindingResult bindingResult) {
+    @PostMapping("/insert")
+    public Map<String, Object> insert(@RequestBody EstimateInsertDto estimateInsertDto, BindingResult bindingResult) {
         ModelMap model = new ModelMap();
-        if (bindingResult.hasErrors()) {
-            Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-            return setFailResult(model, fieldErrors);
+
+        if(estimateInsertDto.getEstimateStatusCd() != null && "ESS002".equals(estimateInsertDto.getEstimateStatusCd())) {
+            estimateDtoValidator.validate(estimateInsertDto, bindingResult);
+            if (bindingResult.hasErrors()) {
+                Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
+                return setFailResult(model, fieldErrors);
+            }
         }
-        estimateService.insertTemp(estimateDraftDto);
+        estimateService.insert(estimateInsertDto);
         return setSuccessResult(model);
     }
 
-    @PostMapping("/insert/done")
-    public Map<String, Object> insertDone(@Validated @RequestBody EstimateSubmitDto estimateSubmitDto, BindingResult bindingResult) {
+    @PostMapping("/update/{estimateId}")
+    public Map<String, Object> update(@RequestBody EstimateInsertDto estimateInsertDto, BindingResult bindingResult) {
         ModelMap model = new ModelMap();
-        if (bindingResult.hasErrors()) {
-            Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-            return setFailResult(model, fieldErrors);
-        }
-        estimateService.insertDone(estimateSubmitDto);
-        return setSuccessResult(model);
-    }
 
-    @PostMapping("/update/temp")
-    public Map<String, Object> updateTemp(@RequestBody EstimateDraftDto estimateDraftDto, BindingResult bindingResult) {
-        ModelMap model = new ModelMap();
-        if (bindingResult.hasErrors()) {
-            Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-            return setFailResult(model, fieldErrors);
+        if(estimateInsertDto.getEstimateStatusCd() != null && "ESS002".equals(estimateInsertDto.getEstimateStatusCd())) {
+            estimateDtoValidator.validate(estimateInsertDto, bindingResult);
+            if (bindingResult.hasErrors()) {
+                Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
+                return setFailResult(model, fieldErrors);
+            }
         }
-        estimateService.updateTemp(estimateDraftDto);
-        return setSuccessResult(model);
-    }
-
-    @PostMapping("/update/done")
-    public Map<String, Object> updateDone(@Validated @RequestBody EstimateSubmitDto estimateSubmitDto, BindingResult bindingResult) {
-        ModelMap model = new ModelMap();
-        if (bindingResult.hasErrors()) {
-            Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-            return setFailResult(model, fieldErrors);
-        }
-        estimateService.updateDone(estimateSubmitDto);
+        estimateService.update(estimateInsertDto);
         return setSuccessResult(model);
     }
 
