@@ -21,22 +21,13 @@
         });
 
         function loadUserMenu() {
-            fetch("/api/menu/loadUserMenu", {
+            apiJsonRequest({
+                url: "/api/menu/loadUserMenu",
                 method: "GET"
-                , headers: {
-                    "Content-Type": "application/json"
-                    , "Accept": "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.code === "00") {
-                    renderMenu(data.menuList);
-                } else {
-                    console.error("메뉴 로딩 실패:", data.exceptionMessage);
-                }
-            })
-            .catch(error => console.error("메뉴 데이터를 불러오는 중 오류 발생:", error));
+            },
+            (data) => {
+                renderMenu(data.menuList);
+            });
         }
 
         function renderMenu(menuList) {

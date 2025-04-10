@@ -9,11 +9,17 @@ import com.mangopuree.user.dto.UserGridDto;
 import com.mangopuree.user.dto.UserSearchDto;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriUtils;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +91,31 @@ public class EstimateApiController extends BaseContoller {
     @DeleteMapping("/{estimateId}")
     public Map<String, Object> delete(@PathVariable String estimateId) {
         ModelMap model = new ModelMap();
+        estimateService.delete(estimateId);
         return setSuccessResult(model);
+    }
+
+    @PostMapping("/update/{estimateId}/estimateStatusCd")
+    public Map<String, Object> update(@PathVariable String estimateId) {
+        ModelMap model = new ModelMap();
+        estimateService.confirmEstimateStatus(estimateId);
+        return setSuccessResult(model);
+    }
+
+    @GetMapping("/{estimateId}/downloadEstimateToExcel")
+    public ResponseEntity<byte[]> downloadEstimateToExcel(@PathVariable String estimateId) {
+        ModelMap model = new ModelMap();
+        byte[] fileBytes = null;
+        try {
+            fileBytes = estimateService.makeEstimateToExcel(estimateId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String filename = UriUtils.encode("견적서.xlsx", StandardCharsets.UTF_8) ;
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ filename +"\"")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                .body(fileBytes);
     }
 }

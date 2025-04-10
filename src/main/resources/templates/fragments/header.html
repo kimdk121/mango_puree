@@ -49,25 +49,17 @@
             }
 
             function loadUserInfo() {
-                fetch("/api/user/loadUserInfo", {
+                apiJsonRequest({
+                    url: "/api/user/loadUserInfo",
                     method: "GET"
-                    , headers: {
-                        "Content-Type": "application/json"
-                        , "Accept": "application/json"
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.code === "00") {
-                        ["userId","username", "name", "telNo", "faxNo"].forEach(field => {
-                            const el = document.getElementById(field);
-                            if (el) el.value = data.user[field] || '';
-                        });
-                    } else {
-                        console.error("사용자 정보 로딩 실패:", data.exceptionMessage);
-                    }
-                })
-                .catch(error => console.error("사용자 정보를 불러오는 중 오류 발생:", error));
+                },
+                (data) => {
+                    console.log(data);
+                    ["userId","username", "name", "telNo", "faxNo"].forEach(field => {
+                        const el = document.getElementById(field);
+                        if (el) el.value = data.user[field] || '';
+                    });
+                });
             }
         </script>
     </nav>

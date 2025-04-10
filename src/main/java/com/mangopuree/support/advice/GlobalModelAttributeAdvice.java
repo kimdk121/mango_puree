@@ -22,10 +22,6 @@ public class GlobalModelAttributeAdvice {
      */
     @ModelAttribute
     public void addCurrentMenu(HttpServletRequest request, Model model) {
-        if (MediaType.APPLICATION_JSON_VALUE.equals(request.getHeader("Accept"))) {
-            return;
-        }
-
         String uri = request.getRequestURI();
         if (!uri.startsWith("/admin")) {
             return;

@@ -263,44 +263,30 @@
 
                 formData.estimateStatusCd = estimateStatusCd;
 
-/*
                 if (estimateStatusCd === 'ESS002' && !validateEstimate(formData, itemData)) {
                     return;
                 }
-*/
                 if(confirm(confirmMessage)) {
-                    fetch('/api/estimate/insert', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            ...formData,
-                            itemList: itemData
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.code === '00') {
-                            alert('[[#{insert.success}]]');
-                            location.href = '/admin/estimate';
-                        } else {
-                            var fieldErrors = data.fieldErrors;
-                            var messages = [];
-                            for (const field in fieldErrors) {
-                                if (fieldErrors.hasOwnProperty(field)) {
-                                    messages.push(...fieldErrors[field]);
-                                }
-                            }
-                            if (messages.length > 0) {
-                                alert(messages.join('\n'));
+                    apiJsonRequest({
+                        url: '/api/estimate/insert',
+                        method: "POST",
+                        body: {...formData, itemList: itemData}
+                    },
+                    (data) => {
+                        alert('[[#{insert.success}]]');
+                        location.href = '/admin/estimate';
+                    },
+                    (data) => {
+                        var fieldErrors = data.fieldErrors;
+                        var messages = [];
+                        for (const field in fieldErrors) {
+                            if (fieldErrors.hasOwnProperty(field)) {
+                                messages.push(...fieldErrors[field]);
                             }
                         }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert('[[#{common.error.request}]]');
+                        if (messages.length > 0) {
+                            alert(messages.join('\n'));
+                        }
                     });
                 }
             }

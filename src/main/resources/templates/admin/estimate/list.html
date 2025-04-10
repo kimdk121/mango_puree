@@ -25,8 +25,8 @@
                             <button type="button" class="btn btn-success btn-sm" onclick="reset()">새로고침</button>
                             <button type="button" class="btn btn-success btn-sm" onclick="openEditModal()">수정</button>
                             <button type="button" class="btn btn-success btn-sm" onclick="deleteEstimate()">삭제</button>
-                            <button type="button" class="btn btn-success btn-sm">확정</button>
-                            <button type="button" class="btn btn-success btn-sm">견적서 엑셀 다운로드</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="confirmEstimate()">확정</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="downloadEstimateExcel()">견적서 엑셀 다운로드</button>
                         </div>
                     </div>
                     <form id="estimateSearchForm" class="mb-3">
@@ -64,234 +64,267 @@
                     <div id="estimateGrid"></div>
                 </div>
             </div>
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function () {
+                    setGrid();
+                });
+
+                var estimateGrid = null;
+
+                function setGrid() {
+                    estimateGrid = new tui.Grid({
+                        el: document.getElementById('estimateGrid'),
+                        data: {
+                            api: {
+                                readData: { url: '/api/estimate/list', method: 'GET' }
+                            }
+                        },
+                        columns: [
+                            { header: '사업자', name: 'businessName', align: 'left', resizable: true  }
+                            , { header: '견적일자', name: 'estimateDate', align: 'center', resizable: true  }
+                            , { header: '견적서번호', name: 'estimateId', width: '140', align: 'center', resizable: true }
+                            , { header: '견적서상태', name: 'estimateStatusCd', hidden: true}
+                            , { header: '견적서상태', name: 'estimateStatusCdName', align: 'center', resizable: true
+                                , formatter: function({ row }) {
+                                    const codeName = row.estimateStatusCdName;
+                                    let color = 'black';
+                                    if (codeName === '임시저장') {
+                                        color = 'red';
+                                    } else if (codeName === '작성완료') {
+                                        color = 'blue';
+                                    } else {
+                                        color = 'green';
+                                    }
+                                    return `<span style="color: ${color};">${row.estimateStatusCdName}</span>`;
+                                }
+                            }
+                            , { header: '거래처', name: 'vendorName', align: 'left', resizable: true }
+                            , { header: '담당자', name: 'managerName', align: 'left', resizable: true }
+                            , { header: '유효기간', name: 'validDateCdName', align: 'center', resizable: true }
+                            , { header: '품목코드', name: 'itemId', align: 'center', resizable: true }
+                            , { header: '품목명', name: 'itemName', align: 'left', resizable: true }
+                            , { header: '납기일자', name: 'dueDate', align: 'center', resizable: true }
+                            , { header: '단가', name: 'price', align: 'right', resizable: true,
+                                formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
+                              }
+                            , { header: '수량', name: 'quantity', align: 'right', resizable: true,
+                                formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
+                              }
+                            , { header: '공급가액', name: 'supplyAmount', align: 'right', resizable: true,
+                                formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
+                              }
+                            , { header: '부가세', name: 'vatAmount', align: 'right', resizable: true,
+                                formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
+                              }
+                            , { header: '총액', name: 'totalAmount', align: 'right', resizable: true,
+                                formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
+                              }
+                            , { header: '등록자', name: 'regUsername', align: 'left', resizable: true }
+                            , { header: '등록일시', name: 'regDt', align: 'center', resizable: true }
+                        ],
+                        pageOptions: {
+                            useClient: false,
+                            perPage: 10
+                        },
+                        rowHeaders: [
+                            {
+                                header: '선택',
+                                renderer: {
+                                    type: customRadioRenderer('rowRadio')
+                                }
+                            }
+                        ],
+                        summary: {
+                            height: 40,
+                            columnContent: {
+                                price: {
+                                    template: (valueMap) => `<div style="text-align: left; font-weight: bold;"><span>합계</span></div>`
+                                },
+                                quantity: {
+                                    template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
+                                },
+                                supplyAmount: {
+                                    template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
+                                },
+                                vatAmount: {
+                                    template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
+                                },
+                                totalAmount: {
+                                    template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
+                                }
+                            }
+                        },
+                        scrollX: true,
+                        scrollY: true
+                    });
+                    tui.Grid.applyTheme('striped');
+
+                    estimateGrid.on('click', function (ev) {
+                        if (ev.rowKey != null) {
+                            const radio = document.querySelector(`input[name="rowRadio"][data-row-key="${ev.rowKey}"]`);
+                            if (radio) {
+                                radio.checked = true;
+                                radio.dispatchEvent(new Event('change'));
+                            }
+                        }
+                    });
+                }
+
+                function searchEstimateList() {
+                    const params = formToObject(document.getElementById('estimateSearchForm'));
+                    estimateGrid.readData(1, params, true);
+                }
+
+                function reset() {
+                    document.getElementById('estimateSearchForm').reset();
+                    estimateGrid.readData(1, {}, true);
+                }
+
+                function openEditModal() {
+                    const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+                    const estimateStatusCd = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateStatusCd;
+                    const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
+
+                    if (!selectedRadio) {
+                        alert('[[#{select.estimate.update}]]');
+                        return;
+                    }
+                    if (estimateStatusCd === 'ESS003') {
+                        alert('[[#{error.estimate.alreadyConfirmed}]]');
+                        return;
+                    }
+
+                    if (!estimateItemGrid) {
+                        setEstimateItemGrid();
+                    }
+                    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                    editModal.show();
+
+                    loadEstimateInfo(estimateId);
+                }
+
+                function loadEstimateInfo(estimateId) {
+
+                    apiJsonRequest({
+                        url: `/api/estimate/${estimateId}`,
+                        method: "GET"
+                    },
+                    (data) => {
+                        setEstimateForm(data.estimate);
+                        setItems(data.estimate.itemList);
+                    });
+                }
+
+                function setEstimateForm(estimate) {
+                    const form = document.getElementById('estimateForm');
+
+                    const fieldMap = {
+                        estimateId: 'estimateId',
+                        businessId: 'businessId',
+                        businessName: 'businessName',
+                        representativeName: 'representativeName',
+                        registrationNumber: 'registrationNumber',
+                        businessAddress: 'businessAddress',
+                        businessTelNo: 'businessTelNo',
+                        businessFaxNo: 'businessFaxNo',
+                        businessType: 'businessType',
+                        industryType: 'industryType',
+                        estimateDate: 'estimateDate',
+                        estimateStatusCd: 'estimateStatusCd',
+                        remark: 'remark',
+                        managerId: 'managerId',
+                        managerName: 'managerName',
+                        managerTelNo: 'managerTelNo',
+                        managerFaxNo: 'managerFaxNo',
+                        vendorId: 'vendorId',
+                        vendorName: 'vendorName',
+                        vendorTelNo: 'vendorTelNo',
+                        vendorFaxNo: 'vendorFaxNo',
+                        validDateCd: 'validDateCd'
+                    };
+
+                    for (const key in fieldMap) {
+                        if (form.elements[fieldMap[key]]) {
+                            form.elements[fieldMap[key]].value = estimate[key] ?? '';
+                        }
+                    }
+                }
+
+                function setItems(itemList) {
+                    estimateItemGrid.resetData(itemList);
+                }
+
+                function deleteEstimate() {
+                    var confirmMessage = '[[#{delete.confirm}]]';
+                    const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+
+                    if (!selectedRadio) {
+                        alert('[[#{select.estimate.delete}]]');
+                        return;
+                    }
+                    const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
+
+                    if(confirm(confirmMessage)) {
+                        apiJsonRequest({
+                            url: `/api/estimate/${estimateId}`,
+                            method: "DELETE"
+                        },
+                        (data) => {
+                            alert('[[#{delete.success}]]');
+                            location.href = '/admin/estimate';
+                        });
+                    }
+                }
+
+                function confirmEstimate() {
+                    var confirmMessage = '[[#{confirm.estimate}]]';
+                    const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+                    const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
+                    const estimateStatusCd = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateStatusCd;
+
+                    if (!selectedRadio) {
+                        alert('[[#{select.estimate.confirm}]]');
+                        return;
+                    }
+                    if (estimateStatusCd !== 'ESS002') {
+                        alert('[[#{error.estimate.unconfirmable}]]');
+                        return;
+                    }
+                    if(confirm(confirmMessage)) {
+                        apiJsonRequest({
+                            url: `/api/estimate/update/${estimateId}/estimateStatusCd`,
+                            method: "POST"
+                        },
+                        (data) => {
+                            alert('[[#{confirm.estimate.success}]]');
+                            location.href = '/admin/estimate';
+                        });
+                    }
+                }
+
+                function downloadEstimateExcel() {
+
+                    var confirmMessage = '[[#{confirm.estimate.download.excel}]]';
+                    const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+                    const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
+                    const estimateStatusCd = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateStatusCd;
+
+                    if (estimateStatusCd !== 'ESS003') {
+                        alert('[[#{error.estimate.download.notConfirmed}]]');
+                        return;
+                    }
+
+                    if(confirm(confirmMessage)) {
+                        apiDownloadRequest({
+                            url: `/api/estimate/${estimateId}/downloadEstimateToExcel`,
+                            method: 'GET',
+                            filename: '견적서.xlsx'
+                        });
+                    }
+                }
+
+            </script>
         </div>
     </main>
-    <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function () {
-            setGrid();
-        });
-
-        var estimateGrid = null;
-
-        function setGrid() {
-            estimateGrid = new tui.Grid({
-                el: document.getElementById('estimateGrid'),
-                data: {
-                    api: {
-                        readData: { url: '/api/estimate/list', method: 'GET' }
-                    }
-                },
-                columns: [
-                    { header: '사업자', name: 'businessName', align: 'left', resizable: true  }
-                    , { header: '견적일자', name: 'estimateDate', align: 'center', resizable: true  }
-                    , { header: '견적서번호', name: 'estimateId', width: '140', align: 'center', resizable: true }
-                    , { header: '견적서상태', name: 'estimateStatusCdName', align: 'center', resizable: true
-                        , formatter: function({ row }) {
-                            const codeName = row.estimateStatusCdName;
-                            let color = 'black';
-                            if (codeName === '임시저장') {
-                                color = 'red';
-                            } else if (codeName === '작성완료') {
-                                color = 'blue';
-                            } else {
-                                color = 'green';
-                            }
-                            return `<span style="color: ${color};">${row.estimateStatusCdName}</span>`;
-                        }
-                    }
-                    , { header: '거래처', name: 'vendorName', align: 'left', resizable: true }
-                    , { header: '담당자', name: 'managerName', align: 'left', resizable: true }
-                    , { header: '유효기간', name: 'validDateCdName', align: 'center', resizable: true }
-                    , { header: '품목코드', name: 'itemId', align: 'center', resizable: true }
-                    , { header: '품목명', name: 'itemName', align: 'left', resizable: true }
-                    , { header: '납기일자', name: 'dueDate', align: 'center', resizable: true }
-                    , { header: '단가', name: 'price', align: 'right', resizable: true,
-                        formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
-                      }
-                    , { header: '수량', name: 'quantity', align: 'right', resizable: true,
-                        formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
-                      }
-                    , { header: '공급가액', name: 'supplyAmount', align: 'right', resizable: true,
-                        formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
-                      }
-                    , { header: '부가세', name: 'vatAmount', align: 'right', resizable: true,
-                        formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
-                      }
-                    , { header: '총액', name: 'totalAmount', align: 'right', resizable: true,
-                        formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
-                      }
-                    , { header: '등록자', name: 'regUsername', align: 'left', resizable: true }
-                    , { header: '등록일시', name: 'regDt', align: 'center', resizable: true }
-                ],
-                pageOptions: {
-                    useClient: false,
-                    perPage: 10
-                },
-                rowHeaders: [
-                    {
-                        header: '선택',
-                        renderer: {
-                            type: customRadioRenderer('rowRadio')
-                        }
-                    }
-                ],
-                summary: {
-                    height: 40,
-                    columnContent: {
-                        price: {
-                            template: (valueMap) => `<div style="text-align: left; font-weight: bold;"><span>합계</span></div>`
-                        },
-                        quantity: {
-                            template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
-                        },
-                        supplyAmount: {
-                            template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
-                        },
-                        vatAmount: {
-                            template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
-                        },
-                        totalAmount: {
-                            template: (valueMap) => `<div style="text-align: right; font-weight: bold;">${valueMap.sum.toLocaleString()}</div>`
-                        }
-                    }
-                },
-                scrollX: true,
-                scrollY: true
-            });
-            tui.Grid.applyTheme('striped');
-
-            estimateGrid.on('click', function (ev) {
-                if (ev.rowKey != null) {
-                    const radio = document.querySelector(`input[name="rowRadio"][data-row-key="${ev.rowKey}"]`);
-                    if (radio) {
-                        radio.checked = true;
-                        radio.dispatchEvent(new Event('change'));
-                    }
-                }
-            });
-        }
-
-        function searchEstimateList() {
-            const params = formToObject(document.getElementById('estimateSearchForm'));
-            estimateGrid.readData(1, params, true);
-        }
-
-        function reset() {
-            document.getElementById('estimateSearchForm').reset();
-            estimateGrid.readData(1, {}, true);
-        }
-
-        function openEditModal() {
-            const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
-            if (!selectedRadio) {
-                alert('[[#{select.estimate.update}]]');
-                return;
-            }
-            const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
-
-            if (!estimateItemGrid) {
-                setEstimateItemGrid();
-            }
-            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-            editModal.show();
-
-            loadEstimateInfo(estimateId);
-        }
-
-        function loadEstimateInfo(estimateId) {
-
-            fetch(`/api/estimate/${estimateId}`, {
-                method: "GET"
-                , headers: {
-                    "Content-Type": "application/json"
-                    , "Accept": "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.code === "00") {
-                    setEstimateForm(data.estimate);
-                    setItems(data.estimate.itemList);
-                } else {
-                    console.error("견적서 조회 실패 : ", data.exceptionMessage);
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('[[#{common.error.request}]]');
-            });
-        }
-
-        function setEstimateForm(estimate) {
-            const form = document.getElementById('estimateForm');
-
-            const fieldMap = {
-                estimateId: 'estimateId',
-                businessId: 'businessId',
-                businessName: 'businessName',
-                representativeName: 'representativeName',
-                registrationNumber: 'registrationNumber',
-                businessAddress: 'businessAddress',
-                businessTelNo: 'businessTelNo',
-                businessFaxNo: 'businessFaxNo',
-                businessType: 'businessType',
-                industryType: 'industryType',
-                estimateDate: 'estimateDate',
-                estimateStatusCd: 'estimateStatusCd',
-                remark: 'remark',
-                managerId: 'managerId',
-                managerName: 'managerName',
-                managerTelNo: 'managerTelNo',
-                managerFaxNo: 'managerFaxNo',
-                vendorId: 'vendorId',
-                vendorName: 'vendorName',
-                vendorTelNo: 'vendorTelNo',
-                vendorFaxNo: 'vendorFaxNo',
-                validDateCd: 'validDateCd'
-            };
-
-            for (const key in fieldMap) {
-                if (form.elements[fieldMap[key]]) {
-                    form.elements[fieldMap[key]].value = estimate[key] ?? '';
-                }
-            }
-        }
-
-        function setItems(itemList) {
-            estimateItemGrid.resetData(itemList);
-        }
-
-        function deleteEstimate() {
-            var confirmMessage = '[[#{delete.confirm}]]';
-            const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
-
-            if (!selectedRadio) {
-                alert('[[#{select.estimate.delete}]]');
-                return;
-            }
-            const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
-
-            fetch(`/api/estimate/${estimateId}`, {
-                method: "GET"
-                , headers: {
-                    "Content-Type": "application/json"
-                    , "Accept": "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.code === "00") {
-                    setEstimateForm(data.estimate);
-                    setItems(data.estimate.itemList);
-                } else {
-                    console.error("견적서 조회 실패 : ", data.exceptionMessage);
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('[[#{common.error.request}]]');
-            });
-        }
-    </script>
 </th:block>
 </html>

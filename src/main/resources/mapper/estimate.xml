@@ -28,6 +28,7 @@
             , a.business_name
             , a.estimate_date
             , a.estimate_id
+            , a.estimate_status_cd
             , (select code_name from code where code_id = a.estimate_status_cd) as estimate_status_cd_name
             , a.vendor_name
             , a.manager_name
@@ -168,9 +169,9 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.mangopuree.estimate.dto.EstimateInsertDto">
+    <update id="updateByEstimateId" parameterType="com.mangopuree.estimate.dto.EstimateInsertDto">
         /*
-        EstimateMapper.update
+        EstimateMapper.updateByEstimateId
         수정
         */
         update
@@ -202,4 +203,31 @@
         where
             estimate_id = #{estimateId}
     </update>
+
+    <delete id="deleteByEstimateId">
+        /*
+        EstimateMapper.deleteByEstimateId
+        삭제
+        */
+        delete from
+            estimate
+        where
+            estimate_id = #{estimateId}
+    </delete>
+
+    <update id="confirmEstimateStatus">
+        /*
+        EstimateMapper.confirmEstimateStatus
+        수정
+        */
+        update
+            estimate
+        set
+            estimate_status_cd = 'ESS003'
+            , upd_id = #{updId}
+            , upd_dt = now()
+        where
+            estimate_id = #{estimateId}
+    </update>
+
 </mapper>

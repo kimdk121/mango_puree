@@ -17,6 +17,7 @@ public class EstimateGridDto extends ResponseGridDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate estimateDate;
     private String estimateId;
+    private String estimateStatusCd;
     private String estimateStatusCdName;
     private String vendorName;
     private String managerName;

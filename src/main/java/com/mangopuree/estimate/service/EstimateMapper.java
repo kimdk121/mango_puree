@@ -14,7 +14,9 @@ public interface EstimateMapper {
 
     int insert(EstimateInsertDto estimateInsertDto);
 
-    int update(EstimateInsertDto estimateUpdateDto);
+    int updateByEstimateId(EstimateInsertDto estimateUpdateDto);
+
+    int deleteByEstimateId(String estimateId);
 
     EstimateDto findByEstimateId(String EstimateId);
 
@@ -25,4 +27,5 @@ public interface EstimateMapper {
      */
     List<EstimateGridDto> estimateListByGrid(EstimateSearchDto estimateSearchDto);
 
+    int confirmEstimateStatus(String estimateId, Long updId);
 }

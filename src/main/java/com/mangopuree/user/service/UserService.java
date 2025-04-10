@@ -1,6 +1,7 @@
 package com.mangopuree.user.service;
 
 import com.mangopuree.support.base.dto.RequestGridDto;
+import com.mangopuree.support.security.LoginUserHolder;
 import com.mangopuree.user.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
