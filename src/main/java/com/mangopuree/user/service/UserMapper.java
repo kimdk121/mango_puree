@@ -1,6 +1,5 @@
 package com.mangopuree.user.service;
 
-import com.mangopuree.support.base.dto.RequestGridDto;
 import com.mangopuree.user.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 

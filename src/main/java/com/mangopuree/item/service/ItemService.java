@@ -1,7 +1,5 @@
 package com.mangopuree.item.service;
 
-import com.mangopuree.business.dto.BusinessGridDto;
-import com.mangopuree.business.dto.BusinessSearchDto;
 import com.mangopuree.item.dto.ItemGridDto;
 import com.mangopuree.item.dto.ItemSearchDto;
 import lombok.RequiredArgsConstructor;

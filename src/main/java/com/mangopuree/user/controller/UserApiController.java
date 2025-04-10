@@ -1,8 +1,6 @@
 package com.mangopuree.user.controller;
 
-import com.mangopuree.business.dto.BusinessGridDto;
 import com.mangopuree.support.base.BaseContoller;
-import com.mangopuree.support.base.dto.RequestGridDto;
 import com.mangopuree.user.dto.UserGridDto;
 import com.mangopuree.user.dto.UserPasswordUpdateDto;
 import com.mangopuree.user.dto.UserSearchDto;
@@ -10,7 +8,6 @@ import com.mangopuree.user.dto.UserUpdateDto;
 import com.mangopuree.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;

@@ -1,7 +1,5 @@
 package com.mangopuree.vendor.service;
 
-import com.mangopuree.business.dto.BusinessGridDto;
-import com.mangopuree.business.dto.BusinessSearchDto;
 import com.mangopuree.vendor.dto.VendorGridDto;
 import com.mangopuree.vendor.dto.VendorSearchDto;
 import org.apache.ibatis.annotations.Mapper;

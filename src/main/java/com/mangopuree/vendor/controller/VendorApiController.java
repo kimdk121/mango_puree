@@ -1,9 +1,6 @@
 package com.mangopuree.vendor.controller;
 
-import com.mangopuree.business.dto.BusinessGridDto;
-import com.mangopuree.business.dto.BusinessSearchDto;
 import com.mangopuree.support.base.BaseContoller;
-import com.mangopuree.user.dto.UserGridDto;
 import com.mangopuree.vendor.dto.VendorGridDto;
 import com.mangopuree.vendor.dto.VendorSearchDto;
 import com.mangopuree.vendor.service.VendorService;

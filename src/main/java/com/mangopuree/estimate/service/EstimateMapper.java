@@ -1,8 +1,9 @@
 package com.mangopuree.estimate.service;
 
-import com.mangopuree.estimate.dto.*;
-import com.mangopuree.user.dto.UserGridDto;
-import com.mangopuree.user.dto.UserSearchDto;
+import com.mangopuree.estimate.dto.EstimateDto;
+import com.mangopuree.estimate.dto.EstimateGridDto;
+import com.mangopuree.estimate.dto.EstimateInsertDto;
+import com.mangopuree.estimate.dto.EstimateSearchDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

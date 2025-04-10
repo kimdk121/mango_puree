@@ -4,8 +4,6 @@ import com.mangopuree.business.dto.BusinessGridDto;
 import com.mangopuree.business.dto.BusinessSearchDto;
 import com.mangopuree.business.service.BusinessService;
 import com.mangopuree.support.base.BaseContoller;
-import com.mangopuree.support.base.dto.RequestGridDto;
-import com.mangopuree.user.dto.UserGridDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;

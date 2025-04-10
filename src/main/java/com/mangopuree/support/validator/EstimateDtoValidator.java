@@ -1,7 +1,6 @@
 package com.mangopuree.support.validator;
 
 import com.mangopuree.estimate.dto.EstimateInsertDto;
-import com.mangopuree.estimateitem.dto.EstimateItemInsertDto;
 import jakarta.validation.ConstraintViolation;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
