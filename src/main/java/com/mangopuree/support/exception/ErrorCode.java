@@ -5,8 +5,11 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
-    MENU_NOT_FOUND ("E001", "errorCode.menu.notFound")
-    , PARENT_MENU_NOT_FOUND ("E002", "errorCode.parentMenu.notFound");
+    MENU_NOT_FOUND ("ERR_SYS_001", "errorCode.menu.notFound")
+    , PARENT_MENU_NOT_FOUND ("ERR_SYS_002", "errorCode.parentMenu.notFound")
+
+    , API_TIMEOUT ("ERR_API_001", "errorCode.api.timeout")
+    , API_FAIL ("ERR_API_002", "errorCode.api.fail");
 
     private final String code;
     private final String messageKey;

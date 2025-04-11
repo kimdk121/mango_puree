@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutDefault}">
+
+<th:block layout:fragment="content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 th:text="${currentMenu.subMenuList == null ? currentMenu.menuName : currentMenu.subMenuList[0].menuName}"></h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item">
+                    <span th:text="${currentMenu.menuName}">1뎁스</span>
+                </li>
+                <li class="breadcrumb-item active"
+                    th:if="${currentMenu.subMenuList != null and #lists.size(currentMenu.subMenuList) > 0}">
+                    <span th:text="${currentMenu.subMenuList[0].menuName}">2뎁스</span>
+                </li>
+            </ol>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form th:action="@{/schedule/insert}" method="post" th:object="${scheduleDto}" class="form-horizontal">
+
+                        <!-- 카메라 -->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">카메라</label>
+                            <div class="col-sm-6">
+                                <select th:field="*{cameraId}" class="form-control">
+                                    <option th:each="camera : ${cameraList}" th:value="${camera.cameraId}" th:text="${camera.cameraName}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 시작일 (Focused input) -->
+                        <div class="form-group has-success">
+                            <label class="col-sm-2 control-label">시작일</label>
+                            <div class="col-sm-6">
+                                <input type="date" th:field="*{startDate}" class="form-control" autofocus>
+                                <span class="help-block">Woohoo! 시작일이 올바릅니다.</span>
+                            </div>
+                        </div>
+
+                        <!-- 종료일 (Warning) -->
+                        <div class="form-group has-warning">
+                            <label class="col-sm-2 control-label">종료일</label>
+                            <div class="col-sm-6">
+                                <input type="date" th:field="*{endDate}" class="form-control">
+                                <span class="help-block">Something may have gone wrong</span>
+                            </div>
+                        </div>
+
+                        <!-- 주기 (에러 입력 예시) -->
+                        <div class="form-group has-error">
+                            <label class="col-sm-2 control-label">주기 (분)</label>
+                            <div class="col-sm-6">
+                                <input type="number" th:field="*{cycle}" class="form-control" min="1">
+                                <span class="help-block">Please enter a valid number</span>
+                            </div>
+                        </div>
+
+                        <!-- 길이 (성공 입력 예시) -->
+                        <div class="form-group has-success">
+                            <label class="col-sm-2 control-label">길이 (초)</label>
+                            <div class="col-sm-6">
+                                <input type="number" th:field="*{duration}" class="form-control" min="1">
+                                <span class="help-block">Woohoo! Looks good!</span>
+                            </div>
+                        </div>
+
+                        <!-- 버튼 -->
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-6">
+                                <button type="submit" class="btn btn-primary">등록</button>
+                                <a href="/schedule/list" class="btn btn-default">취소</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+
+        </script>
+    </main>
+</th:block>
+</html>
