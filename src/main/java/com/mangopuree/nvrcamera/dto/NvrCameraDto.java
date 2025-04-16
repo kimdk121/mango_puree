@@ -13,6 +13,6 @@ public class NvrCameraDto {
     private String cameraId;
     private String serverId;
     private String cameraName;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime regDt;
 }

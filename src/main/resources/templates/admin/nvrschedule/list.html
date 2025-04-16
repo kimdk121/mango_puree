@@ -4,6 +4,9 @@
       layout:decorate="~{layouts/layoutDefault}">
 
 <th:block layout:fragment="content">
+    <th:block th:replace="~{admin/nvrschedule/insertModal :: insertModalFragment}"></th:block>
+    <th:block th:replace="~{admin/nvrschedule/detailModal :: detailModalFragment}"></th:block>
+    <th:block th:replace="~{admin/nvrschedule/updateModal :: updateModalFragment}"></th:block>
     <main>
         <div class="container-fluid px-4">
             <h1 th:text="${currentMenu.subMenuList == null ? currentMenu.menuName : currentMenu.subMenuList[0].menuName}"></h1>
@@ -18,68 +21,183 @@
             </ol>
             <div class="card mb-4">
                 <div class="card-body">
-                    <form th:action="@{/schedule/insert}" method="post" th:object="${scheduleDto}" class="form-horizontal">
-
-                        <!-- 카메라 -->
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">카메라</label>
-                            <div class="col-sm-6">
-                                <select th:field="*{cameraId}" class="form-control">
-                                    <option th:each="camera : ${cameraList}" th:value="${camera.cameraId}" th:text="${camera.cameraName}"></option>
-                                </select>
-                            </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0 fw-bold"><span class="material-symbols-outlined align-middle me-1 fs-5">event</span> 스케쥴 목록</h5>
+                        <div>
+                            <button type="button" class="btn btn-success btn-sm" onclick="reset()">새로고침</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="openInsertModal()">등록</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="openDetailModal()">상세</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="openUpdateModal()">수정</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="deleteSchedule()">삭제</button>
                         </div>
+                    </div>
+                    <form id="nvrScheduleSearchForm" class="mb-3">
+                        <table class="table table-bordered table-sm align-middle mb-2">
+                            <tbody>
+                            <tr>
+                                <th class="text-center" style="width: 100px;">카메라</th>
+                                <td>
+                                    <select class="form-select" id="searchCameraId" name="cameraId" required>
+                                        <option value="">선택</option>
+                                        <option th:each="camera : ${cameraList}" th:value="${camera.cameraId}" th:text="${camera.cameraName}" th:selected="${camera.cameraId} == ${selectedCameraId}">
+                                        </option>
+                                    </select>
+                                </td>
 
-                        <!-- 시작일 (Focused input) -->
-                        <div class="form-group has-success">
-                            <label class="col-sm-2 control-label">시작일</label>
-                            <div class="col-sm-6">
-                                <input type="date" th:field="*{startDate}" class="form-control" autofocus>
-                                <span class="help-block">Woohoo! 시작일이 올바릅니다.</span>
-                            </div>
-                        </div>
-
-                        <!-- 종료일 (Warning) -->
-                        <div class="form-group has-warning">
-                            <label class="col-sm-2 control-label">종료일</label>
-                            <div class="col-sm-6">
-                                <input type="date" th:field="*{endDate}" class="form-control">
-                                <span class="help-block">Something may have gone wrong</span>
-                            </div>
-                        </div>
-
-                        <!-- 주기 (에러 입력 예시) -->
-                        <div class="form-group has-error">
-                            <label class="col-sm-2 control-label">주기 (분)</label>
-                            <div class="col-sm-6">
-                                <input type="number" th:field="*{cycle}" class="form-control" min="1">
-                                <span class="help-block">Please enter a valid number</span>
-                            </div>
-                        </div>
-
-                        <!-- 길이 (성공 입력 예시) -->
-                        <div class="form-group has-success">
-                            <label class="col-sm-2 control-label">길이 (초)</label>
-                            <div class="col-sm-6">
-                                <input type="number" th:field="*{duration}" class="form-control" min="1">
-                                <span class="help-block">Woohoo! Looks good!</span>
-                            </div>
-                        </div>
-
-                        <!-- 버튼 -->
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-6">
-                                <button type="submit" class="btn btn-primary">등록</button>
-                                <a href="/schedule/list" class="btn btn-default">취소</a>
-                            </div>
-                        </div>
+                                <th class="text-center" style="width: 100px;">스케쥴아이디</th>
+                                <td><input type="text" name="scheduleId" class="form-control form-control-sm"></td>
+                                <th class="text-center" style="width: 100px;">스케쥴명</th>
+                                <td><input type="text" name="scheduleName" class="form-control form-control-sm"></td>
+                                <td style="width: 80px;">
+                                    <button type="button" class="btn btn-primary btn-sm w-100" onclick="searchScheduleList()">조회</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </form>
+
+                    <div id="nvrScheduleGrid"></div>
                 </div>
             </div>
         </div>
-        <script>
-
-        </script>
     </main>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            setNvrScheduleGrid();
+
+            const selectedCameraId = document.getElementById("searchCameraId")?.value;
+            if (selectedCameraId) {
+                searchScheduleList();
+            }
+        });
+
+        var nvrScheduleGrid = null;
+
+        function setNvrScheduleGrid() {
+            nvrScheduleGrid = new tui.Grid({
+                el: document.getElementById('nvrScheduleGrid'),
+                data: {
+                    api: {
+                        readData: { url: '/api/nvrschedule/list', method: 'GET' }
+                    }
+                },
+                columns: [
+                    { header: '스케쥴아이디', name: 'scheduleId', align: 'center' },
+                    { header: '카메라아이디', name: 'cameraId', align: 'center' },
+                    { header: '스케쥴명', name: 'scheduleName', align: 'left' },
+                    { header: '시작일자', name: 'startDate', align: 'center'},
+                    { header: '종료일자', name: 'endDate', align: 'center'},
+                    { header: '주기 (분)', name: 'cycle', align: 'right'},
+                    { header: '길이 (분)', name: 'duration', align: 'right'},
+                    { header: '등록자아이디', name: 'regId', align: 'left', hidden: true},
+                    { header: '등록자', name: 'regUserName', align: 'left', hidden: true},
+                    { header: '등록일시', name: 'regDt', align: 'center'}
+                ],
+                pageOptions: {
+                    useClient: false,
+                    perPage: 10
+                },
+                rowHeaders: [
+                    {
+                        header: '선택',
+                        renderer: {
+                            type: customRadioRenderer('rowRadio')
+                        }
+                    }
+                ],
+                scrollX: true,
+                scrollY: true
+            });
+            tui.Grid.applyTheme('striped');
+            // 버튼 이외의 행을 클릭해도 선택 되도록 설정
+            nvrScheduleGrid.on('click', function (ev) {
+                if (ev.rowKey != null) {
+                    const radio = document.querySelector(`input[name="rowRadio"][data-row-key="${ev.rowKey}"]`);
+                    if (radio) {
+                        radio.checked = true;
+                        radio.dispatchEvent(new Event('change'));
+                    }
+                }
+            });
+        }
+
+        function searchScheduleList() {
+            const params = formToObject(document.getElementById('nvrScheduleSearchForm'));
+            nvrScheduleGrid.readData(1, params, true);
+        }
+
+        function reset() {
+            document.getElementById('nvrScheduleSearchForm').reset();
+            const cameraSelect = document.getElementById('searchCameraId');
+            if (cameraSelect) {
+                cameraSelect.selectedIndex = 0;
+            }
+            nvrScheduleGrid.readData(1, {}, true);
+        }
+
+        function openInsertModal() {
+            const insertForm = document.getElementById('nvrScheduleInsertForm');
+            insertForm.querySelectorAll(".text-danger").forEach(el => el.textContent = '');
+            insertForm.reset();
+
+            const modal = new bootstrap.Modal(document.getElementById('insertModal'));
+            modal.show();
+        }
+
+        function openDetailModal() {
+            const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+            modal.show();
+        }
+
+        function openUpdateModal() {
+            const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+            if (!selectedRadio) {
+                alert('[[#{select.nvrSchedule.update}]]');
+                return;
+            }
+            const scheduleId = nvrScheduleGrid.getRow(Number(selectedRadio.dataset.rowKey)).scheduleId;
+            document.getElementById('nvrScheduleUpdateForm').querySelectorAll(".text-danger").forEach(el => el.textContent = '');
+
+            loadNvrScheduleInfo(scheduleId);
+
+            const modal = new bootstrap.Modal(document.getElementById('updateModal'));
+            modal.show();
+        }
+
+        function loadNvrScheduleInfo(scheduleId) {
+            apiJsonRequest({
+                url: `/api/nvrschedule/${scheduleId}`,
+                method: "GET"
+            },
+            (data) => {
+                setNvrScheduleForm(data.nvrSchedule);
+            });
+        }
+
+        function setNvrScheduleForm(nvrSchedule) {
+            const form = document.getElementById('nvrScheduleUpdateForm');
+
+            const fieldMap = {
+                cameraId: 'cameraId',
+                scheduleId: 'scheduleId',
+                scheduleName: 'scheduleName',
+                cycle: 'cycle',
+                duration: 'duration',
+                startDate: 'startDate',
+                endDate: 'endDate'
+            };
+
+            for (const key in fieldMap) {
+                if (form.elements[fieldMap[key]]) {
+                    form.elements[fieldMap[key]].value = nvrSchedule[key] ?? '';
+                }
+            }
+        }
+
+        function deleteSchedule() {
+            const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+            const scheduleId = nvrScheduleGrid.getRow(Number(selectedRadio.dataset.rowKey)).scheduleId;
+        }
+    </script>
 </th:block>
 </html>

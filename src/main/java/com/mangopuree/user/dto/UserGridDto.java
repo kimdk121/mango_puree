@@ -17,6 +17,6 @@ public class UserGridDto extends ResponseGridDto {
     private String telNo;
     private String faxNo;
     private String roleName;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime regDt;
 }

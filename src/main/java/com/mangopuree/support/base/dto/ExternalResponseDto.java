@@ -12,7 +12,7 @@ import java.util.List;
 public class ExternalResponseDto<T> {
 
     private String responseId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime responseDt;
     private String resultCode;
     private String resultMessage;

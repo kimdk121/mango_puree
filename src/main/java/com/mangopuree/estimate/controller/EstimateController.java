@@ -2,6 +2,7 @@ package com.mangopuree.estimate.controller;
 
 import com.mangopuree.code.service.CodeService;
 import com.mangopuree.estimate.service.EstimateService;
+import com.mangopuree.support.base.BaseContoller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/estimate")
-public class EstimateController {
+public class EstimateController extends BaseContoller {
 
     private final EstimateService estimateService;
     private final CodeService codeService;

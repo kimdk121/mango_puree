@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutDefault}">
+
+<th:block layout:fragment="content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 th:text="${currentMenu.subMenuList == null ? currentMenu.menuName : currentMenu.subMenuList[0].menuName}"></h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item">
+                    <span th:text="${currentMenu.menuName}">1뎁스</span>
+                </li>
+                <li class="breadcrumb-item active"
+                    th:if="${currentMenu.subMenuList != null and #lists.size(currentMenu.subMenuList) > 0}">
+                    <span th:text="${currentMenu.subMenuList[0].menuName}">2뎁스</span>
+                </li>
+            </ol>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>카메라 목록</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                        <div class="col" th:each="camera : ${cameraList}">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${camera.cameraName}"></h5>
+                                    <p class="card-text mb-1">
+                                        <strong>ID:</strong> <span th:text="${camera.cameraId}"></span>
+                                    </p>
+                                    <p class="card-text mb-1">
+                                        <strong>서버:</strong> <span th:text="${camera.serverId}"></span>
+                                    </p>
+                                    <p class="card-text">
+                                        <strong>등록일:</strong> <span th:text="${camera.regDt}"></span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-outline-danger btn-sm" th:onclick="|location.href='@{/admin/nvrschedule(cameraId=${camera.cameraId})}'|">스케쥴 관리</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+        </script>
+    </main>
+</th:block>
+</html>

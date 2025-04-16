@@ -31,11 +31,10 @@ public class UserApiController extends BaseContoller {
         ModelMap model = new ModelMap();
         userSearchDto.calculatePaging();
         List<UserGridDto> userGridDtos = userService.userListByGrid(userSearchDto);
-        if (userGridDtos == null) {
-            return setFailResult(model);
+        int totalCount = 0;
+        if (userGridDtos.size() > 0) {
+            totalCount = userGridDtos.get(0).getTotalCount();
         }
-        int totalCount = userGridDtos.get(0).getTotalCount();
-
         Map<String, Object> data = setGridData(userSearchDto, userGridDtos, totalCount);
         model.addAttribute("data", data);
 

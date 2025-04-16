@@ -29,11 +29,10 @@ public class BusinessApiController extends BaseContoller {
         ModelMap model = new ModelMap();
         businessSearchDto.calculatePaging();
         List<BusinessGridDto> businessGridDtos = businessService.businessListByGrid(businessSearchDto);
-        if (businessGridDtos == null) {
-            return setFailResult(model);
+        int totalCount = 0;
+        if (businessGridDtos.size() > 0) {
+            totalCount = businessGridDtos.get(0).getTotalCount();
         }
-        int totalCount = businessGridDtos.get(0).getTotalCount();
-
         Map<String, Object> data = setGridData(businessSearchDto, businessGridDtos, totalCount);
         model.addAttribute("data", data);
 

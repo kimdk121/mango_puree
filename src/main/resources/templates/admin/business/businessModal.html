@@ -79,7 +79,7 @@
                 scrollX: false,
                 scrollY: false
             });
-
+            // 버튼 이외의 행을 클릭해도 선택 되도록 설정
             businessGrid.on('click', function (ev) {
                 if (ev.rowKey != null) {
                     const radio = document.querySelector(`input[name="rowRadioBusiness"][data-row-key="${ev.rowKey}"]`);

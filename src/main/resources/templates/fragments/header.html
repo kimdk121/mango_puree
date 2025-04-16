@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="headerFragment">
-    <th:block th:replace="~{admin/user/updateModal :: updateModalFragment}"></th:block>
+    <th:block th:replace="~{admin/user/updateUserModal :: updateUserModalFragment}"></th:block>
     <th:block th:replace="~{admin/user/updatePasswordModal :: updatePasswordModalFragment}"></th:block>
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Navbar Brand-->
@@ -22,8 +22,8 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#!" onclick="openUpdateModal()">개인정보 수정</a></li>
-                    <li><a class="dropdown-item" href="#!" onclick="openUpdatePasswordModal()">비밀번호 수정</a></li>
+                    <li><a class="dropdown-item" onclick="openUpdateUserModal()">개인정보 수정</a></li>
+                    <li><a class="dropdown-item" onclick="openUpdatePasswordModal()">비밀번호 수정</a></li>
                     <li><hr class="dropdown-divider" /></li>
                     <li><a class="dropdown-item" href="/logout">로그아웃</a></li>
                 </ul>
@@ -39,11 +39,11 @@
                 modal.show();
             }
 
-            function openUpdateModal() {
+            function openUpdateUserModal() {
                 document.getElementById("userUpdateForm").reset();
                 document.querySelectorAll(".text-danger").forEach(el => el.textContent = '');
 
-                const modal = new bootstrap.Modal(document.getElementById('updateModal'));
+                const modal = new bootstrap.Modal(document.getElementById('updateUserModal'));
                 loadUserInfo();
                 modal.show();
             }
@@ -54,7 +54,6 @@
                     method: "GET"
                 },
                 (data) => {
-                    console.log(data);
                     ["userId","username", "name", "telNo", "faxNo"].forEach(field => {
                         const el = document.getElementById(field);
                         if (el) el.value = data.user[field] || '';

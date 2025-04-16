@@ -29,11 +29,10 @@ public class VendorApiController extends BaseContoller {
         ModelMap model = new ModelMap();
         vendorSearchDto.calculatePaging();
         List<VendorGridDto> vendorGridDtos = vendorService.vendorListByGrid(vendorSearchDto);
-        if (vendorGridDtos == null) {
-            return setFailResult(model);
+        int totalCount = 0;
+        if (vendorGridDtos.size() > 0) {
+            totalCount = vendorGridDtos.get(0).getTotalCount();
         }
-        int totalCount = vendorGridDtos.get(0).getTotalCount();
-
         Map<String, Object> data = setGridData(vendorSearchDto, vendorGridDtos, totalCount);
         model.addAttribute("data", data);
 

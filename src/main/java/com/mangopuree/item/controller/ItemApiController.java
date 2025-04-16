@@ -29,11 +29,10 @@ public class ItemApiController extends BaseContoller {
         ModelMap model = new ModelMap();
         itemSearchDto.calculatePaging();
         List<ItemGridDto> itemGridDtos = itemService.businessListByGrid(itemSearchDto);
-        if (itemGridDtos == null) {
-            return setFailResult(model);
+        int totalCount = 0;
+        if (itemGridDtos.size() > 0) {
+            totalCount = itemGridDtos.get(0).getTotalCount();
         }
-        int totalCount = itemGridDtos.get(0).getTotalCount();
-
         Map<String, Object> data = setGridData(itemSearchDto, itemGridDtos, totalCount);
         model.addAttribute("data", data);
 

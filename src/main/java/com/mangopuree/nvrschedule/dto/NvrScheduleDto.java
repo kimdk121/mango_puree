@@ -12,33 +12,16 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class NvrScheduleInsertDto extends BaseAuditDto {
+public class NvrScheduleDto {
 
     private String scheduleId;
-
-    @NotBlank
     private String cameraId;
-
-    @NotBlank
     private String scheduleName;
-
-    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
-
-    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-
-    @NotNull
-    @Min(value = 1)
     private int cycle;
-
-    @NotNull
-    @Min(value = 1)
     private int duration;
 
-    public boolean isDateRangeValid() {
-        return startDate != null && endDate != null && !startDate.isAfter(endDate);
-    }
 }

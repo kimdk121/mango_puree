@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="updateModalFragment">
+    <div class="modal fade" id="updateModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">스케쥴 수정</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <form id="nvrScheduleUpdateForm" name="nvrScheduleUpdateForm">
+                    <div class="modal-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="border rounded p-3">
+                                    <h6 class="fw-bold mb-3">필수 입력정보</h6>
+                                    <input type="hidden" name="scheduleId" id="scheduleId">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">카메라<span class="text-danger">*</span></label>
+                                        <select class="form-select" name="cameraId">
+                                            <option value="">선택</option>
+                                            <option th:each="camera : ${cameraList}" th:value="${camera.cameraId}" th:text="${camera.cameraName}"/>
+                                        </select>
+                                        <div id="cameraIdError" class="text-danger field-error small"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">스케쥴명 <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="scheduleName">
+                                        <div id="scheduleNameError" class="text-danger field-error small"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="border rounded p-3">
+                                    <h6 class="fw-bold mb-3">다운로드 설정 정보</h6>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">배치 주기</label>
+                                        <input type="number" class="form-control" name="cycle">
+                                        <small class="text-muted">※ 입력된 시간(분 단위)마다 저장됩니다. 기본값: 60분</small>
+                                        <div id="cycleError" class="text-danger field-error small"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">영상 길이</label>
+                                        <input type="number" class="form-control" name="duration">
+                                        <small class="text-muted">※ 기본 설정: 5분</small>
+                                        <div id="durationError" class="text-danger field-error small"></div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">시작일자</label>
+                                            <input type="date" class="form-control" name="startDate">
+                                            <div id="startDateError" class="text-danger field-error small"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">종료일자</label>
+                                            <input type="date" class="form-control" name="endDate">
+                                            <div id="endDateError" class="text-danger field-error small"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-block" onclick="updateNvrSchedule()">수정</button>
+                        <button type="button" class="btn btn-primary btn-block" data-bs-dismiss="modal">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function updateNvrSchedule() {
+            const updateForm = document.getElementById('nvrScheduleUpdateForm');
+            const updateData = formToJson(updateForm);
+            var confirmMessage = '[[#{update.confirm}]]';
+            if(confirm(confirmMessage)) {
+                apiJsonRequest({
+                    url: '/api/nvrschedule/update',
+                    method: "POST",
+                    body: updateData
+                },
+                (data) => {
+                    alert('[[#{update.success}]]');
+                    searchScheduleList();
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('updateModal'));
+                    modal.hide();
+                },
+                (data) => {
+                    updateForm.querySelectorAll(".field-error").forEach(el => el.textContent = '');
+                    for (const field in data.fieldErrors) {
+                        const errorDiv = updateForm.querySelector(`#${field}Error`);
+                        if (errorDiv) {
+                            errorDiv.innerText = data.fieldErrors[field].join('\n');
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+</th:block>
+</html>

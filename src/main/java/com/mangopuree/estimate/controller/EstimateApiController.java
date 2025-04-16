@@ -44,7 +44,7 @@ public class EstimateApiController extends BaseContoller {
         return setSuccessResult(model);
     }
 
-    @PostMapping("/update/{estimateId}")
+    @PostMapping("/update")
     public Map<String, Object> update(@RequestBody EstimateInsertDto estimateInsertDto, BindingResult bindingResult) {
         ModelMap model = new ModelMap();
 
@@ -67,11 +67,10 @@ public class EstimateApiController extends BaseContoller {
         ModelMap model = new ModelMap();
         estimateSearchDto.calculatePaging();
         List<EstimateGridDto> estimateGridDtos = estimateService.estimateListByGrid(estimateSearchDto);
-        if (estimateGridDtos == null) {
-            return setFailResult(model);
+        int totalCount = 0;
+        if (estimateGridDtos.size() > 0) {
+            totalCount = estimateGridDtos.get(0).getTotalCount();
         }
-        int totalCount = estimateGridDtos.get(0).getTotalCount();
-
         Map<String, Object> data = setGridData(estimateSearchDto, estimateGridDtos, totalCount);
         model.addAttribute("data", data);
 

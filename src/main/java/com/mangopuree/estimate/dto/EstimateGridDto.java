@@ -31,6 +31,6 @@ public class EstimateGridDto extends ResponseGridDto {
     private Integer vatAmount;
     private Integer totalAmount;
     private String regUsername;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime regDt;
 }

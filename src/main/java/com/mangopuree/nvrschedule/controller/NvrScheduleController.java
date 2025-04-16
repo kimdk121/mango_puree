@@ -1,26 +1,36 @@
 package com.mangopuree.nvrschedule.controller;
 
+import com.mangopuree.nvrcamera.dto.NvrCameraDto;
+import com.mangopuree.nvrcamera.service.NvrCameraService;
 import com.mangopuree.nvrschedule.dto.NvrScheduleInsertDto;
+import com.mangopuree.nvrschedule.service.NvrScheduleService;
+import com.mangopuree.support.base.BaseContoller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/nvrschedule")
-public class NvrScheduleController {
+public class NvrScheduleController extends BaseContoller {
 
+    private final NvrCameraService nvrCameraService;
+    private final NvrScheduleService nvrScheduleService;
 
     @GetMapping
-    public String list() {
+    public String list(@RequestParam(required = false) String cameraId, Model model) {
+        List<NvrCameraDto> cameraList = nvrCameraService.findActiveCameras();
+        model.addAttribute("nvrScheduleInsertDto", new NvrScheduleInsertDto());
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("selectedCameraId", cameraId);
+        model.addAttribute("cameraList", cameraList);
         return "admin/nvrschedule/list";
     }
 
-    @GetMapping("/insert")
-    public String insertForm(Model model) {
-        model.addAttribute("scheduleDto", new NvrScheduleInsertDto());
-        return "admin/nvrschedule/insert";
-    }
 }

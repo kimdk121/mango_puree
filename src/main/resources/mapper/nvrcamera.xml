@@ -1,20 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mangopuree.nvrserver.service.NvrServerMapper">
+<mapper namespace="com.mangopuree.nvrcamera.service.NvrCameraMapper">
 
-    <select id="getNvrServer" resultType="com.mangopuree.nvrserver.dto.NvrServerDto">
+    <select id="findAll" resultType="com.mangopuree.nvrcamera.dto.NvrCameraDto">
         /*
-        NvrServerMapper.getNvrServer
+        NvrCameraMapper.findAll
         조회
         */
         select
-            server_id
-            , server_name
-            , server_address
+            camera_id
+            , server_id
+            , camera_name
             , date_format(reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
         from
-            nvr_server
-        LIMIT 1
+            nvr_camera
     </select>
+
+    <select id="findActiveCameras" resultType="com.mangopuree.nvrcamera.dto.NvrCameraDto">
+        /*
+        NvrCameraMapper.findActiveCameras
+        조회
+        */
+        select
+            camera_id
+            , server_id
+            , camera_name
+            , date_format(reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
+        from
+            nvr_camera
+        where
+            use_yn = true
+    </select>
+
+    <select id="findByCameraId" resultType="com.mangopuree.nvrcamera.dto.NvrCameraDto">
+        /*
+        NvrCameraMapper.findByCameraId
+        조회
+        */
+        select
+            camera_id
+            , server_id
+            , camera_name
+            , date_format(reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
+        from
+            nvr_camera
+        where
+            camera_id = #{cameraId}
+            and use_yn = true
+    </select>
+
+    <insert id="insert">
+        /*
+        NvrCameraMapper.insert
+        등록
+        */
+        insert into nvr_camera (
+            camera_id
+            , server_id
+            , camera_name
+        ) values (
+            #{cameraId}
+            , #{serverId}
+            , #{cameraName}
+        )
+    </insert>
+
+    <update id="update">
+        /*
+        NvrCameraMapper.update
+        수정
+        */
+        update
+            nvr_camera
+        set
+            camera_name = #{cameraName}
+            , use_yn = true
+        where
+            camera_id = #{cameraId}
+    </update>
+
+    <delete id="delete">
+        /*
+        NvrCameraMapper.delete
+        삭제
+        */
+        update
+            nvr_camera
+        set
+            use_yn = false
+        where
+            camera_id = #{cameraId}
+    </delete>
 
 </mapper>

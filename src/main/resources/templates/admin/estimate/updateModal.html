@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<th:block th:fragment="editModalFragment">
-    <div class="modal fade" id="editModal" tabindex="-1">
+<th:block th:fragment="updateModalFragment">
+    <div class="modal fade" id="updateModal" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -132,7 +132,7 @@
         </div>
     </div>
     <script>
-        document.getElementById('editModal').addEventListener('shown.bs.modal', function () {
+        document.getElementById('updateModal').addEventListener('shown.bs.modal', function () {
             if (!estimateItemGrid) {
                 setEstimateItemGrid();
             } else {
@@ -335,7 +335,7 @@
 
             if(confirm(confirmMessage)) {
                 apiJsonRequest({
-                    url: `/api/estimate/update/${estimateId}`,
+                    url: '/api/estimate/update',
                     method: "POST",
                     body: {...formData, itemList: itemData}
                 },

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangopuree.nvrschedule.service.NvrScheduleMapper">
+
+    <sql id="searchConditions">
+        <if test="scheduleId != null and scheduleId != ''">
+            AND schedule_id LIKE CONCAT('%', #{scheduleId}, '%')
+        </if>
+        <if test="scheduleName != null and scheduleName != ''">
+            AND schedule_name LIKE CONCAT('%', #{scheduleName}, '%')
+        </if>
+        <if test="cameraId != null and cameraId != ''">
+            AND camera_id LIKE CONCAT('%', #{cameraId}, '%')
+        </if>
+    </sql>
+
+    <select id="nvrScheduleListByGrid" resultType="com.mangopuree.nvrschedule.dto.NvrScheduleGridDto">
+        /*
+        NvrScheduleMapper.nvrScheduleListByGrid
+        조회
+        */
+        select
+            schedule_id
+            , camera_id
+            , schedule_name
+            , start_date
+            , end_date
+            , cycle
+            , duration
+            , reg_id
+            , (select a.username from user a where a.user_id = reg_id) as reg_username
+            , date_format(reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
+        from
+            nvr_schedule
+        where
+            1=1
+            <include refid="searchConditions"/>
+    </select>
+
+    <select id="findByScheduleId" resultType="com.mangopuree.nvrschedule.dto.NvrScheduleDto">
+        /*
+        NvrScheduleMapper.findByCameraId
+        조회
+        */
+        select
+            schedule_id
+            , camera_id
+            , schedule_name
+            , start_date
+            , end_date
+            , cycle
+            , duration
+        from
+            nvr_schedule
+        where
+            schedule_id = #{scheduleId}
+            and use_yn = true
+    </select>
+
+    <select id="findNextScheduleId" resultType="String">
+        /*
+        NvrScheduleMapper.findNextScheduleId
+        다음 스케쥴아이디 조회
+        */
+        select
+            case
+                when
+                    max(schedule_id) is null then 'SCHEDULE0001'
+                else
+                    concat(
+                        'SCHEDULE',
+                        lpad(substring(max(schedule_id), 9) + 1, 4, '0')
+                    )
+                end as schedule_id
+        from
+            nvr_schedule
+    </select>
+
+    <insert id="insert">
+        /*
+        NvrScheduleMapper.insert
+        등록
+        */
+        insert into nvr_schedule (
+            schedule_id
+            , camera_id
+            , schedule_name
+            , start_date
+            , end_date
+            , cycle
+            , duration
+            , reg_id
+        ) values (
+            #{scheduleId}
+            , #{cameraId}
+            , #{scheduleName}
+            , #{startDate}
+            , #{endDate}
+            , #{cycle}
+            , #{duration}
+            , #{regId}
+        )
+    </insert>
+
+    <update id="update">
+        /*
+        NvrScheduleMapper.update
+        수정
+        */
+        update
+            nvr_schedule
+        set
+            camera_id = #{cameraId}
+            , schedule_name = #{scheduleName}
+            , start_date = #{startDate}
+            , end_date = #{endDate}
+            , cycle = #{cycle}
+            , duration = #{duration}
+            , upd_id = #{updId}
+            , upd_dt = now()
+        where
+            schedule_id = #{scheduleId}
+    </update>
+
+    <delete id="delete">
+        /*
+        NvrScheduleMapper.delete
+        삭제
+        */
+        update
+            nvr_camera
+        set
+            use_yn = false
+        where
+            camera_id = #{cameraId}
+    </delete>
+
+</mapper>

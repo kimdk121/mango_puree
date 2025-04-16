@@ -22,7 +22,11 @@ public class GlobalModelAttributeAdvice {
     @ModelAttribute
     public void addCurrentMenu(HttpServletRequest request, Model model) {
         String uri = request.getRequestURI();
+
         if (!uri.startsWith("/admin")) {
+            return;
+        }
+        if (!request.getMethod().equalsIgnoreCase("GET")) {
             return;
         }
 

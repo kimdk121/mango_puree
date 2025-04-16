@@ -16,7 +16,7 @@
             code
         where
             code_group_id = #{codeGroupId}
-            and is_active = true
+            and use_yn = true
         order by
             order_index
     </select>
