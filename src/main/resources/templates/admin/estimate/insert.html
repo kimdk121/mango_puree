@@ -196,6 +196,11 @@
                             formatter: ({ value }) => (value != null ? Number(value).toLocaleString() : '')
                         },
                     ],
+                    pageOptions: {
+                        useClient: false,
+                        perPage: null,
+                        visible: false
+                    },
                     rowHeaders: ['checkbox'],
                     summary: {
                         height: 40,
@@ -219,7 +224,7 @@
                     },
                     bodyHeight: 300,
                     scrollX: true,
-                    scrollY: false
+                    scrollY: true
                 });
 
                 estimateItemGrid.on('afterChange', function (ev) {

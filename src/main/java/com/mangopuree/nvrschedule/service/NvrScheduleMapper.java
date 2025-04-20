@@ -1,9 +1,6 @@
 package com.mangopuree.nvrschedule.service;
 
-import com.mangopuree.nvrschedule.dto.NvrScheduleDto;
-import com.mangopuree.nvrschedule.dto.NvrScheduleGridDto;
-import com.mangopuree.nvrschedule.dto.NvrScheduleInsertDto;
-import com.mangopuree.nvrschedule.dto.NvrScheduleSearchDto;
+import com.mangopuree.nvrschedule.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -20,4 +17,8 @@ public interface NvrScheduleMapper {
     NvrScheduleDto findByScheduleId(String scheduleId);
 
     int update(NvrScheduleInsertDto nvrScheduleInsertDto);
+
+    int deleteByScheduleId(String scheduleId);
+
+    NvrScheduleDetailDto findScheduleDetail(String scheduleId);
 }

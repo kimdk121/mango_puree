@@ -2,10 +2,7 @@ package com.mangopuree.nvrschedule.controller;
 
 import com.mangopuree.estimate.dto.EstimateGridDto;
 import com.mangopuree.estimate.dto.EstimateSearchDto;
-import com.mangopuree.nvrschedule.dto.NvrScheduleDto;
-import com.mangopuree.nvrschedule.dto.NvrScheduleGridDto;
-import com.mangopuree.nvrschedule.dto.NvrScheduleInsertDto;
-import com.mangopuree.nvrschedule.dto.NvrScheduleSearchDto;
+import com.mangopuree.nvrschedule.dto.*;
 import com.mangopuree.nvrschedule.service.NvrScheduleService;
 import com.mangopuree.support.base.BaseContoller;
 import com.mangopuree.support.validator.NvrScheduleDtoValidator;
@@ -65,10 +62,12 @@ public class NvrScheduleApiController extends BaseContoller {
         return setSuccessResult(model);
     }
 
-    @GetMapping("/{scheduleId}/detail")
-    public Map<String, Object> detail() {
+    @GetMapping("/detail/{scheduleId}")
+    public Map<String, Object> detail(@PathVariable String scheduleId) {
         ModelMap model = new ModelMap();
-        return model;
+        NvrScheduleDetailDto scheduleDetail = nvrScheduleService.findScheduleDetail(scheduleId);
+        model.addAttribute("nvrSchedule", scheduleDetail);
+        return setSuccessResult(model);
     }
 
     @PostMapping("/update")
@@ -80,6 +79,13 @@ public class NvrScheduleApiController extends BaseContoller {
             return setFailResult(model, fieldErrors);
         }
         nvrScheduleService.update(nvrScheduleInsertDto);
+        return setSuccessResult(model);
+    }
+
+    @DeleteMapping("{scheduleId}")
+    public Map<String, Object> delete(@PathVariable String scheduleId) {
+        ModelMap model = new ModelMap();
+        nvrScheduleService.deleteByScheduleId(scheduleId);
         return setSuccessResult(model);
     }
 }

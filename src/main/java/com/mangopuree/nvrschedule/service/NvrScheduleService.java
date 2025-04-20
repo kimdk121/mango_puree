@@ -1,9 +1,6 @@
 package com.mangopuree.nvrschedule.service;
 
-import com.mangopuree.nvrschedule.dto.NvrScheduleDto;
-import com.mangopuree.nvrschedule.dto.NvrScheduleGridDto;
-import com.mangopuree.nvrschedule.dto.NvrScheduleInsertDto;
-import com.mangopuree.nvrschedule.dto.NvrScheduleSearchDto;
+import com.mangopuree.nvrschedule.dto.*;
 import com.mangopuree.support.security.LoginUserHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,5 +41,13 @@ public class NvrScheduleService {
         nvrScheduleInsertDto.setRegId(regId);
 
         return nvrScheduleMapper.update(nvrScheduleInsertDto);
+    }
+
+    public int deleteByScheduleId(String scheduleId) {
+        return nvrScheduleMapper.deleteByScheduleId(scheduleId);
+    }
+
+    public NvrScheduleDetailDto findScheduleDetail(String scheduleId) {
+        return nvrScheduleMapper.findScheduleDetail(scheduleId);
     }
 }

@@ -8,12 +8,127 @@
                     <h5 class="modal-title">스케쥴 상세</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
                 </div>
-                <div class="modal-body">
-                </div>
+                <form id="nvrScheduleDetailForm" name="nvrScheduleDetailForm">
+                    <div class="modal-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="border rounded p-3">
+                                    <h6 class="fw-bold mb-3">필수 입력정보</h6>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">카메라</label>
+                                        <input type="text" class="form-control" name="detailCamera" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">서버</label>
+                                        <input type="text" class="form-control" name="detailServerId" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">카메라 등록일시</label>
+                                        <input type="text" class="form-control" name="detailCameraRegDt" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">스케쥴명</label>
+                                        <input type="text" class="form-control" name="detailScheduleName" readonly>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="border rounded p-3">
+                                    <h6 class="fw-bold mb-3">다운로드 설정 정보</h6>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">배치 주기</label>
+                                        <input type="number" class="form-control" name="detailCycle" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">영상 길이</label>
+                                        <input type="number" class="form-control" name="detailDuration" readonly>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">시작일자</label>
+                                            <input type="date" class="form-control" name="detailStartDate" readonly>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">종료일자</label>
+                                            <input type="date" class="form-control" name="detailEndDate" readonly>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0 fw-bold"><span class="material-symbols-outlined align-middle me-1 fs-6">history</span> 이력</h6>
+                            <div>
+                            </div>
+                        </div>
+                        <div id="scheduleHistoryGrid"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-block" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     <script>
+        document.getElementById('detailModal').addEventListener('shown.bs.modal', function () {
+            if (!scheduleHistoryGrid) {
+                setScheduleHistoryGrid();
+                loadScheduleHistory();
+            } else {
+                loadScheduleHistory();
+            }
+        });
+
+        var scheduleHistoryGrid = null;
+
+        function setScheduleHistoryGrid() {
+            scheduleHistoryGrid = new tui.Grid({
+                el: document.getElementById('scheduleHistoryGrid'),
+                data: {
+                    api: {
+                        readData: { url: '/api/nvrschedulehistory/list', method: 'GET' }
+                    }
+                },
+                columns: [
+                    { header: '스케쥴이력아이디', name: 'historyId', align: 'center'},
+                    { header: '스케쥴명', name: 'scheduleName', align: 'center'},
+                    { header: '영상명', name: 'movieName', align: 'left', resizable: true },
+                    { header: '다운로드여부', name: 'downloadedYn', align: 'center', resizable: true, hidden: true},
+                    { header: '실패이유', name: 'failReason', align: 'center', resizable: true },
+                    { header: '등록일시', name: 'regDt', align: 'center', resizable: true}
+                ],
+                pageOptions: {
+                    useClient: false,
+                    perPage: 10
+                },
+                rowHeaders: ['rowNum'],
+                bodyHeight: 300,
+                scrollX: true,
+                scrollY: false
+            });
+        }
+
+        function loadScheduleHistory() {
+            const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+            if (!selectedRadio) {
+                alert('[[#{select.nvrSchedule.detail}]]');
+                return;
+            }
+            const scheduleId = nvrScheduleGrid.getRow(Number(selectedRadio.dataset.rowKey)).scheduleId;
+            scheduleHistoryGrid.readData(1, {scheduleId}, true);
+        }
     </script>
 </th:block>
 </html>

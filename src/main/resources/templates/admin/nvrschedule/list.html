@@ -145,6 +145,15 @@
         }
 
         function openDetailModal() {
+            const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+            if (!selectedRadio) {
+                alert('[[#{select.nvrSchedule.detail}]]');
+                return;
+            }
+            const scheduleId = nvrScheduleGrid.getRow(Number(selectedRadio.dataset.rowKey)).scheduleId;
+
+            loadNvrScheduleForDetail(scheduleId);
+
             const modal = new bootstrap.Modal(document.getElementById('detailModal'));
             modal.show();
         }
@@ -158,23 +167,33 @@
             const scheduleId = nvrScheduleGrid.getRow(Number(selectedRadio.dataset.rowKey)).scheduleId;
             document.getElementById('nvrScheduleUpdateForm').querySelectorAll(".text-danger").forEach(el => el.textContent = '');
 
-            loadNvrScheduleInfo(scheduleId);
+            loadNvrScheduleForUpdate(scheduleId);
 
             const modal = new bootstrap.Modal(document.getElementById('updateModal'));
             modal.show();
         }
 
-        function loadNvrScheduleInfo(scheduleId) {
+        function loadNvrScheduleForUpdate(scheduleId) {
             apiJsonRequest({
                 url: `/api/nvrschedule/${scheduleId}`,
                 method: "GET"
             },
             (data) => {
-                setNvrScheduleForm(data.nvrSchedule);
+                setNvrScheduleFormForUpdate(data.nvrSchedule);
             });
         }
 
-        function setNvrScheduleForm(nvrSchedule) {
+        function loadNvrScheduleForDetail(scheduleId) {
+            apiJsonRequest({
+                url: `/api/nvrschedule/${scheduleId}`,
+                method: "GET"
+            },
+            (data) => {
+                setNvrScheduleFormForUpdate(data.nvrSchedule);
+            });
+        }
+
+        function setNvrScheduleFormForUpdate(nvrSchedule) {
             const form = document.getElementById('nvrScheduleUpdateForm');
 
             const fieldMap = {
@@ -194,9 +213,53 @@
             }
         }
 
+        function loadNvrScheduleForDetail(scheduleId) {
+            apiJsonRequest({
+                url: `/api/nvrschedule/detail/${scheduleId}`,
+                method: "GET"
+            },
+            (data) => {
+                console.log(data.nvrSchedule);
+                setNvrScheduleFormForDetail(data.nvrSchedule);
+            });
+        }
+
+        function setNvrScheduleFormForDetail(nvrSchedule) {
+            const form = document.getElementById('nvrScheduleDetailForm');
+            const fieldMap = {
+                camera: 'detailCamera',
+                serverId: 'detailServerId',
+                cameraRegDt: 'detailCameraRegDt',
+                scheduleName: 'detailScheduleName',
+                cycle: 'detailCycle',
+                duration: 'detailDuration',
+                startDate: 'detailStartDate',
+                endDate: 'detailEndDate'
+            };
+
+            for (const key in fieldMap) {
+                if (form.elements[fieldMap[key]]) {
+                    form.elements[fieldMap[key]].value = nvrSchedule[key] ?? '';
+                }
+            }
+
+        }
+
         function deleteSchedule() {
+            var confirmMessage = '[[#{delete.confirm}]]';
             const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
             const scheduleId = nvrScheduleGrid.getRow(Number(selectedRadio.dataset.rowKey)).scheduleId;
+
+            if (confirm(confirmMessage)) {
+                apiJsonRequest({
+                    url: `/api/nvrschedule/${scheduleId}`,
+                    method: "DELETE"
+                },
+                (data) => {
+                    alert('[[#{delete.success}]]');
+                    searchScheduleList();
+                });
+            }
         }
     </script>
 </th:block>

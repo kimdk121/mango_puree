@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangopuree.nvrschedulehistory.service.NvrScheduleHistoryMapper">
+
+    <select id="historyListByGrid" resultType="com.mangopuree.nvrschedulehistory.dto.NvrScheduleHistoryGridDto">
+        /*
+        NvrScheduleHistoryMapper.historyListByGrid
+        조회
+        */
+        select
+            history_id
+            , (select a.schedule_name from nvr_schedule a where schedule_id = a.schedule_id) as schedule_name
+            , (select a.movie_name from movie a where movie_id = a.movie_id) as movie_name
+            , downloaded_yn
+            , fail_reason
+            , date_format(reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
+        from
+            nvr_schedule_history
+        where
+            schedule_id = #{scheduleId}
+    </select>
+
+</mapper>

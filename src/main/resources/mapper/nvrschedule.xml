@@ -34,6 +34,7 @@
             nvr_schedule
         where
             1=1
+            and use_yn = true
             <include refid="searchConditions"/>
     </select>
 
@@ -55,6 +56,28 @@
         where
             schedule_id = #{scheduleId}
             and use_yn = true
+    </select>
+
+    <select id="findScheduleDetail" resultType="com.mangopuree.nvrschedule.dto.NvrScheduleDetailDto">
+        /*
+        NvrScheduleMapper.findScheduleDetail
+        조회
+        */
+        select
+            concat(b.camera_id, " / " , b.camera_name) as camera
+            , b.server_id
+            , date_format(b.reg_dt, '%Y-%m-%d %H:%i:%s') as camera_reg_dt
+            , a.schedule_name
+            , a.start_date
+            , a.end_date
+            , a.cycle
+            , a.duration
+        from
+            nvr_schedule a
+            left join nvr_camera b on a.camera_id = b.camera_id
+        where
+            a.schedule_id = #{scheduleId}
+            and a.use_yn = true
     </select>
 
     <select id="findNextScheduleId" resultType="String">
@@ -122,17 +145,17 @@
             schedule_id = #{scheduleId}
     </update>
 
-    <delete id="delete">
+    <delete id="deleteByScheduleId">
         /*
-        NvrScheduleMapper.delete
+        NvrScheduleMapper.deleteByScheduleId
         삭제
         */
         update
-            nvr_camera
+            nvr_schedule
         set
             use_yn = false
         where
-            camera_id = #{cameraId}
+            schedule_id = #{scheduleId}
     </delete>
 
 </mapper>

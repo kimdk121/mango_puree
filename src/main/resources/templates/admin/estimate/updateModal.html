@@ -259,7 +259,8 @@
                 ],
                 pageOptions: {
                     useClient: false,
-                    perPage: 10
+                    perPage: null,
+                    visible: false
                 },
                 rowHeaders: ['checkbox'],
                 summary: {
@@ -284,7 +285,7 @@
                 },
                 bodyHeight: 300,
                 scrollX: true,
-                scrollY: false
+                scrollY: true
             });
 
             estimateItemGrid.on('afterChange', function (ev) {
