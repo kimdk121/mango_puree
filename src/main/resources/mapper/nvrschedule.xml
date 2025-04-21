@@ -30,6 +30,7 @@
             , reg_id
             , (select a.username from user a where a.user_id = reg_id) as reg_username
             , date_format(reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
+            , date_format(last_download_dt, '%Y-%m-%d %H:%i:%s') as last_download_dt
         from
             nvr_schedule
         where
@@ -51,6 +52,7 @@
             , end_date
             , cycle
             , duration
+            , date_format(last_download_dt, '%Y-%m-%d %H:%i:%s') as last_download_dt
         from
             nvr_schedule
         where
@@ -72,6 +74,7 @@
             , a.end_date
             , a.cycle
             , a.duration
+            , date_format(last_download_dt, '%Y-%m-%d %H:%i:%s') as last_download_dt
         from
             nvr_schedule a
             left join nvr_camera b on a.camera_id = b.camera_id
@@ -97,6 +100,30 @@
                 end as schedule_id
         from
             nvr_schedule
+    </select>
+
+    <select id="findScheduleToDownload" resultType="com.mangopuree.nvrschedule.dto.NvrScheduleDto">
+        /*
+        NvrScheduleMapper.findScheduleToDownload
+        다운로드 할 스케쥴 조회
+        */
+        select
+            schedule_id
+            , camera_id
+            , schedule_name
+            , start_date
+            , end_date
+            , cycle
+            , duration
+            , date_format(last_download_dt, '%Y-%m-%d %H:%i:%s') as last_download_dt
+        from
+            nvr_schedule
+        where
+            now() between start_date and end_date
+            and ( last_download_dt is null
+            or date_format(date_add(last_download_dt, interval cycle minute), '%Y-%m-%d %H:%i') &lt;= date_format(now(), '%Y-%m-%d %H:%i')
+        )
+
     </select>
 
     <insert id="insert">
@@ -141,6 +168,19 @@
             , duration = #{duration}
             , upd_id = #{updId}
             , upd_dt = now()
+        where
+            schedule_id = #{scheduleId}
+    </update>
+
+    <update id="updateLastDownloadDt">
+        /*
+        NvrScheduleMapper.updateLastDownloadDt
+        다운로드 일자 수정
+        */
+        update
+            nvr_schedule
+        set
+            last_download_dt = now()
         where
             schedule_id = #{scheduleId}
     </update>

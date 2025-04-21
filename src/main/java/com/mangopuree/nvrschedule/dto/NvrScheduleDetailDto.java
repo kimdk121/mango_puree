@@ -23,5 +23,7 @@ public class NvrScheduleDetailDto extends BaseAuditDto {
     private LocalDate endDate;
     private int cycle;
     private int duration;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastDownloadDt;
 
 }

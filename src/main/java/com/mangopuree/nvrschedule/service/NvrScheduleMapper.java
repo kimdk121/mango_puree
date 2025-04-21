@@ -21,4 +21,8 @@ public interface NvrScheduleMapper {
     int deleteByScheduleId(String scheduleId);
 
     NvrScheduleDetailDto findScheduleDetail(String scheduleId);
+
+    List<NvrScheduleDto> findScheduleToDownload();
+
+    int updateLastDownloadDt(String scheduleId);
 }

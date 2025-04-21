@@ -21,6 +21,8 @@ public class NvrScheduleGridDto extends ResponseGridDto {
     private LocalDate endDate;
     private Integer cycle;
     private Integer duration;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastDownloadDt;
     private String regId;
     private String regUserName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

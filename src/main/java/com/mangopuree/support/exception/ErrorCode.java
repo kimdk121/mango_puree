@@ -9,7 +9,11 @@ public enum ErrorCode {
     , PARENT_MENU_NOT_FOUND ("ERR_SYS_002", "errorCode.parentMenu.notFound")
 
     , API_TIMEOUT ("ERR_API_001", "errorCode.api.timeout")
-    , API_FAIL ("ERR_API_002", "errorCode.api.fail");
+    , API_FAIL ("ERR_API_002", "errorCode.api.fail")
+
+    , HDFS_FAIL ("ERR_HDFS_001", "errorCode.hdfs.fail")
+
+    , NVR_MOVIE_NOT_EXIST ("ERR_NVR_001", "errorCode.nvr.movieNotExist");
 
     private final String code;
     private final String messageKey;

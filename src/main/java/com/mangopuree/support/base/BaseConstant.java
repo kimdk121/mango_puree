@@ -21,5 +21,11 @@ public interface BaseConstant {
     String EXCEPTION_MESSAGE = "exception_message";
 
     // Toast grid 메세지
-    public static final String GRID_RESULT_KEY = "result";
+    String GRID_RESULT_KEY = "result";
+
+    // 하둡 동영상 다운로드 경로
+    String HADOOP_MOVIE_PATH = "/data/movie";
+
+    // 하둡 동영상 확장자
+    String EXTENSION_MP4 = "mp4";
 }

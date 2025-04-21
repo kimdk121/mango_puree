@@ -13,12 +13,12 @@ public class NvrScheduler {
     private final NvrCameraJob nvrCameraJob;
     private final NvrScheduleJob nvrScheduleJob;
 
-    // @Scheduled(cron = "*/30 * * * * ?")
+    @Scheduled(cron = "*/30 * * * * ?")
     public void searchCameras() {
         nvrCameraJob.searchCameras();
     }
 
-    // @Scheduled(cron = "*/10 * * * * ?")
+    @Scheduled(cron = "*/10 * * * * ?")
     public void movieDownload() {
         nvrScheduleJob.movieDownload();
     }

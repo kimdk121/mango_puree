@@ -89,8 +89,9 @@
                     { header: '종료일자', name: 'endDate', align: 'center'},
                     { header: '주기 (분)', name: 'cycle', align: 'right'},
                     { header: '길이 (분)', name: 'duration', align: 'right'},
+                    { header: '마지막 다운로드일시', name: 'lastDownloadDt', align: 'right'},
                     { header: '등록자아이디', name: 'regId', align: 'left', hidden: true},
-                    { header: '등록자', name: 'regUserName', align: 'left', hidden: true},
+                    { header: '등록자', name: 'regUserName', align: 'left'},
                     { header: '등록일시', name: 'regDt', align: 'center'}
                 ],
                 pageOptions: {
@@ -203,7 +204,8 @@
                 cycle: 'cycle',
                 duration: 'duration',
                 startDate: 'startDate',
-                endDate: 'endDate'
+                endDate: 'endDate',
+                lastDownloadDt: 'lastDownloadDt'
             };
 
             for (const key in fieldMap) {
@@ -234,7 +236,8 @@
                 cycle: 'detailCycle',
                 duration: 'detailDuration',
                 startDate: 'detailStartDate',
-                endDate: 'detailEndDate'
+                endDate: 'detailEndDate',
+                lastDownloadDt: 'detailLastDownloadDt'
             };
 
             for (const key in fieldMap) {

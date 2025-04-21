@@ -14,7 +14,7 @@ public class NvrScheduleHistoryGridDto extends ResponseGridDto {
     private String historyId;
     private String scheduleName;
     private String movieName;
-    private String downloadedYn;
+    private boolean downloadedYn;
     private String failReason;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime regDt;

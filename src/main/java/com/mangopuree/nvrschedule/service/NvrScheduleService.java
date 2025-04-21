@@ -50,4 +50,12 @@ public class NvrScheduleService {
     public NvrScheduleDetailDto findScheduleDetail(String scheduleId) {
         return nvrScheduleMapper.findScheduleDetail(scheduleId);
     }
+
+    public List<NvrScheduleDto> findScheduleToDownload() {
+        return nvrScheduleMapper.findScheduleToDownload();
+    }
+
+    public int updateLastDownloadDt(String scheduleId) {
+        return nvrScheduleMapper.updateLastDownloadDt(scheduleId);
+    }
 }

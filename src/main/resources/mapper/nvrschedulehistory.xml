@@ -20,4 +20,42 @@
             schedule_id = #{scheduleId}
     </select>
 
+    <select id="findNextHistoryId" resultType="String">
+        /*
+        NvrScheduleHistoryMapper.findNextHistoryId
+        다음 스케쥴이력아이디 조회
+        */
+        select
+            case
+                when
+                    max(history_id) is null then 'HISTORY0001'
+                else
+                    concat(
+                        'HISTORY',
+                        lpad(substring(max(history_id), 8) + 1, 4, '0')
+                )
+            end as history_id
+        from
+            nvr_schedule_history
+    </select>
+
+    <insert id="insert">
+        /*
+        NvrScheduleHistoryMapper.insert
+        등록
+        */
+        insert into nvr_schedule_history (
+            history_id
+            , schedule_id
+            , movie_id
+            , downloaded_yn
+            , fail_reason
+        ) values (
+            #{historyId}
+            , #{scheduleId}
+            , #{movieId}
+            , #{downloadedYn}
+            , #{failReason}
+        )
+    </insert>
 </mapper>
