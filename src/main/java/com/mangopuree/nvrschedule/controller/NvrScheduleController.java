@@ -4,12 +4,10 @@ import com.mangopuree.nvrcamera.dto.NvrCameraDto;
 import com.mangopuree.nvrcamera.service.NvrCameraService;
 import com.mangopuree.nvrschedule.dto.NvrScheduleInsertDto;
 import com.mangopuree.nvrschedule.service.NvrScheduleService;
-import com.mangopuree.support.base.BaseContoller;
+import com.mangopuree.support.base.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,7 +16,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/nvrschedule")
-public class NvrScheduleController extends BaseContoller {
+public class NvrScheduleController extends BaseController {
 
     private final NvrCameraService nvrCameraService;
     private final NvrScheduleService nvrScheduleService;

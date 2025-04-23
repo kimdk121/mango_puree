@@ -1,14 +1,13 @@
 package com.mangopuree.user.controller;
 
-import com.mangopuree.support.base.BaseContoller;
-import com.mangopuree.user.dto.UserGridDto;
-import com.mangopuree.user.dto.UserPasswordUpdateDto;
-import com.mangopuree.user.dto.UserSearchDto;
-import com.mangopuree.user.dto.UserUpdateDto;
+import com.mangopuree.support.base.BaseController;
+import com.mangopuree.support.base.dto.ApiResponseDto;
+import com.mangopuree.support.grid.dto.SetGridDataDto;
+import com.mangopuree.user.dto.*;
 import com.mangopuree.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
-public class UserApiController extends BaseContoller {
+public class UserApiController extends BaseController {
 
     private final UserService userService;
 
@@ -27,41 +26,37 @@ public class UserApiController extends BaseContoller {
      * API 사용자전체 Grid 호출
      */
     @GetMapping("/list")
-    public Map<String, Object> list(@ModelAttribute UserSearchDto userSearchDto) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> list(@ModelAttribute UserSearchDto userSearchDto) {
+
         userSearchDto.calculatePaging();
         List<UserGridDto> userGridDtos = userService.userListByGrid(userSearchDto);
         int totalCount = 0;
         if (userGridDtos.size() > 0) {
             totalCount = userGridDtos.get(0).getTotalCount();
         }
-        Map<String, Object> data = setGridData(userSearchDto, userGridDtos, totalCount);
-        model.addAttribute("data", data);
-
-        return setSuccessResult(model);
+        SetGridDataDto data = setGridData(userSearchDto, userGridDtos, totalCount);
+        return setSuccessResult(data);
     }
 
     /**
      * API 사용자 호출
      */
     @GetMapping("/loadUserInfo")
-    public Map<String, Object> loadUserInfo(Authentication authentication) {
-        ModelMap model = new ModelMap();
-        model.addAttribute("user",userService.findByUserId(authentication.getName()));
-        return setSuccessResult(model);
+    public ResponseEntity<ApiResponseDto> loadUserInfo(Authentication authentication) {
+        UserDto user = userService.findByUserId(authentication.getName());
+        return setSuccessResult(user);
     }
 
     /**
      * API 사용자 수정
      */
     @PostMapping("/update")
-    public Map<String, Object> update(@RequestBody @Validated UserUpdateDto userUpdateDto, BindingResult bindingResult) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> update(@RequestBody @Validated UserUpdateDto userUpdateDto, BindingResult bindingResult) {
+
         if (bindingResult.hasErrors()) {
             Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-            return setFailResult(model, fieldErrors);
+            return setFailResult(fieldErrors);
         }
-
         userService.updateByUserId(userUpdateDto);
         return setSuccessResult();
     }
@@ -70,18 +65,17 @@ public class UserApiController extends BaseContoller {
      * API 비밀번호 수정
      */
     @PostMapping("/updatePassword")
-    public Map<String, Object> updatePassword(@RequestBody @Validated UserPasswordUpdateDto userPasswordUpdateDto, BindingResult bindingResult) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> updatePassword(@RequestBody @Validated UserPasswordUpdateDto userPasswordUpdateDto, BindingResult bindingResult) {
+
         if (bindingResult.hasErrors()) {
             Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-            return setFailResult(model, fieldErrors);
+            return setFailResult(fieldErrors);
         }
         if (!userPasswordUpdateDto.isPasswordMatching()) {
             bindingResult.rejectValue("password", "mismatch.password");
-            Map<String, List<String>> fieldErrors = setFieldError(bindingResult);
-            return setFailResult(model, fieldErrors);
+            Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
+            return setFailResult(fieldErrors);
         }
-
         userService.updatePasswordByUserId(userPasswordUpdateDto);
         return setSuccessResult();
     }

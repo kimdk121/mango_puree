@@ -109,8 +109,14 @@
                     { header: '스케쥴이력아이디', name: 'historyId', align: 'center'},
                     { header: '스케쥴명', name: 'scheduleName', align: 'center'},
                     { header: '영상명', name: 'movieName', align: 'left', resizable: true },
-                    { header: '다운로드여부', name: 'downloadedYn', align: 'center', resizable: true, hidden: true},
+                    { header: '다운로드여부', name: 'downloadedYn', hidden: true},
                     { header: '실패이유', name: 'failReason', align: 'center', resizable: true },
+                    { header: '저장경로', name: 'savePath', hidden: true},
+                    { header: '다운로드', name: 'download', align: 'center', resizable: true
+                        ,renderer: {
+                            type: downloadButtonRenderer(downloadMovie)
+                        }
+                    },
                     { header: '등록일시', name: 'regDt', align: 'center', resizable: true}
                 ],
                 pageOptions: {
@@ -122,6 +128,25 @@
                 scrollX: true,
                 scrollY: false
             });
+        }
+
+        function downloadMovie(rowKey) {
+            var confirmMessage = '[[#{confirm.nvr.movie.download}]]';
+            const row = scheduleHistoryGrid.getRow(rowKey);
+            if (!row.downloadedYn) {
+                alert('[[#{error.nvr.movie.notDownloaded}]]');
+                return;
+            }
+
+            if(confirm(confirmMessage)) {
+                const encodedPath = encodeURIComponent(row.savePath);
+                const encodedFilename = encodeURIComponent(row.movieName);
+                apiDownloadRequest({
+                    url: `/api/movie/download?path=${encodedPath}&movieName=${encodedFilename}`,
+                    method: 'GET',
+                    filename: row.movieName
+                });
+            }
         }
 
         function loadScheduleHistory() {

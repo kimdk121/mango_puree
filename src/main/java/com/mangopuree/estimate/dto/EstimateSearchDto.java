@@ -1,7 +1,7 @@
 package com.mangopuree.estimate.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mangopuree.support.base.dto.RequestGridDto;
+import com.mangopuree.support.grid.dto.RequestGridDto;
 import lombok.Getter;
 import lombok.Setter;
 

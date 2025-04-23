@@ -18,6 +18,8 @@ public class HadoopConfig {
         org.apache.hadoop.conf.Configuration configuration = new org.apache.hadoop.conf.Configuration();
         configuration.set("fs.defaultFS", url);
         configuration.set("dfs.client.use.datanode.hostname", "true");
+        System.setProperty("HADOOP_USER_NAME", "root");
+
         return configuration;
     }
 

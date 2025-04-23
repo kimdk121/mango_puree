@@ -1,6 +1,6 @@
 package com.mangopuree.login.controller;
 
-import com.mangopuree.support.base.BaseContoller;
+import com.mangopuree.support.base.BaseController;
 import com.mangopuree.support.message.MessageUtil;
 import com.mangopuree.user.dto.UserSignupDto;
 import com.mangopuree.user.service.UserService;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/login")
-public class LoginController extends BaseContoller {
+public class LoginController extends BaseController {
 
     private final UserService userService;
     private final MessageUtil messageUtil;

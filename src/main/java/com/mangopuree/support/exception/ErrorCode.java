@@ -11,7 +11,9 @@ public enum ErrorCode {
     , API_TIMEOUT ("ERR_API_001", "errorCode.api.timeout")
     , API_FAIL ("ERR_API_002", "errorCode.api.fail")
 
-    , HDFS_FAIL ("ERR_HDFS_001", "errorCode.hdfs.fail")
+    , HDFS_WRITE_FAIL ("ERR_HDFS_001", "errorCode.hdfs.writeFail")
+    , HDFS_READ_FAIL ("ERR_HDFS_002", "errorCode.hdfs.readFail")
+    , HDFS_FILE_NOT_FOUND ("ERR_HDFS_003", "errorCode.hdfs.fileNotFound")
 
     , NVR_MOVIE_NOT_EXIST ("ERR_NVR_001", "errorCode.nvr.movieNotExist");
 

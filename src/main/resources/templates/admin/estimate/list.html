@@ -182,13 +182,14 @@
 
                 function openUpdateModal() {
                     const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
-                    const estimateStatusCd = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateStatusCd;
-                    const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
 
                     if (!selectedRadio) {
                         alert('[[#{select.estimate.update}]]');
                         return;
                     }
+                    const estimateStatusCd = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateStatusCd;
+                    const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
+
                     if (estimateStatusCd === 'ESS003') {
                         alert('[[#{error.estimate.alreadyConfirmed}]]');
                         return;
@@ -210,8 +211,8 @@
                         method: "GET"
                     },
                     (data) => {
-                        setEstimateForm(data.estimate);
-                        setItems(data.estimate.itemList);
+                        setEstimateForm(data.data);
+                        setItems(data.data.itemList);
                     });
                 }
 
@@ -279,13 +280,14 @@
                 function confirmEstimate() {
                     var confirmMessage = '[[#{confirm.estimate}]]';
                     const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
-                    const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
-                    const estimateStatusCd = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateStatusCd;
 
                     if (!selectedRadio) {
                         alert('[[#{select.estimate.confirm}]]');
                         return;
                     }
+                    const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
+                    const estimateStatusCd = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateStatusCd;
+
                     if (estimateStatusCd !== 'ESS002') {
                         alert('[[#{error.estimate.unconfirmable}]]');
                         return;

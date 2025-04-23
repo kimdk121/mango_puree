@@ -48,6 +48,26 @@ function customRadioRenderer(radioName) {
     }
 }
 
+function downloadButtonRenderer(downloadHandler) {
+    return class {
+        constructor(props) {
+            const el = document.createElement('button');
+            el.type = 'button';
+            el.className = 'btn btn-sm btn-primary';
+            el.textContent = '다운로드';
+
+            el.addEventListener('click', () => downloadHandler(props.rowKey));
+            this.el = el;
+        }
+
+        getElement() {
+            return this.el;
+        }
+
+        render() {}
+    }
+}
+
 // Toast UI grid rowData form안에 등록
 function setFields(rowData, form, fieldMap) {
     for (const [key, inputName] of Object.entries(fieldMap)) {
@@ -63,7 +83,8 @@ function apiJsonRequest({ url, method = "GET", body = null }, onSuccess, onFail)
     const options = {
         method,
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Accept": "application/json"
         }
     };
 
@@ -72,23 +93,30 @@ function apiJsonRequest({ url, method = "GET", body = null }, onSuccess, onFail)
     }
 
     fetch(url, options)
-        .then(res => res.json())
-        .then(data => {
-            if (data.code === "00") {
-                if (onSuccess) onSuccess(data);
-            } else {
-                if(data.exceptionMessage) {
-                    console.error("API 실패:", data.exceptionMessage);
+        .then(async res => {
+            const contentType = res.headers.get("Content-Type") || "";
+            const isJson = contentType.includes("application/json");
+            const data = isJson ? await res.json() : { message: "알 수 없는 오류", result: false };
+
+            if (res.ok) {
+                // 200 OK
+                if (typeof onSuccess === "function") {
+                    onSuccess(data);
                 }
-                if (onFail) {
+            } else if (res.status === 400) {
+                // 유효성 검사 오류
+                if (typeof onSuccess === "function") {
                     onFail(data);
-                } else {
-                    alert(data.exceptionMessage || '[[#{common.error.request}]]');
                 }
+            } else {
+                // 서버 에러
+                const code = data.errorCode || "SERVER_ERROR";
+                const message = data.errorMessage || "시스템 오류가 발생했습니다.";
+                alert(`[${code}] ${message}`);
             }
         })
         .catch(err => {
-            console.error("API 요청 오류:", err);
+            console.error("요청 실패:", err);
             alert('[[#{common.error.request}]]');
         });
 }
@@ -99,11 +127,19 @@ function apiDownloadRequest({ url, method = "POST", body = null, filename = "dow
         method,
         headers: {
             "Content-Type": "application/json",
-            "Accept": "application/octet-stream"
+            "Accept": "application/json, application/octet-stream"
         },
         body: body ? JSON.stringify(body) : null
     })
-    .then(response => response.blob())
+     .then(async (response) => {
+          if (!response.ok) {
+              const data = await response.json();
+              const code = data.errorCode || "SERVER_ERROR";
+              const message = data.errorMessage || "시스템 오류가 발생했습니다.";
+              throw new Error(`[${code}] ${message}`);
+          }
+          return response.blob();
+     })
     .then(blob => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -114,7 +150,7 @@ function apiDownloadRequest({ url, method = "POST", body = null, filename = "dow
         document.body.removeChild(a);
     })
     .catch(err => {
-        console.error("파일 다운로드 실패:", err);
-        alert('[[#{common.error.request}]]');
+        console.error(err.message);
+        alert(err.message || '[[#{common.error.request}]]');
     });
 }

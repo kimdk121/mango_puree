@@ -1,16 +1,14 @@
 package com.mangopuree.nvrschedule.controller;
 
-import com.mangopuree.estimate.dto.EstimateGridDto;
-import com.mangopuree.estimate.dto.EstimateSearchDto;
 import com.mangopuree.nvrschedule.dto.*;
 import com.mangopuree.nvrschedule.service.NvrScheduleService;
-import com.mangopuree.support.base.BaseContoller;
+import com.mangopuree.support.base.BaseController;
+import com.mangopuree.support.base.dto.ApiResponseDto;
+import com.mangopuree.support.grid.dto.SetGridDataDto;
 import com.mangopuree.support.validator.NvrScheduleDtoValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +17,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/nvrschedule")
-public class NvrScheduleApiController extends BaseContoller {
+public class NvrScheduleApiController extends BaseController {
 
     private final NvrScheduleService nvrScheduleService;
     private final NvrScheduleDtoValidator nvrScheduleDtoValidator;
@@ -28,64 +26,59 @@ public class NvrScheduleApiController extends BaseContoller {
      * API NVR schedule 전체 Grid 호출
      */
     @GetMapping("/list")
-    public Map<String, Object> list(@ModelAttribute NvrScheduleSearchDto nvrScheduleSearchDto) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> list(@ModelAttribute NvrScheduleSearchDto nvrScheduleSearchDto) {
+
         nvrScheduleSearchDto.calculatePaging();
         List<NvrScheduleGridDto> nvrScheduleGridDtos = nvrScheduleService.nvrScheduleListByGrid(nvrScheduleSearchDto);
         int totalCount = 0;
         if (nvrScheduleGridDtos.size() > 0) {
             totalCount = nvrScheduleGridDtos.get(0).getTotalCount();
         }
-        Map<String, Object> data = setGridData(nvrScheduleSearchDto, nvrScheduleGridDtos, totalCount);
-        model.addAttribute("data", data);
-
-        return setSuccessResult(model);
+        SetGridDataDto data = setGridData(nvrScheduleSearchDto, nvrScheduleGridDtos, totalCount);
+        return setSuccessResult(data);
     }
 
     @PostMapping("/insert")
-    public Map<String, Object> insert(@RequestBody NvrScheduleInsertDto nvrScheduleInsertDto, BindingResult bindingResult) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> insert(@RequestBody NvrScheduleInsertDto nvrScheduleInsertDto, BindingResult bindingResult) {
+
         nvrScheduleDtoValidator.validate(nvrScheduleInsertDto, bindingResult);
         if (bindingResult.hasErrors()) {
             Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-            return setFailResult(model, fieldErrors);
+            return setFailResult(fieldErrors);
         }
         nvrScheduleService.insert(nvrScheduleInsertDto);
-        return setSuccessResult(model);
+        return setSuccessResult();
     }
 
     @GetMapping("/{scheduleId}")
-    public Map<String, Object> detailForUpdate(@PathVariable String scheduleId) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> detailForUpdate(@PathVariable String scheduleId) {
+
         NvrScheduleDto nvrScheduleDto = nvrScheduleService.findByScheduleId(scheduleId);
-        model.addAttribute("nvrSchedule", nvrScheduleDto);
-        return setSuccessResult(model);
+        return setSuccessResult(nvrScheduleDto);
     }
 
     @GetMapping("/detail/{scheduleId}")
-    public Map<String, Object> detail(@PathVariable String scheduleId) {
-        ModelMap model = new ModelMap();
-        NvrScheduleDetailDto scheduleDetail = nvrScheduleService.findScheduleDetail(scheduleId);
-        model.addAttribute("nvrSchedule", scheduleDetail);
-        return setSuccessResult(model);
+    public ResponseEntity<ApiResponseDto> detail(@PathVariable String scheduleId) {
+
+        NvrScheduleDetailDto nvrSchedule = nvrScheduleService.findScheduleDetail(scheduleId);
+        return setSuccessResult(nvrSchedule);
     }
 
     @PostMapping("/update")
-    public Map<String, Object> update(@RequestBody NvrScheduleInsertDto nvrScheduleInsertDto, BindingResult bindingResult) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> update(@RequestBody NvrScheduleInsertDto nvrScheduleInsertDto, BindingResult bindingResult) {
+
         nvrScheduleDtoValidator.validate(nvrScheduleInsertDto, bindingResult);
         if (bindingResult.hasErrors()) {
             Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-            return setFailResult(model, fieldErrors);
+            return setFailResult(fieldErrors);
         }
         nvrScheduleService.update(nvrScheduleInsertDto);
-        return setSuccessResult(model);
+        return setSuccessResult();
     }
 
     @DeleteMapping("{scheduleId}")
-    public Map<String, Object> delete(@PathVariable String scheduleId) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> delete(@PathVariable String scheduleId) {
         nvrScheduleService.deleteByScheduleId(scheduleId);
-        return setSuccessResult(model);
+        return setSuccessResult();
     }
 }

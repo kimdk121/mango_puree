@@ -56,7 +56,7 @@
                 (data) => {
                     ["userId","username", "name", "telNo", "faxNo"].forEach(field => {
                         const el = document.getElementById(field);
-                        if (el) el.value = data.user[field] || '';
+                        if (el) el.value = data.data[field] || '';
                     });
                 });
             }

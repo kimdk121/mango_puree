@@ -4,7 +4,6 @@ package com.mangopuree.nvrschedulehistory.service;
 import com.mangopuree.nvrschedulehistory.dto.NvrScheduleHistoryGridDto;
 import com.mangopuree.nvrschedulehistory.dto.NvrScheduleHistoryInsertDto;
 import com.mangopuree.nvrschedulehistory.dto.NvrScheduleHistorySearchDto;
-import com.mangopuree.support.base.dto.RequestGridDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

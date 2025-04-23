@@ -5,13 +5,16 @@ import com.mangopuree.estimate.dto.EstimateGridDto;
 import com.mangopuree.estimate.dto.EstimateInsertDto;
 import com.mangopuree.estimate.dto.EstimateSearchDto;
 import com.mangopuree.estimate.service.EstimateService;
-import com.mangopuree.support.base.BaseContoller;
+import com.mangopuree.support.base.BaseController;
+import com.mangopuree.support.base.dto.ApiResponseDto;
+import com.mangopuree.support.grid.dto.SetGridDataDto;
 import com.mangopuree.support.validator.EstimateDtoValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
@@ -24,84 +27,75 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/estimate")
-public class EstimateApiController extends BaseContoller {
+public class EstimateApiController extends BaseController {
 
     private final EstimateService estimateService;
     private final EstimateDtoValidator estimateDtoValidator;
 
     @PostMapping("/insert")
-    public Map<String, Object> insert(@RequestBody EstimateInsertDto estimateInsertDto, BindingResult bindingResult) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> insert(@RequestBody EstimateInsertDto estimateInsertDto, BindingResult bindingResult) {
 
         if(estimateInsertDto.getEstimateStatusCd() != null && "ESS002".equals(estimateInsertDto.getEstimateStatusCd())) {
             estimateDtoValidator.validate(estimateInsertDto, bindingResult);
             if (bindingResult.hasErrors()) {
                 Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-                return setFailResult(model, fieldErrors);
+                return setFailResult(fieldErrors);
             }
         }
         estimateService.insert(estimateInsertDto);
-        return setSuccessResult(model);
+        return setSuccessResult();
     }
 
     @PostMapping("/update")
-    public Map<String, Object> update(@RequestBody EstimateInsertDto estimateInsertDto, BindingResult bindingResult) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> update(@RequestBody EstimateInsertDto estimateInsertDto, BindingResult bindingResult) {
 
         if(estimateInsertDto.getEstimateStatusCd() != null && "ESS002".equals(estimateInsertDto.getEstimateStatusCd())) {
             estimateDtoValidator.validate(estimateInsertDto, bindingResult);
             if (bindingResult.hasErrors()) {
                 Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
-                return setFailResult(model, fieldErrors);
+                return setFailResult(fieldErrors);
             }
         }
         estimateService.update(estimateInsertDto);
-        return setSuccessResult(model);
+        return setSuccessResult();
     }
 
     /**
      * API 견적서 전체 Grid 호출
      */
     @GetMapping("/list")
-    public Map<String, Object> list(@ModelAttribute EstimateSearchDto estimateSearchDto) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> list(@ModelAttribute EstimateSearchDto estimateSearchDto) {
         estimateSearchDto.calculatePaging();
         List<EstimateGridDto> estimateGridDtos = estimateService.estimateListByGrid(estimateSearchDto);
         int totalCount = 0;
         if (estimateGridDtos.size() > 0) {
             totalCount = estimateGridDtos.get(0).getTotalCount();
         }
-        Map<String, Object> data = setGridData(estimateSearchDto, estimateGridDtos, totalCount);
-        model.addAttribute("data", data);
-
-        return setSuccessResult(model);
+        SetGridDataDto data = setGridData(estimateSearchDto, estimateGridDtos, totalCount);
+        return setSuccessResult(data);
     }
 
     @GetMapping("/{estimateId}")
-    public Map<String, Object> getEstimateDetail(@PathVariable String estimateId) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> getEstimateDetail(@PathVariable String estimateId) {
         EstimateDto estimateDto = estimateService.findEstimateDetail(estimateId);
-        model.addAttribute("estimate", estimateDto);
-        return setSuccessResult(model);
+        return setSuccessResult(estimateDto);
     }
 
     @DeleteMapping("/{estimateId}")
-    public Map<String, Object> delete(@PathVariable String estimateId) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> delete(@PathVariable String estimateId) {
         estimateService.delete(estimateId);
-        return setSuccessResult(model);
+        return setSuccessResult();
     }
 
     @PostMapping("/update/{estimateId}/estimateStatusCd")
-    public Map<String, Object> update(@PathVariable String estimateId) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<ApiResponseDto> update(@PathVariable String estimateId) {
         estimateService.confirmEstimateStatus(estimateId);
-        return setSuccessResult(model);
+        return setSuccessResult();
     }
 
     @GetMapping("/{estimateId}/downloadEstimateToExcel")
-    public ResponseEntity<byte[]> downloadEstimateToExcel(@PathVariable String estimateId) {
-        ModelMap model = new ModelMap();
+    public ResponseEntity<Resource> downloadEstimateToExcel(@PathVariable String estimateId) {
+
         byte[] fileBytes = null;
         try {
             fileBytes = estimateService.makeEstimateToExcel(estimateId);
@@ -113,6 +107,6 @@ public class EstimateApiController extends BaseContoller {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ filename +"\"")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
-                .body(fileBytes);
+                .body(new ByteArrayResource(fileBytes));
     }
 }

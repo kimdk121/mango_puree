@@ -8,14 +8,15 @@
         조회
         */
         select
-            history_id
-            , (select a.schedule_name from nvr_schedule a where schedule_id = a.schedule_id) as schedule_name
-            , (select a.movie_name from movie a where movie_id = a.movie_id) as movie_name
-            , downloaded_yn
-            , fail_reason
-            , date_format(reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
+            a.history_id
+            , (select b.schedule_name from nvr_schedule b where a.schedule_id = b.schedule_id) as schedule_name
+            , (select b.movie_name from movie b where a.movie_id = b.movie_id) as movie_name
+            , a.downloaded_yn
+            , a.fail_reason
+            , date_format(a.reg_dt, '%Y-%m-%d %H:%i:%s') as reg_dt
+            , (select b.save_path from movie b where a.movie_id = b.movie_id) as save_path
         from
-            nvr_schedule_history
+            nvr_schedule_history a
         where
             schedule_id = #{scheduleId}
     </select>

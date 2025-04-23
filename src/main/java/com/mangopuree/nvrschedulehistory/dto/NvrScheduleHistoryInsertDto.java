@@ -1,6 +1,5 @@
 package com.mangopuree.nvrschedulehistory.dto;
 
-import com.mangopuree.support.base.dto.RequestGridDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

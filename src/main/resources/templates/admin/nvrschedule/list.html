@@ -180,7 +180,7 @@
                 method: "GET"
             },
             (data) => {
-                setNvrScheduleFormForUpdate(data.nvrSchedule);
+                setNvrScheduleFormForUpdate(data.data);
             });
         }
 
@@ -190,7 +190,7 @@
                 method: "GET"
             },
             (data) => {
-                setNvrScheduleFormForUpdate(data.nvrSchedule);
+                setNvrScheduleFormForUpdate(data.data);
             });
         }
 
@@ -221,8 +221,7 @@
                 method: "GET"
             },
             (data) => {
-                console.log(data.nvrSchedule);
-                setNvrScheduleFormForDetail(data.nvrSchedule);
+                setNvrScheduleFormForDetail(data.data);
             });
         }
 

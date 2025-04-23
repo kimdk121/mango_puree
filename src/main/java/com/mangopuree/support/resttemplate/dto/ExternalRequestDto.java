@@ -1,4 +1,4 @@
-package com.mangopuree.support.base.dto;
+package com.mangopuree.support.resttemplate.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

@@ -33,11 +33,11 @@
             , save_path
             , file_size
         ) values (
-            #{movie_id}
-            , #{schedule_id}
-            , #{movie_name}
-            , #{save_path}
-            , #{file_size}
+            #{movieId}
+            , #{scheduleId}
+            , #{movieName}
+            , #{savePath}
+            , #{fileSize}
         )
     </insert>
 

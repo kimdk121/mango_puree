@@ -1,15 +1,17 @@
 package com.mangopuree.movie.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mangopuree.support.resttemplate.dto.ExternalRequestDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class MovieDownloadDto {
+@Builder
+public class MovieSearchDto extends ExternalRequestDto {
 
     private String cameraId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -17,5 +19,5 @@ public class MovieDownloadDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endDate;
     private int duration;
-    private String movieData;
+
 }

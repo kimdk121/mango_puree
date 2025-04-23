@@ -2,9 +2,8 @@ package com.mangopuree.support.schedule.nvrjob;
 
 import com.mangopuree.movie.dto.MovieDownloadDto;
 import com.mangopuree.movie.dto.MovieInsertDto;
+import com.mangopuree.movie.dto.MovieSearchDto;
 import com.mangopuree.movie.service.MovieService;
-import com.mangopuree.nvrcamera.dto.NvrCameraDto;
-import com.mangopuree.nvrcamera.service.NvrCameraService;
 import com.mangopuree.nvrschedule.dto.NvrScheduleDto;
 import com.mangopuree.nvrschedule.service.NvrScheduleService;
 import com.mangopuree.nvrschedulehistory.dto.NvrScheduleHistoryInsertDto;
@@ -12,8 +11,8 @@ import com.mangopuree.nvrschedulehistory.service.NvrScheduleHistoryService;
 import com.mangopuree.nvrserver.dto.NvrServerDto;
 import com.mangopuree.nvrserver.service.NvrServerService;
 import com.mangopuree.support.base.BaseConstant;
-import com.mangopuree.support.base.dto.ExternalRequestDto;
-import com.mangopuree.support.base.dto.ExternalResponseDto;
+import com.mangopuree.support.resttemplate.dto.ExternalResponseDto;
+import com.mangopuree.support.converter.ConverterUtil;
 import com.mangopuree.support.exception.CodeException;
 import com.mangopuree.support.exception.ErrorCode;
 import com.mangopuree.support.hdfs.HdfsUtils;
@@ -25,6 +24,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
 
@@ -62,14 +62,17 @@ public class NvrScheduleJob {
         for (NvrScheduleDto nvrScheduleDto : downloadScheduleList) {
             try {
                 log.info("{} 스케쥴 ID : {} 다운로드 시작", LOG_NAME, nvrScheduleDto.getScheduleId());
-                ExternalResponseDto<MovieDownloadDto> response = restTemplateHelper.getWithParams(url, new ExternalRequestDto(), new ParameterizedTypeReference<ExternalResponseDto<MovieDownloadDto>>() {});
+                MovieSearchDto movieSearchDto = ConverterUtil.convertToMovieSearchDto(nvrScheduleDto);
+                ExternalResponseDto<MovieDownloadDto> response = restTemplateHelper.getWithParams(url, movieSearchDto, new ParameterizedTypeReference<ExternalResponseDto<MovieDownloadDto>>() {});
 
                 MovieDownloadDto movieDownloadDto = response.getData().stream().findFirst().orElse(null);
                 if (movieDownloadDto == null || movieDownloadDto.getMovieData().length() < 1) {
                     throw new CodeException(ErrorCode.NVR_MOVIE_NOT_EXIST);
                 }
                 // 하둡 저장
-                String movieName = movieDownloadDto.getStartDate() + "_" + movieDownloadDto.getDuration() + "_" + movieDownloadDto.getCameraId() + "." + BaseConstant.EXTENSION_MP4;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+                String formattedStartDate = movieDownloadDto.getStartDate().format(formatter);
+                String movieName = formattedStartDate + "_" + movieDownloadDto.getDuration() + "_" + movieDownloadDto.getCameraId() + "." + BaseConstant.EXTENSION_MP4;
                 String savePath = BaseConstant.HADOOP_MOVIE_PATH + movieName;
                 byte[] movieData = Base64.getDecoder().decode(movieDownloadDto.getMovieData());
 

@@ -1,6 +1,6 @@
 package com.mangopuree.business.dto;
 
-import com.mangopuree.support.base.dto.RequestGridDto;
+import com.mangopuree.support.grid.dto.RequestGridDto;
 import lombok.Getter;
 import lombok.Setter;
 

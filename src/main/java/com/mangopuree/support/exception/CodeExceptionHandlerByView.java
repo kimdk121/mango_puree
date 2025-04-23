@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
-public class CodeExceptionHandler {
+public class CodeExceptionHandlerByView {
 
     private final MessageUtil messageUtil;
 
     @ExceptionHandler(CodeException.class)
-    public String handleCodeException(CodeException ex, Model model) {
-        String errorCode = ex.getErrorCode().getCode();
-        String errorMessage = messageUtil.get(ex.getErrorCode().getMessageKey());
+    public String handleCodeExceptionByView(CodeException e, Model model) {
+        String errorCode = e.getErrorCode().getCode();
+        String errorMessage = messageUtil.get(e.getErrorCode().getMessageKey());
 
         log.error("ERROR CODE = {}", errorCode);
         log.error("ERROR MESSAGE = {}", errorMessage);
