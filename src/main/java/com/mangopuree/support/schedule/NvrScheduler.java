@@ -18,7 +18,7 @@ public class NvrScheduler {
         nvrCameraJob.searchCameras();
     }
 
-    @Scheduled(cron = "10 49 * * * ?")
+    // @Scheduled(cron = "10 49 * * * ?")
     public void movieDownload() {
         nvrScheduleJob.movieDownload();
     }
