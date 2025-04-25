@@ -119,7 +119,8 @@
         from
             nvr_schedule
         where
-            now() between start_date and end_date
+            use_yn = true
+            and date_format(now(), '%Y-%m-%d') between start_date and end_date
             and ( last_download_dt is null
             or date_format(date_add(last_download_dt, interval cycle minute), '%Y-%m-%d %H:%i') &lt;= date_format(now(), '%Y-%m-%d %H:%i')
         )
