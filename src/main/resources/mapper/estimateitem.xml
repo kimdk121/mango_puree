@@ -28,7 +28,7 @@
     <insert id="bulkInsert">
         /*
         EstimateItemMapper.bulkInsert
-        저장
+        한꺼번에 저장
         */
         INSERT INTO estimate_item (
             estimate_id

@@ -17,7 +17,7 @@
     <select id="nvrScheduleListByGrid" resultType="com.mangopuree.nvrschedule.dto.NvrScheduleGridDto">
         /*
         NvrScheduleMapper.nvrScheduleListByGrid
-        조회
+        Grid용 스케쥴 조회
         */
         select
             schedule_id
@@ -41,8 +41,8 @@
 
     <select id="findByScheduleId" resultType="com.mangopuree.nvrschedule.dto.NvrScheduleDto">
         /*
-        NvrScheduleMapper.findByCameraId
-        조회
+        NvrScheduleMapper.findByScheduleId
+        수정페이지용 조회
         */
         select
             schedule_id
@@ -63,7 +63,7 @@
     <select id="findScheduleDetail" resultType="com.mangopuree.nvrschedule.dto.NvrScheduleDetailDto">
         /*
         NvrScheduleMapper.findScheduleDetail
-        조회
+        상세페이지용 조회
         */
         select
             concat(b.camera_id, " / " , b.camera_name) as camera
@@ -86,7 +86,7 @@
     <select id="findNextScheduleId" resultType="String">
         /*
         NvrScheduleMapper.findNextScheduleId
-        다음 스케쥴아이디 조회
+        다음 저장할 스케쥴아이디 조회
         */
         select
             case
@@ -176,7 +176,7 @@
     <update id="updateLastDownloadDt">
         /*
         NvrScheduleMapper.updateLastDownloadDt
-        다운로드 일자 수정
+        다운로드 일자 지금으로 수정
         */
         update
             nvr_schedule
@@ -189,7 +189,7 @@
     <delete id="deleteByScheduleId">
         /*
         NvrScheduleMapper.deleteByScheduleId
-        삭제
+        스케쥴아이디로 삭제
         */
         update
             nvr_schedule

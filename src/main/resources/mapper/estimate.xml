@@ -57,7 +57,7 @@
     <select id="findNextEstimateId" resultType="String">
         /*
         EstimateMapper.findNextEstimateId
-        조회
+        새로 생성할 견적서 번호 조회
         */
         select
             case
@@ -218,7 +218,7 @@
     <update id="confirmEstimateStatus">
         /*
         EstimateMapper.confirmEstimateStatus
-        수정
+        상태코드를 확정으로 변경
         */
         update
             estimate

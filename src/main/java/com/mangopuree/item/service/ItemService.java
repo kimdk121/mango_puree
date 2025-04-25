@@ -14,7 +14,7 @@ public class ItemService {
     private final ItemMapper itemMapper;
 
     /**
-     * Grid용 품목 전체조회
+     * Grid용 품목 조회
      * @param itemSearchDto
      * @return List<BusinessGridDto>
      */

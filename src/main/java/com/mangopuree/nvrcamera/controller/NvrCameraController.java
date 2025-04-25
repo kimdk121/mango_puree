@@ -18,6 +18,11 @@ public class NvrCameraController extends BaseController {
 
     private final NvrCameraService nvrCameraService;
 
+    /**
+     * 리스트 페이지 조회
+     * @param model
+     * @return view
+     */
     @GetMapping
     public String list(Model model) {
         List<NvrCameraDto> cameraList = nvrCameraService.findActiveCameras();

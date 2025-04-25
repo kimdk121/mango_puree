@@ -19,8 +19,13 @@ import java.util.List;
 public class NvrScheduleController extends BaseController {
 
     private final NvrCameraService nvrCameraService;
-    private final NvrScheduleService nvrScheduleService;
 
+    /**
+     * 리스트 페이지 조회
+     * @param cameraId 조회 조건에 추가
+     * @param model
+     * @return view
+     */
     @GetMapping
     public String list(@RequestParam(required = false) String cameraId, Model model) {
         List<NvrCameraDto> cameraList = nvrCameraService.findActiveCameras();

@@ -5,7 +5,7 @@
     <select id="findNextMovieId" resultType="String">
         /*
         MovieMapper.findNextMovieId
-        다음 영상아이디 조회
+        다음 저장할 영상아이디 조회
         */
         select
             case

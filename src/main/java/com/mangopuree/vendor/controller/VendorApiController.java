@@ -6,6 +6,7 @@ import com.mangopuree.support.grid.dto.SetGridDataDto;
 import com.mangopuree.vendor.dto.VendorGridDto;
 import com.mangopuree.vendor.dto.VendorSearchDto;
 import com.mangopuree.vendor.service.VendorService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +24,8 @@ public class VendorApiController extends BaseController {
 
     private final VendorService vendorService;
 
-    /**
-     * API 거래처 Grid 호출
-     */
     @GetMapping("/list")
+    @Operation(summary = "거래처 Grid 정보 조회", description = "조건에 따른 거래처 Grid 정보를 조회합니다.")
     public ResponseEntity<ApiResponseDto> list(@ModelAttribute VendorSearchDto vendorSearchDto) {
 
         vendorSearchDto.calculatePaging();

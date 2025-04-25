@@ -9,9 +9,24 @@ import java.util.Map;
 @Mapper
 public interface EstimateItemMapper {
 
+    /**
+     * 견적서아이디로 조회
+     * @param estimateId
+     * @return List<EstimateItemDto>
+     */
     List<EstimateItemDto> findByEstimateId(String estimateId);
 
+    /**
+     * 견적서아이디로 삭제
+     * @param estimateId
+     * @return int
+     */
     int deleteByEstimateId(String estimateId);
 
+    /**
+     * 한꺼번에 저장
+     * @param estimateItemList
+     * @return int
+     */
     int bulkInsert(Map<String, Object> estimateItemList);
 }

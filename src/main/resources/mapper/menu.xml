@@ -20,7 +20,7 @@
     <select id="findMenuListByUserId" resultMap="menuMap">
         /*
             MenuMapper.findMenuListByUserId
-            조회
+            사용자 메뉴 조회
         */
         select
             m1.menu_id as menu_id
@@ -48,7 +48,7 @@
     <select id="getMenuByUrl" resultType="com.mangopuree.menu.dto.MenuDto">
         /*
         MenuMapper.getMenuByUrl
-        조회
+        URL로 조회
         */
         select
             menu_id
@@ -65,7 +65,7 @@
     <select id="getMenuByMenuId" resultType="com.mangopuree.menu.dto.MenuDto">
         /*
         MenuMapper.getMenuByMenuId
-        조회
+        메뉴아이디로 조회
         */
         select
             menu_id

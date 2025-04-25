@@ -7,6 +7,8 @@ public enum ErrorCode {
 
     MENU_NOT_FOUND ("ERR_SYS_001", "errorCode.menu.notFound")
     , PARENT_MENU_NOT_FOUND ("ERR_SYS_002", "errorCode.parentMenu.notFound")
+    , ESTIMATE_NOT_FOUND ("ERR_SYS_003", "errorCode.estimate.notFound")
+    , NVRSCHEDULE_NOT_FOUND ("ERR_SYS_004", "errorCode.nvrschedule.notFound")
 
     , API_TIMEOUT ("ERR_API_001", "errorCode.api.timeout")
     , API_FAIL ("ERR_API_002", "errorCode.api.fail")

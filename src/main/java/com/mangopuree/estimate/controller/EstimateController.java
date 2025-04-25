@@ -17,6 +17,11 @@ public class EstimateController extends BaseController {
     private final EstimateService estimateService;
     private final CodeService codeService;
 
+    /**
+     * 리스트 페이지 조회
+     * @param model
+     * @return view
+     */
     @GetMapping
     public String listForm(Model model) {
         model.addAttribute("estimateStatusList",codeService.getCodeListByCodeGroupId("ESTIMATE_STATUS"));
@@ -24,6 +29,11 @@ public class EstimateController extends BaseController {
         return "admin/estimate/list";
     }
 
+    /**
+     * 등록 페이지 조회
+     * @param model
+     * @return view
+     */
     @GetMapping("/insert")
     public String insertForm(Model model) {
         model.addAttribute("estimateStatusList",codeService.getCodeListByCodeGroupId("ESTIMATE_STATUS"));

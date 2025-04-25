@@ -1,5 +1,6 @@
 package com.mangopuree.support.jwt;
 
+import com.mangopuree.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,9 +25,9 @@ public class JwtUtil {
         this.secretKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String userId) {
         return Jwts.builder()
-                .claim("sub", username)
+                .claim("userId", userId)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() +EXPIRATION_MS))
                 .signWith(secretKey)
@@ -40,7 +41,7 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload();
 
-        return claims.get("sub", String.class);
+        return claims.get("userId", String.class);
     }
 
 }

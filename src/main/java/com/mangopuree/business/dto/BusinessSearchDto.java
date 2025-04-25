@@ -12,6 +12,7 @@ public class BusinessSearchDto extends RequestGridDto {
 
     @Schema(description = "상호명", example = "망고퓨레 본사")
     private String businessName;
+
     @Schema(description = "대표자명", example = "김동균")
     private String representativeName;
 }

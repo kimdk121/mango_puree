@@ -4,6 +4,7 @@ import com.mangopuree.menu.dto.MenuDto;
 import com.mangopuree.menu.service.MenuService;
 import com.mangopuree.support.base.BaseController;
 import com.mangopuree.support.base.dto.ApiResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,10 +22,8 @@ public class MenuApiController extends BaseController {
 
     private final MenuService menuService;
 
-    /**
-     * API 메뉴 호출
-     */
     @GetMapping("/loadUserMenu")
+    @Operation(summary = "사용자의 메뉴 정보 조회", description = "사용자의 메뉴 정보를 조회합니다.")
     public ResponseEntity<ApiResponseDto> loadUserMenu(Authentication authentication) {
         List<MenuDto> menuList = menuService.findMenuListByUserId(authentication.getName());
         return setSuccessResult(menuList);

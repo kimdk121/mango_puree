@@ -9,21 +9,21 @@ import java.util.List;
 public interface MenuMapper {
 
     /**
-     * 유저아이디로 메뉴 리스트 호출
+     * 사용자 메뉴 조회
      * @param userId
      * @return List<MenuDto>
      */
     List<MenuDto> findMenuListByUserId(String userId);
 
     /**
-     * URL로 메뉴 호출
+     * URL로 조회
      * @param url
      * @return MenuDto
      */
     MenuDto getMenuByUrl(String url);
 
     /**
-     * 메뉴아이디로 메뉴 호출
+     * 메뉴아이디로 조회
      * @param menuId
      * @return MenuDto
      */

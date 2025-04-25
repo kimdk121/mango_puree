@@ -23,7 +23,12 @@ public class LoginController extends BaseController {
     private final MessageUtil messageUtil;
 
     /**
-     * 로그인 화면 호출
+     * 로그인 페이지 조회
+     * @param error 에러 여부
+     * @param success 성공 여부
+     * @param session 에러 메세지나 성공 메세지가 담겨있을 수 있음
+     * @param model
+     * @return view
      */
     @GetMapping
     public String loginForm(@RequestParam(value = "error", required = false, defaultValue = "false") boolean error,
@@ -42,7 +47,9 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 회원가입 화면 호출
+     * 회원가입 페이지 조회
+     * @param model
+     * @return view
      */
     @GetMapping("/signup")
     public String signupForm(Model model) {
@@ -52,6 +59,10 @@ public class LoginController extends BaseController {
 
     /**
      * 회원가입
+     * @param userSignupDto
+     * @param bindingResult
+     * @param request
+     * @return view
      */
     @PostMapping("/signup")
     public String signup(@Validated @ModelAttribute("userSignupDto") UserSignupDto userSignupDto,
@@ -77,6 +88,7 @@ public class LoginController extends BaseController {
             bindingResult.rejectValue("username", "duplication.username");
             return "login/signup";
         }
+        // 회원가입 성공 메세지 담음
         request.getSession().setAttribute("successMessage","signup.success");
         return "redirect:/login?success=true";
     }

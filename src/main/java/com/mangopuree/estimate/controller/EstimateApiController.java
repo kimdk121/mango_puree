@@ -7,8 +7,11 @@ import com.mangopuree.estimate.dto.EstimateSearchDto;
 import com.mangopuree.estimate.service.EstimateService;
 import com.mangopuree.support.base.BaseController;
 import com.mangopuree.support.base.dto.ApiResponseDto;
+import com.mangopuree.support.exception.CodeException;
 import com.mangopuree.support.grid.dto.SetGridDataDto;
 import com.mangopuree.support.validator.EstimateDtoValidator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -33,8 +36,9 @@ public class EstimateApiController extends BaseController {
     private final EstimateDtoValidator estimateDtoValidator;
 
     @PostMapping("/insert")
-    public ResponseEntity<ApiResponseDto> insert(@RequestBody EstimateInsertDto estimateInsertDto, BindingResult bindingResult) {
-
+    @Operation(summary = "견적서 등록", description = "견적서와 견적서 품목을 등록합니다.")
+    public ResponseEntity<ApiResponseDto> insert(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "견적서 등록 DTO", required = true) @RequestBody EstimateInsertDto estimateInsertDto,
+                                                 BindingResult bindingResult) {
         if(estimateInsertDto.getEstimateStatusCd() != null && "ESS002".equals(estimateInsertDto.getEstimateStatusCd())) {
             estimateDtoValidator.validate(estimateInsertDto, bindingResult);
             if (bindingResult.hasErrors()) {
@@ -47,7 +51,9 @@ public class EstimateApiController extends BaseController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<ApiResponseDto> update(@RequestBody EstimateInsertDto estimateInsertDto, BindingResult bindingResult) {
+    @Operation(summary = "견적서 수정", description = "견적서와 견적서 품목을 수정합니다.")
+    public ResponseEntity<ApiResponseDto> update(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "견적서 수정 DTO", required = true) @RequestBody EstimateInsertDto estimateInsertDto,
+                                                 BindingResult bindingResult) {
 
         if(estimateInsertDto.getEstimateStatusCd() != null && "ESS002".equals(estimateInsertDto.getEstimateStatusCd())) {
             estimateDtoValidator.validate(estimateInsertDto, bindingResult);
@@ -60,10 +66,8 @@ public class EstimateApiController extends BaseController {
         return setSuccessResult();
     }
 
-    /**
-     * API 견적서 전체 Grid 호출
-     */
     @GetMapping("/list")
+    @Operation(summary = "견적서 Grid 정보 조회", description = "조건에 따른 견적서 Grid 정보를 조회합니다.")
     public ResponseEntity<ApiResponseDto> list(@ModelAttribute EstimateSearchDto estimateSearchDto) {
         estimateSearchDto.calculatePaging();
         List<EstimateGridDto> estimateGridDtos = estimateService.estimateListByGrid(estimateSearchDto);
@@ -76,25 +80,29 @@ public class EstimateApiController extends BaseController {
     }
 
     @GetMapping("/{estimateId}")
-    public ResponseEntity<ApiResponseDto> getEstimateDetail(@PathVariable String estimateId) {
+    @Operation(summary = "견적서 상세조회", description = "견적서와 견적서 품목을 조회합니다.")
+    public ResponseEntity<ApiResponseDto> getEstimateDetail(@Parameter(description = "견적서아이디", required = true, example = "EST25040700010") @PathVariable String estimateId) {
         EstimateDto estimateDto = estimateService.findEstimateDetail(estimateId);
         return setSuccessResult(estimateDto);
     }
 
     @DeleteMapping("/{estimateId}")
-    public ResponseEntity<ApiResponseDto> delete(@PathVariable String estimateId) {
+    @Operation(summary = "견적서 삭제", description = "견적서와 견적서 품목을 삭제합니다.")
+    public ResponseEntity<ApiResponseDto> delete(@Parameter(description = "견적서아이디", required = true, example = "EST25040700010") @PathVariable String estimateId) {
         estimateService.delete(estimateId);
         return setSuccessResult();
     }
 
     @PostMapping("/update/{estimateId}/estimateStatusCd")
-    public ResponseEntity<ApiResponseDto> update(@PathVariable String estimateId) {
+    @Operation(summary = "견적서의 상태 변경", description = "견적서의 상태를 확정으로 변경합니다.")
+    public ResponseEntity<ApiResponseDto> update(@Parameter(description = "견적서아이디", required = true, example = "EST25040700010") @PathVariable String estimateId) {
         estimateService.confirmEstimateStatus(estimateId);
         return setSuccessResult();
     }
 
     @GetMapping("/{estimateId}/downloadEstimateToExcel")
-    public ResponseEntity<Resource> downloadEstimateToExcel(@PathVariable String estimateId) {
+    @Operation(summary = "견적서 엑셀 다운로드", description = "견적서를 조회하여 엑셀문서로 다운로드 합니다.")
+    public ResponseEntity<Resource> downloadEstimateToExcel(@Parameter(description = "견적서아이디", required = true, example = "EST25041900001") @PathVariable String estimateId) {
 
         byte[] fileBytes = null;
         try {

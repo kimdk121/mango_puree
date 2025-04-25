@@ -4,8 +4,12 @@ import com.mangopuree.nvrschedule.dto.*;
 import com.mangopuree.nvrschedule.service.NvrScheduleService;
 import com.mangopuree.support.base.BaseController;
 import com.mangopuree.support.base.dto.ApiResponseDto;
+import com.mangopuree.support.exception.CodeException;
+import com.mangopuree.support.exception.ErrorCode;
 import com.mangopuree.support.grid.dto.SetGridDataDto;
 import com.mangopuree.support.validator.NvrScheduleDtoValidator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -22,10 +26,8 @@ public class NvrScheduleApiController extends BaseController {
     private final NvrScheduleService nvrScheduleService;
     private final NvrScheduleDtoValidator nvrScheduleDtoValidator;
 
-    /**
-     * API NVR schedule 전체 Grid 호출
-     */
     @GetMapping("/list")
+    @Operation(summary = "NVR 스케쥴 Grid 정보 조회", description = "조건에 따른 NVR 스케쥴 Grid 정보를 조회합니다.")
     public ResponseEntity<ApiResponseDto> list(@ModelAttribute NvrScheduleSearchDto nvrScheduleSearchDto) {
 
         nvrScheduleSearchDto.calculatePaging();
@@ -39,7 +41,9 @@ public class NvrScheduleApiController extends BaseController {
     }
 
     @PostMapping("/insert")
-    public ResponseEntity<ApiResponseDto> insert(@RequestBody NvrScheduleInsertDto nvrScheduleInsertDto, BindingResult bindingResult) {
+    @Operation(summary = "NVR 스케쥴 등록", description = "NVR 스케쥴을 등록합니다.")
+    public ResponseEntity<ApiResponseDto> insert(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "NVR 스케쥴 등록 DTO", required = true) @RequestBody NvrScheduleInsertDto nvrScheduleInsertDto,
+                                                 BindingResult bindingResult) {
 
         nvrScheduleDtoValidator.validate(nvrScheduleInsertDto, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -51,21 +55,31 @@ public class NvrScheduleApiController extends BaseController {
     }
 
     @GetMapping("/{scheduleId}")
-    public ResponseEntity<ApiResponseDto> detailForUpdate(@PathVariable String scheduleId) {
+    @Operation(summary = "수정페이지용 NVR 스케쥴 조회", description = "수정페이지용 NVR 스케쥴을 조회합니다.")
+    public ResponseEntity<ApiResponseDto> detailForUpdate(@Parameter(description = "스케쥴아이디", required = true, example = "SCHEDULE0004") @PathVariable String scheduleId) {
 
         NvrScheduleDto nvrScheduleDto = nvrScheduleService.findByScheduleId(scheduleId);
+        if (nvrScheduleDto == null) {
+            throw new CodeException(ErrorCode.NVRSCHEDULE_NOT_FOUND);
+        }
         return setSuccessResult(nvrScheduleDto);
     }
 
     @GetMapping("/detail/{scheduleId}")
-    public ResponseEntity<ApiResponseDto> detail(@PathVariable String scheduleId) {
+    @Operation(summary = "상세페이지용 NVR 스케쥴 조회", description = "상세페이지용 NVR 스케쥴을 조회합니다.")
+    public ResponseEntity<ApiResponseDto> detail(@Parameter(description = "스케쥴아이디", required = true, example = "SCHEDULE0004") @PathVariable String scheduleId) {
 
-        NvrScheduleDetailDto nvrSchedule = nvrScheduleService.findScheduleDetail(scheduleId);
-        return setSuccessResult(nvrSchedule);
+        NvrScheduleDetailDto nvrScheduleDto = nvrScheduleService.findScheduleDetail(scheduleId);
+        if (nvrScheduleDto == null) {
+            throw new CodeException(ErrorCode.NVRSCHEDULE_NOT_FOUND);
+        }
+        return setSuccessResult(nvrScheduleDto);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<ApiResponseDto> update(@RequestBody NvrScheduleInsertDto nvrScheduleInsertDto, BindingResult bindingResult) {
+    @Operation(summary = "NVR 스케쥴 수정", description = "NVR 스케쥴을 수정합니다.")
+    public ResponseEntity<ApiResponseDto> update(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "NVR 스케쥴 등록 DTO", required = true) @RequestBody NvrScheduleInsertDto nvrScheduleInsertDto,
+                                                 BindingResult bindingResult) {
 
         nvrScheduleDtoValidator.validate(nvrScheduleInsertDto, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -77,7 +91,8 @@ public class NvrScheduleApiController extends BaseController {
     }
 
     @DeleteMapping("{scheduleId}")
-    public ResponseEntity<ApiResponseDto> delete(@PathVariable String scheduleId) {
+    @Operation(summary = "NVR 스케쥴 삭제", description = "NVR 스케쥴을 삭제합니다.")
+    public ResponseEntity<ApiResponseDto> delete(@Parameter(description = "스케쥴아이디", required = true, example = "SCHEDULE0005") @PathVariable String scheduleId) {
         nvrScheduleService.deleteByScheduleId(scheduleId);
         return setSuccessResult();
     }

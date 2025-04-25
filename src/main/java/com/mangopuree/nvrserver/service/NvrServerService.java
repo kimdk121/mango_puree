@@ -10,6 +10,10 @@ public class NvrServerService {
 
     private final NvrServerMapper nvrServerMapper;
 
+    /**
+     * 조회
+     * @return NvrServerDto
+     */
     public NvrServerDto getNvrServer() {
         return nvrServerMapper.getNvrServer();
     }

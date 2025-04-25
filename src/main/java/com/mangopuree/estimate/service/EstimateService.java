@@ -6,6 +6,8 @@ import com.mangopuree.estimate.dto.EstimateInsertDto;
 import com.mangopuree.estimate.dto.EstimateSearchDto;
 import com.mangopuree.estimateitem.service.EstimateItemMapper;
 import com.mangopuree.support.doc.EstimateExcelBuilder;
+import com.mangopuree.support.exception.CodeException;
+import com.mangopuree.support.exception.ErrorCode;
 import com.mangopuree.support.security.LoginUserHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,11 @@ public class EstimateService {
     private final EstimateItemMapper estimateItemMapper;
     private final EstimateExcelBuilder estimateExcelBuilder;
 
+    /**
+     * 견적서와 견적서 품목 등록
+     * @param estimateInsertDto
+     * @return
+     */
     @Transactional
     public int insert(EstimateInsertDto estimateInsertDto) {
         String estimateId = estimateMapper.findNextEstimateId();
@@ -43,6 +50,11 @@ public class EstimateService {
         return result;
     }
 
+    /**
+     * 견적서와 견적서 품목 수정
+     * @param estimateInsertDto
+     * @return
+     */
     @Transactional
     public int update(EstimateInsertDto estimateInsertDto) {
         Long updId = LoginUserHolder.getAsLong();
@@ -63,6 +75,11 @@ public class EstimateService {
         return result;
     }
 
+    /**
+     * 견적서와 견적서 품목 삭제
+     * @param estimateId
+     * @return
+     */
     @Transactional
     public int delete(String estimateId) {
         estimateItemMapper.deleteByEstimateId(estimateId);
@@ -78,18 +95,37 @@ public class EstimateService {
         return estimateMapper.estimateListByGrid(estimateSearchDto);
     }
 
+    /**
+     * 견적서 상세 조회
+     * @param estimateId
+     * @return
+     */
     @Transactional
     public EstimateDto findEstimateDetail(String estimateId) {
         EstimateDto estimateDto = estimateMapper.findByEstimateId(estimateId);
+        if(estimateDto == null) {
+            throw new CodeException(ErrorCode.ESTIMATE_NOT_FOUND);
+        }
         estimateDto.setItemList(estimateItemMapper.findByEstimateId(estimateId));
         return estimateDto;
     }
 
+    /**
+     * 상태코드를 확정으로 변경
+     * @param estimateId
+     * @return int
+     */
     public int confirmEstimateStatus(String estimateId) {
         Long updId = LoginUserHolder.getAsLong();
         return estimateMapper.confirmEstimateStatus(estimateId, updId);
     }
 
+    /**
+     * 견적서 엑셀 다운로드
+     * @param estimateId
+     * @return
+     * @throws IOException
+     */
     public byte[] makeEstimateToExcel(String estimateId) throws IOException {
         EstimateDto estimateDto = findEstimateDetail(estimateId);
         return estimateExcelBuilder.build(estimateDto);

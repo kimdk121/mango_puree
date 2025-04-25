@@ -10,7 +10,7 @@ import java.util.List;
 public interface BusinessMapper {
 
     /**
-     * Grid용 사업자 전체조회
+     * Grid용 사업자 조회
      * @param businessSearchDto
      * @return List<BusinessGridDto>
      */

@@ -11,6 +11,7 @@ public class ResponseGridDto {
 
     @Schema(description = "순번", example = "1")
     private int rnum;
+
     @Schema(description = "총 데이터 수", example = "10")
     private int totalCount;
 }

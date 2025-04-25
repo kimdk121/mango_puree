@@ -13,7 +13,7 @@ public class CodeService {
     private final CodeMapper codeMapper;
 
     /**
-     * 코드목록 조회
+     * 코드 조회
      * @param codeGroupId
      * @return List<CodeDto>
      */

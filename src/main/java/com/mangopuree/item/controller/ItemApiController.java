@@ -6,6 +6,7 @@ import com.mangopuree.item.service.ItemService;
 import com.mangopuree.support.base.BaseController;
 import com.mangopuree.support.base.dto.ApiResponseDto;
 import com.mangopuree.support.grid.dto.SetGridDataDto;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +24,8 @@ public class ItemApiController extends BaseController {
 
     private final ItemService itemService;
 
-    /**
-     * API 사업자 Grid 호출
-     */
     @GetMapping("/list")
+    @Operation(summary = "품목 Grid 정보 조회", description = "조건에 따른 품목 Grid 정보를 조회합니다.")
     public ResponseEntity<ApiResponseDto> list(@ModelAttribute ItemSearchDto itemSearchDto) {
 
         itemSearchDto.calculatePaging();
