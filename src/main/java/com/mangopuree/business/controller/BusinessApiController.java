@@ -6,6 +6,11 @@ import com.mangopuree.business.service.BusinessService;
 import com.mangopuree.support.base.BaseController;
 import com.mangopuree.support.base.dto.ApiResponseDto;
 import com.mangopuree.support.grid.dto.SetGridDataDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +28,8 @@ public class BusinessApiController extends BaseController {
 
     private final BusinessService businessService;
 
-    /**
-     * API 사업자 Grid 호출
-     */
     @GetMapping("/list")
+    @Operation(summary = "사업자 Grid 정보 조회", description = "조건에 따른 사업자 Grid 정보를 조회합니다.")
     public ResponseEntity<ApiResponseDto> list(@ModelAttribute BusinessSearchDto businessSearchDto) {
         businessSearchDto.calculatePaging();
         List<BusinessGridDto> businessGridDtos = businessService.businessListByGrid(businessSearchDto);

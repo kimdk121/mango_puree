@@ -1,5 +1,6 @@
-package com.mangopuree.support.security;
+package com.mangopuree.support.interceptor;
 
+import com.mangopuree.support.security.LoginUserHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;

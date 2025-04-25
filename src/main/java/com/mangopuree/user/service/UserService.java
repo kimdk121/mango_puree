@@ -23,6 +23,9 @@ public class UserService {
         return userMapper.existsByUsername(username);
     }
 
+    public UserCredentialsDto findUserCredentialsByUsername(String username) {
+        return userMapper.findUserCredentialsByUsername(username);
+    }
     /**
      * 사용자등록
      * @param userSignupDto

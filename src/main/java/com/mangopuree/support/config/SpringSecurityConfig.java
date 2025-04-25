@@ -1,5 +1,8 @@
 package com.mangopuree.support.config;
 
+import com.mangopuree.support.filter.JwtAuthenticationFilter;
+import com.mangopuree.support.interceptor.SetUserIdInterceptor;
+import com.mangopuree.support.jwt.JwtUtil;
 import com.mangopuree.support.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -12,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,6 +24,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class SpringSecurityConfig implements WebMvcConfigurer {
 
+    private final JwtUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
 
     @Bean
@@ -34,7 +39,7 @@ public class SpringSecurityConfig implements WebMvcConfigurer {
                 .authorizeHttpRequests((authorizedHttpRequests) ->
                         authorizedHttpRequests
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()// /static/css/** , /static/js/** , /static/images/** , /static/webjars/** , /static/favicon.*, /static/*/icon-*
-                                .requestMatchers("/login/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() //,"/templates/fragments/**"
+                                .requestMatchers("/login/**", "/swagger-ui/**", "/v3/api-docs/**", "/auth/login").permitAll() //,"/templates/fragments/**"
                                 .anyRequest().authenticated()
                 ).formLogin((formLogin) ->
                         formLogin
@@ -52,7 +57,7 @@ public class SpringSecurityConfig implements WebMvcConfigurer {
                                 .invalidateHttpSession(true)
                                 .clearAuthentication(true)
                                 .logoutSuccessUrl("/login")
-                );
+                ).addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
