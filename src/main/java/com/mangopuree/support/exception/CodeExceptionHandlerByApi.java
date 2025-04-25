@@ -17,6 +17,11 @@ public class CodeExceptionHandlerByApi {
 
     private final MessageUtil messageUtil;
 
+    /**
+     * 에러 코드, 에러 메세지 Json으로 반환
+     * @param e
+     * @return ResponseEntity<Map<String, String>>
+     */
     @ExceptionHandler(CodeException.class)
     public ResponseEntity<Map<String, String>> handleCodeExceptionByApi(CodeException e) {
         String errorCode = e.getErrorCode().getCode();

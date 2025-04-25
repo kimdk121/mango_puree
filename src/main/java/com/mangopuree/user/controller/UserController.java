@@ -15,7 +15,8 @@ public class UserController extends BaseController {
     private final UserService userService;
 
     /**
-     * 사용자 화면 호출
+     * 리스트 페이지 조회
+     * @return view
      */
     @GetMapping
     public String listForm() {

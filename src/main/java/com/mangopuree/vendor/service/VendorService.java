@@ -14,7 +14,7 @@ public class VendorService {
     private final VendorMapper vendorMapper;
 
     /**
-     * Grid용 거래처 전체조회
+     * Grid용 거래처 조회
      * @param vendorSearchDto
      * @return List<VendorGridDto>
      */

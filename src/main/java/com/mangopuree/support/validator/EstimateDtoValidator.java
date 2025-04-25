@@ -8,6 +8,9 @@ import org.springframework.validation.Validator;
 
 import java.util.Set;
 
+/**
+ * 견적서 Bean Validation 수동 검증
+ */
 @Component
 public class EstimateDtoValidator implements Validator {
 

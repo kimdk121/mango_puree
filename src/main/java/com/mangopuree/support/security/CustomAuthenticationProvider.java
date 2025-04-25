@@ -20,6 +20,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * 비밀번호 비교
+     * @param authentication
+     * @return Authentication
+     * @throws AuthenticationException
+     */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 

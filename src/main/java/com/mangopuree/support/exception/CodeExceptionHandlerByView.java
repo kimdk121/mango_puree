@@ -14,6 +14,11 @@ public class CodeExceptionHandlerByView {
 
     private final MessageUtil messageUtil;
 
+    /**
+     * 에러 코드, 에러 메세지 View로 반환
+     * @param e
+     * @return ResponseEntity<Map<String, String>>
+     */
     @ExceptionHandler(CodeException.class)
     public String handleCodeExceptionByView(CodeException e, Model model) {
         String errorCode = e.getErrorCode().getCode();

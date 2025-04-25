@@ -9,6 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 public class SetUserIdInterceptor implements HandlerInterceptor {
 
+    // 유저아이디 쓰레드로컬에 저장
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -21,6 +22,7 @@ public class SetUserIdInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    // 쓰레드로컬 클리어
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         LoginUserHolder.clear();

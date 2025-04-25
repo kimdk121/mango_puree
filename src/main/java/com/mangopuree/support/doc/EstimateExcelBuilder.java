@@ -17,6 +17,12 @@ import java.util.Map;
 @Component
 public class EstimateExcelBuilder {
 
+    /**
+     * 엑셀 다운로드 설정, byte로 생성
+     * @param estimateDto
+     * @return byte[]
+     * @throws IOException
+     */
     public byte[] build(EstimateDto estimateDto) throws IOException {
 
         try (XSSFWorkbook workBook = new XSSFWorkbook();
@@ -37,6 +43,15 @@ public class EstimateExcelBuilder {
 
     }
 
+    /**
+     * Row 생성
+     * @param sheet
+     * @param rowNumber
+     * @param defaultStyle
+     * @param heightInPoints
+     * @param cellCount
+     * @return XSSFRow
+     */
     private XSSFRow createRow(XSSFSheet sheet, int rowNumber, CellStyle defaultStyle, int heightInPoints, int cellCount) {
 
         XSSFRow row = sheet.createRow(rowNumber);
@@ -50,6 +65,11 @@ public class EstimateExcelBuilder {
         return row;
     }
 
+    /**
+     * 견적서에 필요한 셀 스타일 생성
+     * @param workBook
+     * @return Map<String, CellStyle>
+     */
     private Map<String, CellStyle> createCellStyles(XSSFWorkbook workBook) {
         Map<String, CellStyle> styleMap = new HashMap<>();
 
@@ -192,6 +212,11 @@ public class EstimateExcelBuilder {
         return styleMap;
     }
 
+    /**
+     * 시트 설정
+     * @param workbook
+     * @param sheet
+     */
     private void configureSheet(XSSFWorkbook workbook, XSSFSheet sheet) {
 
         // 셀 높이 설정
@@ -217,6 +242,13 @@ public class EstimateExcelBuilder {
         sheet.setHorizontallyCenter(true); // 수평 가운데 정렬
     }
 
+    /**
+     * 내용 제작
+     * @param workBook
+     * @param sheet
+     * @param cellStyles
+     * @param estimateDto
+     */
     private void createContent(XSSFWorkbook workBook, XSSFSheet sheet, Map<String, CellStyle> cellStyles, EstimateDto estimateDto) {
 
         int rownum = 0;

@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 
 public class ConverterUtil {
 
+    /**
+     * NvrScheduleDto -> MovieSearchDto
+     * @param nvrScheduleDto
+     * @return MovieSearchDto
+     */
     public static MovieSearchDto convertToMovieSearchDto(NvrScheduleDto nvrScheduleDto) {
         LocalDateTime startDate = nvrScheduleDto.getLastDownloadDt() == null
                 ? LocalDateTime.now()

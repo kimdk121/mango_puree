@@ -22,6 +22,14 @@ public class RestTemplateHelper {
 
     private final RestTemplate restTemplate;
 
+    /**
+     * Post 요청
+     * @param url
+     * @param body
+     * @param responseType
+     * @return 응답 데이터
+     * @param <T>
+     */
     public <T> T post(String url, Object body, ParameterizedTypeReference<T> responseType) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -40,8 +48,14 @@ public class RestTemplateHelper {
         }
     }
 
+    /**
+     * 파라미터없는 Get 요청
+     * @param url
+     * @param responseType
+     * @return 응답 데이터
+     * @param <T>
+     */
     public <T> T get(String url, ParameterizedTypeReference<T> responseType) {
-
         try {
             ResponseEntity<T> response = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
             return response.getBody();
@@ -54,9 +68,18 @@ public class RestTemplateHelper {
         }
     }
 
+    /**
+     * 쿼리파라미터 Get 요청
+     * @param url
+     * @param dto
+     * @param responseType
+     * @return 응답데이터
+     * @param <T>
+     */
     public <T> T getWithParams(String url, Object dto, ParameterizedTypeReference<T> responseType) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 
+        // DTO 필드를 쿼리스트링 파라미터로 변환
         Field[] fields = dto.getClass().getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);

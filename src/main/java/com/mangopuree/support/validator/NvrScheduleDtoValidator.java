@@ -9,6 +9,9 @@ import org.springframework.validation.Validator;
 
 import java.util.Set;
 
+/**
+ * NVR 스케쥴 Bean Validation 수동 검증
+ */
 @Component
 public class NvrScheduleDtoValidator implements Validator {
 

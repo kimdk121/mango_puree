@@ -14,6 +14,13 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
     private final String failUrl;
 
+    /**
+     * 로그인 실패 세션에 실패 메세지 저장
+     * @param request
+     * @param response
+     * @param exception
+     * @throws IOException
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
 
