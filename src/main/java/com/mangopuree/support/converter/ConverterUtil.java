@@ -50,7 +50,7 @@ public class ConverterUtil {
             if (os.contains("win")) {
                 workbook.setDefaultFontName("Calibri");
             } else {
-                workbook.setDefaultFontName("DejaVu Sans");
+                workbook.setDefaultFontName("Noto Sans CJK KR");
             }
             workbook.saveToStream(bos, FileFormat.PDF);
             return bos.toByteArray();
