@@ -46,6 +46,12 @@ public class ConverterUtil {
             workbook.loadFromStream(bis);
             workbook.getConverterSetting().setSheetFitToWidth(true);
 
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) {
+                workbook.setDefaultFontName("Calibri");
+            } else {
+                workbook.setDefaultFontName("DejaVu Sans");
+            }
             workbook.saveToStream(bos, FileFormat.PDF);
             return bos.toByteArray();
         } catch (IOException e) {
