@@ -17,7 +17,9 @@ public enum ErrorCode {
     , HDFS_READ_FAIL ("ERR_HDFS_002", "errorCode.hdfs.readFail")
     , HDFS_FILE_NOT_FOUND ("ERR_HDFS_003", "errorCode.hdfs.fileNotFound")
 
-    , NVR_MOVIE_NOT_EXIST ("ERR_NVR_001", "errorCode.nvr.movieNotExist");
+    , NVR_MOVIE_NOT_EXIST ("ERR_NVR_001", "errorCode.nvr.movieNotExist")
+
+    , EXCELTOPDF_CONVERT_FAIL ("ERR_EXCEL_001", "errorCode.excelToPdf.convertFail");
 
     private final String code;
     private final String messageKey;

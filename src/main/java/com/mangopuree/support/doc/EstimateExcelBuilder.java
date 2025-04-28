@@ -40,7 +40,6 @@ public class EstimateExcelBuilder {
 
             return bos.toByteArray();
         }
-
     }
 
     /**
@@ -301,7 +300,7 @@ public class EstimateExcelBuilder {
         row.getCell(9).setCellStyle(cellStyles.get("rightBorder"));
 
         row = createRow(sheet,++rownum, cellStyles.get("default"), 25, 10);
-        row.getCell(1).setCellValue("2. 상기건 관련 당사에서 아래와 같이 견적하오니 검토하시어 업무에 참조 바랍니다");
+        row.getCell(1).setCellValue("2. 상기건 관련 당사에서 아래와 같이 견적하오니 검토바랍니다.");
         row.getCell(6).setCellValue("F    A    X  : " + estimateDto.getBusinessFaxNo());
         row.getCell(1).setCellStyle(cellStyles.get("leftBorderText"));
         row.getCell(6).setCellStyle(cellStyles.get("rightText"));

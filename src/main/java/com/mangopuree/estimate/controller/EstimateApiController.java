@@ -117,4 +117,22 @@ public class EstimateApiController extends BaseController {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
                 .body(new ByteArrayResource(fileBytes));
     }
+
+    @GetMapping("/{estimateId}/downloadEstimateToPdf")
+    @Operation(summary = "견적서 PDF 다운로드", description = "견적서를 조회하여 PDF문서로 다운로드 합니다.")
+    public ResponseEntity<Resource> downloadEstimateToPdf(@Parameter(description = "견적서아이디", required = true, example = "EST25041900001") @PathVariable String estimateId) {
+
+        byte[] fileBytes = null;
+        try {
+            fileBytes = estimateService.makeEstimateToPdf(estimateId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String filename = UriUtils.encode("견적서.pdf", StandardCharsets.UTF_8) ;
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ filename +"\"")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                .body(new ByteArrayResource(fileBytes));
+    }
 }

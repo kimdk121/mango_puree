@@ -1,4 +1,4 @@
-package com.mangopuree.auth;
+package com.mangopuree.auth.controller;
 
 import com.mangopuree.auth.dto.AuthRequestDto;
 import com.mangopuree.auth.dto.AuthResponseDto;

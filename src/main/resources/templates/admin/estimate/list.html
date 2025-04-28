@@ -27,6 +27,7 @@
                             <button type="button" class="btn btn-success btn-sm" onclick="deleteEstimate()">삭제</button>
                             <button type="button" class="btn btn-success btn-sm" onclick="confirmEstimate()">확정</button>
                             <button type="button" class="btn btn-success btn-sm" onclick="downloadEstimateExcel()">견적서 엑셀 다운로드</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="downloadEstimatePdf()">견적서 PDF 다운로드</button>
                         </div>
                     </div>
                     <form id="estimateSearchForm" class="mb-3">
@@ -325,6 +326,26 @@
                     }
                 }
 
+                function downloadEstimatePdf() {
+
+                    var confirmMessage = '[[#{confirm.estimate.download.pdf}]]';
+                    const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+                    const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
+                    const estimateStatusCd = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateStatusCd;
+
+                    if (estimateStatusCd !== 'ESS003') {
+                        alert('[[#{error.estimate.download.notConfirmed}]]');
+                        return;
+                    }
+
+                    if(confirm(confirmMessage)) {
+                        apiDownloadRequest({
+                            url: `/api/estimate/${estimateId}/downloadEstimateToPdf`,
+                            method: 'GET',
+                            filename: '견적서.pdf'
+                        });
+                    }
+                }
             </script>
         </div>
     </main>

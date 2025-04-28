@@ -5,6 +5,7 @@ import com.mangopuree.estimate.dto.EstimateGridDto;
 import com.mangopuree.estimate.dto.EstimateInsertDto;
 import com.mangopuree.estimate.dto.EstimateSearchDto;
 import com.mangopuree.estimateitem.service.EstimateItemMapper;
+import com.mangopuree.support.converter.ConverterUtil;
 import com.mangopuree.support.doc.EstimateExcelBuilder;
 import com.mangopuree.support.exception.CodeException;
 import com.mangopuree.support.exception.ErrorCode;
@@ -123,11 +124,23 @@ public class EstimateService {
     /**
      * 견적서 엑셀 다운로드
      * @param estimateId
-     * @return
+     * @return byte[]
      * @throws IOException
      */
     public byte[] makeEstimateToExcel(String estimateId) throws IOException {
         EstimateDto estimateDto = findEstimateDetail(estimateId);
         return estimateExcelBuilder.build(estimateDto);
+    }
+
+    /**
+     * 견적서 PDF 다운로드
+     * @param estimateId
+     * @return byte[]
+     * @throws IOException
+     */
+    public byte[] makeEstimateToPdf(String estimateId) throws IOException {
+        EstimateDto estimateDto = findEstimateDetail(estimateId);
+        byte[] excelData = estimateExcelBuilder.build(estimateDto);
+        return ConverterUtil.excelToPdfConverter(excelData);
     }
 }
