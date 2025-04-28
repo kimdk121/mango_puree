@@ -263,7 +263,8 @@ public class EstimateExcelBuilder {
 
         // 페이지 나누기 미리보기 설정
         //sheet.setDisplayGridlines(false); // 그리드라인 비활성화
-        sheet.setFitToPage(true); // 페이지에 맞춤 설정
+        sheet.setFitToPage(false); // 페이지에 맞춤 설정
+        sheet.setAutobreaks(true);
         sheet.setHorizontallyCenter(true); // 수평 가운데 정렬
     }
 
@@ -354,9 +355,10 @@ public class EstimateExcelBuilder {
         row.forEach(t -> {if(t.getColumnIndex() != 0) t.setCellStyle(cellStyles.get("header"));});
 
         // ITEM 포문
+        int itemNum = 0;
         for (EstimateItemDto estimateItemDto : estimateDto.getItemList()) {
             row = createRow(sheet,++rownum, cellStyles.get("default"), 25, 10);
-            row.getCell(1).setCellValue(rownum);
+            row.getCell(1).setCellValue(++itemNum);
             row.getCell(2).setCellValue(estimateItemDto.getItemName());
             row.getCell(3).setCellValue(estimateItemDto.getUnitCdName());
             row.getCell(4).setCellValue(estimateItemDto.getDueDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));

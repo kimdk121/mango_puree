@@ -43,6 +43,7 @@ public class ConverterUtil {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();) {
             Workbook workbook = new Workbook();
             workbook.loadFromFile(excelFile.getAbsolutePath());
+
             workbook.getConverterSetting().setSheetFitToWidth(true);
 
             String os = System.getProperty("os.name").toLowerCase();
