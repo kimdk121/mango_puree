@@ -9,6 +9,7 @@ import com.spire.xls.Workbook;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -35,15 +36,13 @@ public class ConverterUtil {
 
     /**
      * excelData를 pdfData로 변환
-     * @param excelData
+     * @param excelFile
      * @return byte[]
      */
-    public static byte[] excelToPdfConverter(byte[] excelData) {
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(excelData);
-             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-             ) {
+    public static byte[] excelToPdfConverter(File excelFile) {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();) {
             Workbook workbook = new Workbook();
-            workbook.loadFromStream(bis);
+            workbook.loadFromFile(excelFile.getAbsolutePath());
             workbook.getConverterSetting().setSheetFitToWidth(true);
 
             String os = System.getProperty("os.name").toLowerCase();

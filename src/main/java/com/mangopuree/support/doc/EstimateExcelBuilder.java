@@ -9,6 +9,8 @@ import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -18,15 +20,14 @@ import java.util.Map;
 public class EstimateExcelBuilder {
 
     /**
-     * 엑셀 다운로드 설정, byte로 생성
+     * 엑셀 다운로드 설정, byte[]로 생성 (메모리에)
      * @param estimateDto
      * @return byte[]
      * @throws IOException
      */
-    public byte[] build(EstimateDto estimateDto) throws IOException {
-
+    public byte[] buildToByte(EstimateDto estimateDto) throws IOException {
         try (XSSFWorkbook workBook = new XSSFWorkbook();
-             ByteArrayOutputStream bos = new ByteArrayOutputStream();) {
+             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 
             // 시트 생성
             XSSFSheet sheet = workBook.createSheet();
@@ -36,10 +37,35 @@ public class EstimateExcelBuilder {
 
             configureSheet(workBook, sheet);
             createContent(workBook, sheet, cellStyles, estimateDto);
-            workBook.write(bos);
 
+            workBook.write(bos);
             return bos.toByteArray();
         }
+    }
+
+    /**
+     * 엑셀 다운로드 설정, File로 생성 EC2 메모리 이슈로 부하 적게 걸리게 수정
+     * @param estimateDto
+     * @return File
+     * @throws IOException
+     */
+    public File buildToFile(EstimateDto estimateDto) throws IOException {
+        File tempFile = File.createTempFile("estimate_", ".xlsx");
+        try (XSSFWorkbook workBook = new XSSFWorkbook();
+             FileOutputStream fos = new FileOutputStream(tempFile)) {
+
+            // 시트 생성
+            XSSFSheet sheet = workBook.createSheet();
+
+            // 셀 스타일 생성
+            Map<String, CellStyle> cellStyles = createCellStyles(workBook);
+
+            configureSheet(workBook, sheet);
+            createContent(workBook, sheet, cellStyles, estimateDto);
+
+            workBook.write(fos);
+        }
+        return tempFile;
     }
 
     /**

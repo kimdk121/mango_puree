@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -129,7 +130,7 @@ public class EstimateService {
      */
     public byte[] makeEstimateToExcel(String estimateId) throws IOException {
         EstimateDto estimateDto = findEstimateDetail(estimateId);
-        return estimateExcelBuilder.build(estimateDto);
+        return estimateExcelBuilder.buildToByte(estimateDto);
     }
 
     /**
@@ -140,7 +141,13 @@ public class EstimateService {
      */
     public byte[] makeEstimateToPdf(String estimateId) throws IOException {
         EstimateDto estimateDto = findEstimateDetail(estimateId);
-        byte[] excelData = estimateExcelBuilder.build(estimateDto);
-        return ConverterUtil.excelToPdfConverter(excelData);
+        File excelFile = estimateExcelBuilder.buildToFile(estimateDto);
+        try {
+            return ConverterUtil.excelToPdfConverter(excelFile);
+        } finally {
+            if (excelFile.exists()) {
+                excelFile.delete();
+            }
+        }
     }
 }
