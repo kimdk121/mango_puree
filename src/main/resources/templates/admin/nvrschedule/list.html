@@ -65,10 +65,12 @@
         document.addEventListener("DOMContentLoaded", function () {
             setNvrScheduleGrid();
 
-            const selectedCameraId = document.getElementById("searchCameraId")?.value;
-            if (selectedCameraId) {
-                searchScheduleList();
-            }
+            setTimeout(() => {
+                const selectedCameraId = document.getElementById("searchCameraId")?.value;
+                if (selectedCameraId) {
+                    searchScheduleList();
+                }
+            }, 50);
         });
 
         var nvrScheduleGrid = null;
