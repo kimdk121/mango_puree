@@ -26,6 +26,9 @@ public class MenuDto {
     @Schema(description = "URL")
     private String url;
 
+    @Schema(description = "ICON")
+    private String icon;
+
     @Schema(description = "하위 메뉴", nullable = true)
     private List<SubMenuDto> subMenuList;
 }

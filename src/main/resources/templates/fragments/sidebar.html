@@ -36,17 +36,17 @@
 
                 if (subMenuList.length < 1) {
                     return `
-                        <div class="sb-sidenav-menu-heading">------------------------------</div>
+                        <div class="sb-sidenav-menu-heading">--------------------------------------</div>
                             <a class="nav-link ${menu.url === currentPath ? 'active' : ''}" href="${menu.url}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-link"></i></div>
+                                <div class="sb-nav-link-icon"><i class="${menu.icon}"></i></div>
                                 ${menu.menuName}
                             </a>
                         </div>`;
                 } else {
                     return `
-                        <div class="sb-sidenav-menu-heading">------------------------------</div>
+                        <div class="sb-sidenav-menu-heading">--------------------------------------</div>
                             <a class="nav-link ${isActiveMenu ? '' : 'collapsed'}" href="#" data-bs-toggle="collapse" data-bs-target="#menu${menu.menuId}" aria-expanded="${isActiveMenu}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-folder"></i></div>
+                                <div class="sb-nav-link-icon"><i class="${menu.icon}"></i></div>
                                 ${menu.menuName}
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
