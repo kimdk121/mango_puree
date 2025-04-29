@@ -7,7 +7,10 @@
     <th:block th:replace="~{admin/estimate/updateModal :: updateModalFragment}"></th:block>
     <main>
         <div class="container-fluid px-4">
-            <h1 th:text="${currentMenu.subMenuList == null ? currentMenu.menuName : currentMenu.subMenuList[0].menuName}"></h1>
+            <h3>
+                <i th:class="${currentMenu.subMenuList == null ? currentMenu.icon : currentMenu.subMenuList[0].icon}"></i>
+                <span th:text="${currentMenu.subMenuList == null ? currentMenu.menuName : currentMenu.subMenuList[0].menuName}"></span>
+            </h3>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item">
                     <span th:text="${currentMenu.menuName}">1뎁스</span>
@@ -20,14 +23,14 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="mb-0 fw-bold"><span class="material-symbols-outlined align-middle me-1 fs-5">description</span> 견적서 목록</h5>
+                        <h6 class="mb-0 fw-bold"><span class="material-symbols-outlined align-middle me-1 fs-6">description</span> 견적서 목록</h6>
                         <div>
-                            <button type="button" class="btn btn-success btn-sm" onclick="reset()">새로고침</button>
-                            <button type="button" class="btn btn-success btn-sm" onclick="openUpdateModal()">수정</button>
-                            <button type="button" class="btn btn-success btn-sm" onclick="deleteEstimate()">삭제</button>
-                            <button type="button" class="btn btn-success btn-sm" onclick="confirmEstimate()">확정</button>
-                            <button type="button" class="btn btn-success btn-sm" onclick="downloadEstimateExcel()">견적서 엑셀 다운로드</button>
-                            <button type="button" class="btn btn-success btn-sm" onclick="downloadEstimatePdf()">견적서 PDF 다운로드</button>
+                            <button type="button" class="btn btn-mango btn-sm" onclick="reset()">새로고침</button>
+                            <button type="button" class="btn btn-save btn-sm" onclick="openUpdateModal()">수정</button>
+                            <button type="button" class="btn btn-save btn-sm" onclick="confirmEstimate()">확정</button>
+                            <button type="button" class="btn btn-danger-custom btn-sm" onclick="deleteEstimate()">삭제</button>
+                            <button type="button" class="btn btn-download btn-sm" onclick="downloadEstimateExcel()">견적서 엑셀 다운로드</button>
+                            <button type="button" class="btn btn-download btn-sm" onclick="downloadEstimatePdf()">견적서 PDF 다운로드</button>
                         </div>
                     </div>
                     <form id="estimateSearchForm" class="mb-3">
@@ -55,7 +58,7 @@
                                     </select>
                                 </td>
                                 <td style="width: 80px;">
-                                    <button type="button" class="btn btn-primary btn-sm w-100" onclick="searchEstimateList()">조회</button>
+                                    <button type="button" class="btn btn-mango btn-sm w-100" onclick="searchEstimateList()">조회</button>
                                 </td>
                             </tr>
                             </tbody>

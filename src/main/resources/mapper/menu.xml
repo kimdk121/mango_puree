@@ -15,6 +15,7 @@
             <result property="parentId" column="sub_parent_id"/>
             <result property="orderIndex" column="sub_order_index"/>
             <result property="url" column="sub_url"/>
+            <result property="icon" column="sub_icon"/>
         </collection>
     </resultMap>
 
@@ -35,6 +36,7 @@
             , m2.parent_id as sub_parent_id
             , m2.order_index as sub_order_index
             , m2.url as sub_url
+            , m2.icon as sub_icon
         from
             menu m1
             left join menu m2 on m1.menu_id = m2.parent_id
@@ -58,6 +60,7 @@
             , parent_id
             , order_index
             , url
+            , icon
         from
             menu
         where
@@ -75,6 +78,7 @@
             , parent_id
             , order_index
             , url
+            , icon
         from
             menu
         where

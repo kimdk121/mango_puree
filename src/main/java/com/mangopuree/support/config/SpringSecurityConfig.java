@@ -39,7 +39,7 @@ public class SpringSecurityConfig implements WebMvcConfigurer {
                 .authorizeHttpRequests((authorizedHttpRequests) ->
                         authorizedHttpRequests
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()// /static/css/** , /static/js/** , /static/images/** , /static/webjars/** , /static/favicon.*, /static/*/icon-*
-                                .requestMatchers("/login/**", "/swagger-ui/**", "/v3/api-docs/**", "/auth/login").permitAll() //,"/templates/fragments/**"
+                                .requestMatchers("/login/**", "/swagger-ui/**", "/v3/api-docs/**", "/auth/login", "/assets/**").permitAll() //,"/templates/fragments/**"
                                 .anyRequest().authenticated()
                 ).formLogin((formLogin) ->
                         formLogin

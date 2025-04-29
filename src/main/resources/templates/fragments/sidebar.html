@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="sidebarFragment">
     <div id="layoutSidenav_nav">
-        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
             <div class="sb-sidenav-menu">
                 <div class="nav">
 
@@ -52,7 +52,7 @@
                             </a>
                             <div class="collapse ${isActiveMenu ? 'show' : ''}" id="menu${menu.menuId}">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    ${subMenuList.map(sub => `<a class="nav-link ${sub.url === currentPath ? 'active' : ''}" href="${sub.url}">${sub.menuName}</a>`).join('')}
+                                    ${subMenuList.map(sub => `<a class="nav-link ${sub.url === currentPath ? 'active' : ''}" href="${sub.url}"><i class="sb-nav-link-icon ${sub.icon}"></i>${sub.menuName}</a>`).join('')}
                                 </nav>
                             </div>
                         </div>`;

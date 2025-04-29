@@ -6,7 +6,10 @@
 <th:block layout:fragment="content">
     <main>
         <div class="container-fluid px-4">
-            <h1 th:text="${currentMenu.subMenuList == null ? currentMenu.menuName : currentMenu.subMenuList[0].menuName}"></h1>
+            <h2>
+                <i th:class="${currentMenu.subMenuList == null ? currentMenu.icon : currentMenu.subMenuList[0].icon}"></i>
+                <span th:text="${currentMenu.subMenuList == null ? currentMenu.menuName : currentMenu.subMenuList[0].menuName}"></span>
+            </h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item">
                     <span th:text="${currentMenu.menuName}">1뎁스</span>

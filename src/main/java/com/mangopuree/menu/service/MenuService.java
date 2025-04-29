@@ -47,7 +47,7 @@ public class MenuService {
         if (parentMenu == null) {
             throw new CodeException(ErrorCode.PARENT_MENU_NOT_FOUND);
         }
-        SubMenuDto subMenuDto = new SubMenuDto(currentMenu.getMenuId(), currentMenu.getMenuName(), currentMenu.getParentId(), currentMenu.getOrderIndex(), currentMenu.getUrl());
+        SubMenuDto subMenuDto = new SubMenuDto(currentMenu.getMenuId(), currentMenu.getMenuName(), currentMenu.getParentId(), currentMenu.getOrderIndex(), currentMenu.getUrl(), currentMenu.getIcon());
 
         parentMenu.setSubMenuList(List.of(subMenuDto));
         return parentMenu;

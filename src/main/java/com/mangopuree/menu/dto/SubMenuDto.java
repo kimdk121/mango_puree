@@ -25,4 +25,7 @@ public class SubMenuDto {
 
     @Schema(description = "URL", example = "/admin/estimate/insert")
     private String url;
+
+    @Schema(description = "ICON", example = "fas fa-file-signature")
+    private String icon;
 }
