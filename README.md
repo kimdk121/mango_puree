@@ -9,7 +9,6 @@
 - **프로젝트명**: MangoPuree
 - **개발 기간**: 2025.03.20 ~ 2025.04.29
 - **개발 환경**: Java 21, Spring Boot 3.4.3, MyBatis, MariaDB, Hadoop, Prometheus & Grafana, AWS EC2, Postman Mock Server
-- **GitHub**: [github.com/kimdk121/mango_puree](https://github.com/kimdk121/mango_puree)
 
 **설명**: MangoPuree는 제가 이전 회사에서 경험한 스프링 백엔드 프로젝트들을 기반으로, 최신 스프링 부트에서 권장하는 기술들에 맞춰 개선하고 재구성한 개인 프로젝트입니다. '망고'는 당시 회사에서 얻은 실무 경험을 의미하고 '퓨레'는 그 경험을 다지고 정제하여 더 나은 형태로 재구성했다는 의미를 담았습니다.
 
@@ -80,6 +79,7 @@
 
 - ErdCloud를 사용하여 전체 시스템의 테이블 구조와 관계를 시각적으로 설계하였습니다.
 - 사용자, 권한, 메뉴, 코드, 견적서, NVR 스케쥴, 영상 테이블의 관계를 명확히 정의했습니다.
+- ![mango_puree](https://github.com/user-attachments/assets/09d899fd-355a-465b-a77f-8c1ca1619042)
 
 ---
 
