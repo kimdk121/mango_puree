@@ -257,13 +257,16 @@ public class EstimateExcelBuilder {
         sheet.setColumnWidth(8, 255 * 10);
         sheet.setColumnWidth(9, 255 * 10);
 
+        sheet.setFitToPage(true);
+
         // 인쇄 용지를 A4로 설정
         XSSFPrintSetup print = sheet.getPrintSetup();
-        print.setPaperSize(PaperSize.A4_PAPER);
+        print.setPaperSize(PrintSetup.A4_PAPERSIZE);
+        print.setFitWidth((short) 1);   // 가로 한 페이지에 맞춤
+        print.setFitHeight((short) 0);  // 세로는 자동으로 페이지 나눔
 
         // 페이지 나누기 미리보기 설정
         //sheet.setDisplayGridlines(false); // 그리드라인 비활성화
-        sheet.setFitToPage(false); // 페이지에 맞춤 설정
         sheet.setAutobreaks(true);
         sheet.setHorizontallyCenter(true); // 수평 가운데 정렬
     }
