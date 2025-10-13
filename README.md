@@ -85,21 +85,18 @@
 
 ### 🔨 작업 내용 요약
 
-- Spring Security Form Login, JWT Login 구현
-- 사용자, 견적서, NVR 스케쥴 관련 CRUD API 및 화면 기능 구현
-- Spring Scheduler 배치 + RestTemplate 사용하여 외부 API (Postman Mock Server) 연동하여 영상 다운로드 → HDFS 저장 기능 구현
-- 메뉴 / 서브메뉴 구조를 DB 기반 트리 구조로 설계 및 구현
-- Apache POI와 Spire.xls를 사용하여 견적서 Excel/PDF 다운로드 기능 구현
-- Prometheus & Grafana 사용하여 실시간 서버 리소스 모니터링 대시보드 구축
-- Swagger UI 사용하여 API 문서 자동화 구성
-- Custom ErrorCode, CodeException 구조로 공통 예외 처리 체계화
-- AWS EC2 인스턴스에 Docker 설치하여 WAS, DB, 모니터링 서버 등을 컨테이너 단위로 분리하여 운영
-- Gradle 빌드 및 Docker Was 컨테이너에 배포 스크립트 작성 및 적용
+- Spring Security Form Login 기반 인증 및 접근 제어 구현
+- 사용자 / 견적 / NVR 스케줄 관련 CRUD, API 및 화면 개발
+- Spring Scheduler + RestTemplate 기반 외부 API 영상 수집 및 HDFS 저장
+- Apache POI + Spire.xls 를 활용한 Excel / PDF 견적서 생성 기능 구현
+- Prometheus & Grafana 를 활용한 실시간 모니터링 대시보드 구축
+- Custom ErrorCode / CodeException 구조로 공통 예외 처리 체계화
+- Docker 기반 WAS/ DB / 모니터링 / Hadoop 컨테이너 구성 및 배포 자동화
 
 ---
 
 ### 💬 프로젝트 후기
 
-- 기존 실무 경험을 체계적으로 정리하면서 그동안 사용했던 기능들을 다시 복기할 수 있는 기회가 되었음
-- Spring에서 제공하는 다양한 기능들을 직접 구성해보며 사용법을 더 깊이 이해하게 되었음
-- API, 배포, 모니터링, 예외처리 등 전체 사이클을 직접 설계/운영하며 시스템 전반에 대한 과정을 이해하게 되었음
+- 단순히 기능을 구현하는데 그쳤던 지난 시간들을 돌아보며 예전 업무들을 체계적으로 정립할 수 있는 기회가 되었습니다.
+- 인터넷 강의를 통해 학습한 Spring의 다양한 기능들을 직접 적용하면서 프레임워크의 동작원리와 사용법을 깊이 이해하게 되었습니다.
+- API 설계부터 배포, 모니터링, 예외처리까지 전체 개발 사이클을 직접 설계하고 운영하며 시스템 전반에 대한 흐름과 구조를 스스로 완성해 나가며 자신감을 얻을 수 있었습니다.
