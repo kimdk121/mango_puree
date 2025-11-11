@@ -3,7 +3,7 @@
 # 🍋 MangoPuree
 <img width="560" height="486" alt="image" src="https://github.com/user-attachments/assets/0a843cfd-c778-4993-9ded-acc99a068b2b" />
 
-> 실무형 백엔드 템플릿 프로젝트  
+> 개인 백엔드 템플릿 프로젝트  
 > 견적서 자동화, 배치, 모니터링, 예외처리까지 통합한 **운영 가능한 백엔드 아키텍처**
 
 <br>
