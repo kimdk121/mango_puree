@@ -80,6 +80,18 @@
 
 <br>
 
+## 📄 페이지 소개
+| 페이지 | 화면 | 설명 |
+|--------|------|------|
+| 대시보드 | <img width="1034" height="495" alt="image" src="https://github.com/user-attachments/assets/58580174-f280-4382-ba07-0df601c13c72" /> | <img width="307" height="457" alt="image" src="https://github.com/user-attachments/assets/c173cef9-96ec-4f68-b87b-27f8d9bdba60" /> |
+| 견적서등록 | <img width="903" height="600" alt="image" src="https://github.com/user-attachments/assets/46cbd031-fe2b-49c4-8b56-03edfd38129e" /> |  |
+| 견적서관리 | <img width="987" height="487" alt="image" src="https://github.com/user-attachments/assets/9b4c9692-eb9a-432b-9c55-ba2067885584" /> | <img width="357" height="435" alt="image" src="https://github.com/user-attachments/assets/9fcd4d03-7ff0-47ac-bebd-21eedcf89eb5" /> |
+| NVR 카메라현황 | <img width="1015" height="493" alt="image" src="https://github.com/user-attachments/assets/b105adac-be1c-421e-b5ff-6aea908a6cad" /> | <img width="279" height="579" alt="image" src="https://github.com/user-attachments/assets/1b899d2b-5b65-460c-9f72-2a1c79b77136" /> |
+| NVR 스케쥴관리 | <img width="1061" height="511" alt="image" src="https://github.com/user-attachments/assets/97df71b6-6cee-48c3-8560-8605ef5d4fb1" /> |  |
+| NVR 스케쥴상세 | <img width="1082" height="521" alt="image" src="https://github.com/user-attachments/assets/756b042a-ea21-4c84-96d9-619163128975" /> | <img width="367" height="579" alt="image" src="https://github.com/user-attachments/assets/ae09663e-b4e2-4724-af18-c1589de0b35c" /> |
+
+<br>
+
 ## 🔨 주요 작업내용
 
 - Spring Security Form Login 기반 인증 및 접근 제어 구현
