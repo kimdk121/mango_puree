@@ -75,6 +75,15 @@ public class SpringSecurityConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SetUserIdInterceptor())
-                .addPathPatterns("/api/**/insert/**","/api/**/update/**");
+                .addPathPatterns("/**") // 1. 모든 요청에 대해 인터셉터 실행!
+                .excludePathPatterns(   // 2. 단, 아래 경로들은 제외 (로그인 전, 정적 리소스 등)
+                        "/login/**",
+                        "/auth/**",
+                        "/assets/**",
+                        "/favicon.ico",
+                        "/error",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**"
+                );
     }
 }

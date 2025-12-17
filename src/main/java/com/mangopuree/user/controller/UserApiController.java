@@ -2,7 +2,10 @@ package com.mangopuree.user.controller;
 
 import com.mangopuree.support.base.BaseController;
 import com.mangopuree.support.base.dto.ApiResponseDto;
+import com.mangopuree.support.exception.CodeException;
+import com.mangopuree.support.exception.ErrorCode;
 import com.mangopuree.support.grid.dto.SetGridDataDto;
+import com.mangopuree.support.security.LoginUserHolder;
 import com.mangopuree.user.dto.*;
 import com.mangopuree.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,7 +51,10 @@ public class UserApiController extends BaseController {
     @Operation(summary = "사용자 수정", description = "사용자의 정보를 수정합니다.")
     public ResponseEntity<ApiResponseDto> update(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "사용자 수정 DTO", required = true) @RequestBody @Validated UserUpdateDto userUpdateDto,
                                                  BindingResult bindingResult) {
-
+        String currentUserId = LoginUserHolder.getUsername();
+        if ("guest".equals(currentUserId)) {
+            throw new CodeException(ErrorCode.GUESTUSER_NOT_CHANGE);
+        }
         if (bindingResult.hasErrors()) {
             Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
             return setFailResult(fieldErrors);
@@ -61,7 +67,10 @@ public class UserApiController extends BaseController {
     @Operation(summary = "사용자 비밀번호 수정", description = "사용자의 비밀번호를 수정합니다.")
     public ResponseEntity<ApiResponseDto> updatePassword(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "사용자 비밀번호 수정 DTO", required = true) @RequestBody @Validated UserPasswordUpdateDto userPasswordUpdateDto,
                                                          BindingResult bindingResult) {
-
+        String currentUserId = LoginUserHolder.getUsername();
+        if ("guest".equals(currentUserId)) {
+            throw new CodeException(ErrorCode.GUESTUSER_NOT_CHANGE);
+        }
         if (bindingResult.hasErrors()) {
             Map<String, List<String>> fieldErrors = setFieldErrors(bindingResult);
             return setFailResult(fieldErrors);

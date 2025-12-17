@@ -1,5 +1,6 @@
 package com.mangopuree.support.interceptor;
 
+import com.mangopuree.support.security.CustomUserDetails;
 import com.mangopuree.support.security.LoginUserHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +17,13 @@ public class SetUserIdInterceptor implements HandlerInterceptor {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication != null && authentication.isAuthenticated()) {
-            LoginUserHolder.set(authentication.getName());
+            LoginUserHolder.setUserId(authentication.getName());
+
+            if (authentication.getPrincipal() instanceof CustomUserDetails) {
+                CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+                LoginUserHolder.setUsername(principal.getLoginId());
+            }
+
         }
 
         return true;

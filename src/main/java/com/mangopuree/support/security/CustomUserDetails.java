@@ -24,4 +24,8 @@ public class CustomUserDetails extends User {
         this.name = user.getName();
     }
 
+    public String getLoginId() {
+        return this.userName;
+    }
+
 }

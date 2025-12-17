@@ -6,12 +6,13 @@ package com.mangopuree.support.security;
 public class LoginUserHolder {
 
     private static final ThreadLocal<String> userIdHolder = new ThreadLocal<>();
+    private static final ThreadLocal<String> userNameHolder = new ThreadLocal<>();
 
-    public static void set(String userId) {
+    public static void setUserId(String userId) {
         userIdHolder.set(userId);
     }
 
-    public static String get() {
+    public static String getUserId() {
         return userIdHolder.get();
     }
 
@@ -20,7 +21,16 @@ public class LoginUserHolder {
         return (id != null) ? Long.parseLong(id) : null;
     }
 
+    public static void setUsername(String username) {
+        userNameHolder.set(username);
+    }
+
+    public static String getUsername() {
+        return userNameHolder.get();
+    }
+
     public static void clear() {
         userIdHolder.remove();
+        userNameHolder.remove();
     }
 }
