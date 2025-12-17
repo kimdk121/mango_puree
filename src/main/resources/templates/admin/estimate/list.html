@@ -312,8 +312,15 @@
 
                     var confirmMessage = '[[#{confirm.estimate.download.excel}]]';
                     const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+
+                    if (!selectedRadio) {
+                        alert('[[#{select.estimate.download}]]');
+                        return;
+                    }
+
                     const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
                     const estimateStatusCd = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateStatusCd;
+
 
                     if (estimateStatusCd !== 'ESS003') {
                         alert('[[#{error.estimate.download.notConfirmed}]]');
@@ -333,8 +340,15 @@
 
                     var confirmMessage = '[[#{confirm.estimate.download.pdf}]]';
                     const selectedRadio = document.querySelector('input[name="rowRadio"]:checked');
+
+                    if (!selectedRadio) {
+                        alert('[[#{select.estimate.download}]]');
+                        return;
+                    }
+
                     const estimateId = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateId;
                     const estimateStatusCd = estimateGrid.getRow(Number(selectedRadio.dataset.rowKey)).estimateStatusCd;
+
 
                     if (estimateStatusCd !== 'ESS003') {
                         alert('[[#{error.estimate.download.notConfirmed}]]');

@@ -8,6 +8,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +26,7 @@ public class LoginController extends BaseController {
 
     private final UserService userService;
     private final MessageUtil messageUtil;
+    private final UserDetailsService userDetailsService;
 
     /**
      * 로그인 페이지 조회
@@ -93,4 +99,19 @@ public class LoginController extends BaseController {
         return "redirect:/login?success=true";
     }
 
+    /**
+     * 게스트로그인
+     * @param request
+     * @return main
+     */
+    @GetMapping("/guest")
+    public String guestLogin(HttpServletRequest request) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername("guest");
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        HttpSession session = request.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+        return "redirect:/admin/main";
+    }
 }
